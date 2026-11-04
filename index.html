@@ -43,9 +43,10 @@ dialog label select{display:block;width:100%;margin-top:4px;font-size:17px;paddi
 .punch-start{display:inline;font-size:20px;margin-left:4px;vertical-align:middle}
 .book-actions{margin-top:12px}.book-actions .soft-button{width:100%}.clock{margin-bottom:18px}
 .place-note{font-size:15px;color:#4f5f55;margin:12px 0}
+.header{border-bottom:1px solid #dfe6dd;margin-bottom:18px;padding-bottom:16px}button.brand{background:none;padding:0;text-align:left;cursor:pointer}
 </style></head><body>
 <main class="app">
-  <header class="header"><div class="brand"><span class="brand-icon">◷</span><span>農園タイムカード<small>FARM TIME CARD</small></span></div><button id="settings" class="icon-button" aria-label="保存・アカウントの設定">⚙</button></header>
+  <header class="header"><button id="home-link" class="brand" aria-label="打刻の画面へ"><span class="brand-icon">◷</span><span>農園タイムカード<small>FARM TIME CARD</small></span></button><button id="settings" class="icon-button" aria-label="保存・アカウントの設定">⚙</button></header>
   <div class="cloud-status" id="cloud-status" role="status" aria-live="polite" hidden></div><button id="sync" class="sync-button" hidden>今すぐ送る ↻</button>
   <div id="fatal" class="error" role="alert" hidden></div>
   <section id="auth-panel" class="auth-panel" hidden>
@@ -76,8 +77,8 @@ dialog label select{display:block;width:100%;margin-top:4px;font-size:17px;paddi
     <div class="days-total"><span>合計</span><strong id="days-total">—</strong></div>
     <p class="fine-print" id="days-note"></p>
   </div>
-  <footer class="footer">打刻は端末に保存してから送信します。<br>「保存先へ送信済み」になったことを確認してください。</footer>
-</main><dialog id="modal"><div id="modal-body"></div></dialog><script>window.P02_WEB={"apiUrl":"https://script.google.com/macros/s/AKfycby-w8l6me8DyQfZX5PXZDLk5PXUTVT-BY3xomKUANceDVHtCn_QrUrFfLp6pu7iZdF1tg/exec","version":"20261105.w13"};</script><script>(function(root){
+  
+</main><dialog id="modal"><div id="modal-body"></div></dialog><script>window.P02_WEB={"apiUrl":"https://script.google.com/macros/s/AKfycby-w8l6me8DyQfZX5PXZDLk5PXUTVT-BY3xomKUANceDVHtCn_QrUrFfLp6pu7iZdF1tg/exec","version":"20261105.w14"};</script><script>(function(root){
 'use strict';
 const api={};
 api.id=()=>{if(root.crypto.randomUUID)return root.crypto.randomUUID();const bytes=root.crypto.getRandomValues(new Uint8Array(16));bytes[6]=(bytes[6]&15)|64;bytes[8]=(bytes[8]&63)|128;const hex=[...bytes].map(x=>x.toString(16).padStart(2,'0')).join('');return hex.slice(0,8)+'-'+hex.slice(8,12)+'-'+hex.slice(12,16)+'-'+hex.slice(16,20)+'-'+hex.slice(20);};
@@ -312,9 +313,8 @@ async function authenticate(ev){
     const result=requireOk(await request(authMode,{name,verifier,salt:challenge.salt,invite:boot.invite,deviceId:data.deviceId,ua:navigator.userAgent,expectedEmployeeId:data.queue[0]?.employeeId||''}));
     await save(current=>({...current,session:{token:result.token,iconKey:result.iconKey||'',employee:result.employee},history:M.merge(result.history||[],current.history.filter(p=>p.employeeId===result.employee.id))}));verified=true;
     $('login-password').value='';$('login-confirm').value='';authNotice='';syncUrl();
-    if(result.replacedOther)notify('このスマホに引き継ぎました。以前のスマホの新しい打刻は停止します。');
-    else if(WEB)notify(standalone?'ログインしました。':'ログインしました。ホーム画面に追加すると、アプリのように使えます（⚙に説明があります）。');
-    else notify(standalone?'ログインしました。次からもアイコンで開けるよう、Chromeでログインしてからホーム画面に追加し直してください。':'ログインしました。ホーム画面に追加するなら、いまのこの画面から追加してください。');
+    if(result.replacedOther)notify('このスマホに引き継ぎました。前のスマホでは打刻できなくなります。',false,6000);
+    else notify('ログインしました。',false,3000);
   }catch(err){authError(err);}finally{busy=false;render();flush();}
 }
 async function refresh(sendPending=true){
@@ -373,7 +373,7 @@ function workSpan(form){const c=formWorkContext(form);let inAt=null;
 function updateWorkForm(form){const w=workSpan(form),isOut=w.kind==='退勤',fields=form.querySelector('#lunch-fields'),section=form.querySelector('#work-confirm');fields.hidden=!isOut;fields.disabled=!isOut;section.hidden=!isOut;
   const hours=form.elements.confirmed_hours,minutes=form.elements.confirmed_minutes;hours.disabled=minutes.disabled=!isOut;if(!isOut)return;
   const choice=form.querySelector('[name="lunch"]:checked'),custom=choice?.value==='custom',other=form.elements.lunch_custom;form.querySelector('#lunch-custom-wrap').hidden=!custom;other.disabled=!custom;other.required=custom;
-  const startText=form.querySelector('#work-start-text');startText.textContent=form.id==='punch-form'||w.inAt===null?'':'出勤 '+M.time(w.inAt)+'（'+M.hm(w.st)+'始業）';startText.hidden=!startText.textContent;
+  const startText=form.querySelector('#work-start-text');startText.textContent='';startText.hidden=true;
   const rest=choice?(custom?Number(other.value):Number(choice.value)):null,message=form.querySelector('#work-proposal');
   if(rest===null){message.textContent='昼休憩を選ぶと時間を計算します。';return;}
   if(!Number.isInteger(rest)||rest<0||rest>1440){message.textContent='昼休憩の分数を確認してください。';return;}
@@ -497,13 +497,14 @@ function renderDays(){const first=monthOf(daysMonth),mo=M.month(ownHistory(),fir
       if(t.changed)tags.push('<span class="tag">本人変更</span>');if(lone)tags.push('<span class="tag warn">出勤なし</span>');else if(t.status==='要確認'||t.status==='時間を確認')tags.push('<span class="tag warn">'+(t.status==='要確認'?'確認が必要':'時間を入れる')+'</span>');if(t.status==='勤務中')tags.push(t.date===today?'<span class="tag">勤務中</span>':'<span class="tag warn">退勤なし</span>');if(t.pending)tags.push('<span class="tag warn">未送信</span>');
       return `<button class="day-row" data-day="${t.date}"><span class="day-date">${md(t.date)}</span><span class="day-times">${t.inRec?M.time(t.inRec.at):'—'} – ${t.outRec?M.time(t.outRec.at):lone?M.time(lone.at):'—'}${tags.length?'<br>'+tags.join(''):''}</span><strong>${ok?hm(M.floor30(t.confirmedMinutes)):'—'}</strong><span class="chev">›</span></button>`;}).join(''):'<div class="empty">この月の記録はまだありません。</div>';
   $('days-total').innerHTML=hm(mo.shownMinutes);
-  $('days-note').textContent=`30分未満は切り捨てて表示しています。${mo.days}日`+(mo.check+noOut?`。確認が必要な日 ${mo.check+noOut}日`:'')+(isLocked(Date.parse(first+'T12:00:00+09:00'))?'。この月は締めました。':'');
+  $('days-note').hidden=true;void `30分未満は切り捨てて表示しています。${mo.days}日`+(mo.check+noOut?`。確認が必要な日 ${mo.check+noOut}日`:'')+(isLocked(Date.parse(first+'T12:00:00+09:00'))?'。この月は締めました。':'');
 }
 function settings(){const s=data.session,pendingCount=data.queue.filter(q=>!q.error).length;
   modal(`<h2>設定</h2>${s?`<p class="settings-name">${esc(s.employee.name)} さん</p>${pendingCount?`<p>まだ送れていない打刻が ${pendingCount}件 あります。電波のよい所で開くと、自動で送ります。</p>`:'<p>打刻はすべて送れています。</p>'}<h3>ホーム画面に置く</h3>${standalone?'<p>いまはホーム画面のアイコンから開いています。</p>':'<p>ブラウザの共有ボタン（□に↑の印）やメニューから「ホーム画面に追加」を選ぶと、次からアイコンで開けます。</p>'}<h3>スマホを替えたとき</h3><p>新しいスマホで、同じお名前とパスワードでログインしてください。前のスマホでは打刻できなくなります。</p>${!verified?'<button class="btn" data-action="relogin">もう一度ログインする</button>':''}<button class="btn" data-action="logout">このスマホからログアウト</button>`:'<p>お名前とパスワードでログインしてください。</p>'}<p class="fine-print">アプリの版 ${CLIENT_VERSION}${boot.version?' ／ 保存先 '+esc(boot.version):''}</p><div class="buttons"><button class="btn primary" data-close>閉じる</button></div>`);}
 document.addEventListener('click',async ev=>{const b=ev.target.closest('button');if(!b)return;
   if(b.dataset.authMode){authMode=b.dataset.authMode;render();}
   if(b.dataset.punch)preparePunch(b.dataset.punch).catch(err=>{busy=false;render();notify(err.message,true);});
+  if(b.id==='home-link'){if(dialog.open)dialog.close();if(view==='days'){if(history.state?.tcDays)history.back();else{view='main';render();}}window.scrollTo(0,0);}
   if(b.id==='settings')settings();if(b.dataset.day){if(dialog.open)dialog.close();editDay(b.dataset.day);}if(b.id==='days-open'){view='days';daysMonth=0;try{history.pushState({tcDays:1},'');}catch(e){}render();window.scrollTo(0,0);}if(b.id==='days-back'){if(history.state?.tcDays){history.back();}else{view='main';render();window.scrollTo(0,0);}}if(b.dataset.month!==undefined){daysMonth=Number(b.dataset.month);renderDays();}
   if(b.dataset.startToggle!==undefined){const f=b.closest('form');b.hidden=true;const st=f.querySelector('.start-text');if(st)st.hidden=true;f.querySelector('#start-wrap').hidden=false;if(f.id!=='in-form'){f.dataset.manual='false';updateWorkForm(f);}else updateInForm(f);f.elements.start_time.focus();}if(b.id==='sync')flush();if(b.dataset.close!==undefined)dialog.close();if(b.dataset.correct)correct(b.dataset.correct);
   try{
