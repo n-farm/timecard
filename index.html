@@ -66,7 +66,7 @@ dialog label select{display:block;width:100%;margin-top:4px;font-size:17px;paddi
       <div class="punch-grid"><button class="punch start" data-punch="出勤"><span class="punch-icon">↗</span><strong>出勤</strong><small>お仕事を始める</small></button><button class="punch finish" data-punch="退勤"><span class="punch-icon">↘</span><strong>退勤</strong><small>お仕事を終える</small></button></div>
       <p class="location-note">⌖ 打刻したときだけ、場所を確認します</p><div id="notice" role="status" aria-live="polite"></div>
     </section>
-    <section class="today-section"><div class="section-heading"><h2>出勤簿</h2><span id="today-label"></span></div><div class="stats single"><article><span>今日の時間</span><strong id="work-total">—</strong></article><article><span id="month-label">今月の合計</span><strong id="month-total">—</strong></article></div><div class="book-actions"><button id="days-open" class="soft-button">日別の時間を見る（修正もこちら） ›</button></div></section>
+    <section class="today-section"><div class="section-heading"><h2>出勤簿</h2><span id="today-label" hidden></span></div><div class="stats single"><article><span>今日の時間</span><strong id="work-total">—</strong></article><article><span id="month-label">今月の合計</span><strong id="month-total">—</strong></article></div><div class="book-actions"><button id="days-open" class="soft-button">日別の時間を見る（修正もこちら） ›</button></div></section>
     <input id="history-date" type="hidden">
   </div>
   <div id="days-panel" hidden>
@@ -78,7 +78,7 @@ dialog label select{display:block;width:100%;margin-top:4px;font-size:17px;paddi
     <p class="fine-print" id="days-note"></p>
   </div>
   
-</main><dialog id="modal"><div id="modal-body"></div></dialog><script>window.P02_WEB={"apiUrl":"https://script.google.com/macros/s/AKfycby-w8l6me8DyQfZX5PXZDLk5PXUTVT-BY3xomKUANceDVHtCn_QrUrFfLp6pu7iZdF1tg/exec","version":"20261105.w14"};</script><script>(function(root){
+</main><dialog id="modal"><div id="modal-body"></div></dialog><script>window.P02_WEB={"apiUrl":"https://script.google.com/macros/s/AKfycby-w8l6me8DyQfZX5PXZDLk5PXUTVT-BY3xomKUANceDVHtCn_QrUrFfLp6pu7iZdF1tg/exec","version":"20261105.w15"};</script><script>(function(root){
 'use strict';
 const api={};
 api.id=()=>{if(root.crypto.randomUUID)return root.crypto.randomUUID();const bytes=root.crypto.getRandomValues(new Uint8Array(16));bytes[6]=(bytes[6]&15)|64;bytes[8]=(bytes[8]&63)|128;const hex=[...bytes].map(x=>x.toString(16).padStart(2,'0')).join('');return hex.slice(0,8)+'-'+hex.slice(8,12)+'-'+hex.slice(12,16)+'-'+hex.slice(16,20)+'-'+hex.slice(20);};
