@@ -33,10 +33,11 @@ dialog .buttons{position:sticky;bottom:-22px;background:#fff;margin:18px -22px -
 @media(max-width:370px){.day-date{width:74px;font-size:15px}.day-row strong{font-size:19px}.history-time{font-size:18px}}
 .lunch-choices label{flex-direction:column;justify-content:center;text-align:center;gap:4px;white-space:nowrap}.lunch-choices label span small{display:block;font-size:14px}
 #start-wrap select{display:inline-block;width:auto;margin:0 0 0 8px;padding:8px 12px;font-size:17px}.work-inputs select{display:block;width:100%;margin-top:4px;font-size:16px;padding:11px 12px}
+.sync-button{display:block;margin:-14px auto 18px;background:var(--green);color:#fff;border-radius:10px;padding:10px 18px;font-size:16px}.day-punches{margin-top:18px;border-top:1px solid var(--line);padding-top:8px}.day-punches h3{font-size:16px;margin:6px 0}.punch-row{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;padding:8px 0;border-bottom:1px solid #eef0ea;font-size:16px}.punch-row-time{font-variant-numeric:tabular-nums;font-weight:600}.punch-row .edit-button{margin-left:auto}.punch-row-note{width:100%;margin:0;font-size:14px!important;color:#a65035!important}
 </style></head><body>
 <main class="app">
   <header class="header"><div class="brand"><span class="brand-icon">◷</span><span>農園タイムカード<small>FARM TIME CARD</small></span></div><button id="settings" class="icon-button" aria-label="保存・アカウントの設定">⚙</button></header>
-  <div class="cloud-status" id="cloud-status" role="status" aria-live="polite">接続を確認しています…</div>
+  <div class="cloud-status" id="cloud-status" role="status" aria-live="polite">接続を確認しています…</div><button id="sync" class="sync-button" hidden>今すぐ送る ↻</button>
   <div id="fatal" class="error" role="alert" hidden></div>
   <section id="auth-panel" class="auth-panel" hidden>
     <h1>お名前とパスワードで登録</h1><p>登録後は、このスマホからスムーズに打刻できます。</p>
@@ -56,7 +57,7 @@ dialog .buttons{position:sticky;bottom:-22px;background:#fff;margin:18px -22px -
       <p class="location-note">⌖ 打刻したときだけ、場所を確認します</p><div id="notice" role="status" aria-live="polite"></div>
     </section>
     <section class="today-section"><div class="section-heading"><h2>出勤簿</h2><span id="today-label"></span></div><div class="stats single"><article><span>この日の時間</span><strong id="work-total">—</strong></article><article><span id="month-label">今月の合計</span><strong id="month-total">—</strong></article></div><p class="fine-print" id="attendance-detail">退勤時に昼休憩と時間を確認します。</p><div class="book-actions"><button id="day-edit" class="text-button" hidden>この日の時間を直す</button><button id="days-open" class="text-button">日別の時間を見る ›</button></div></section>
-    <section class="history-section"><div class="section-heading"><h2>打刻の履歴</h2><label class="date-label"><span class="sr-only">履歴の日付</span><input id="history-date" type="date"></label></div><div id="history"></div><div class="history-footer"><button id="sync" class="text-button">未送信を再送 ↻</button></div></section>
+    <input id="history-date" type="hidden">
   </div>
   <div id="days-panel" hidden>
     <div class="days-head"><button id="days-back" class="text-button">＜ 打刻の画面へ戻る</button></div>
@@ -67,7 +68,7 @@ dialog .buttons{position:sticky;bottom:-22px;background:#fff;margin:18px -22px -
     <p class="fine-print" id="days-note"></p>
   </div>
   <footer class="footer">打刻は端末に保存してから送信します。<br>「保存先へ送信済み」になったことを確認してください。</footer>
-</main><dialog id="modal"><div id="modal-body"></div></dialog><script>window.P02_WEB={"apiUrl":"https://script.google.com/macros/s/AKfycby-w8l6me8DyQfZX5PXZDLk5PXUTVT-BY3xomKUANceDVHtCn_QrUrFfLp6pu7iZdF1tg/exec","version":"20261104.w10"};</script><script>(function(root){
+</main><dialog id="modal"><div id="modal-body"></div></dialog><script>window.P02_WEB={"apiUrl":"https://script.google.com/macros/s/AKfycby-w8l6me8DyQfZX5PXZDLk5PXUTVT-BY3xomKUANceDVHtCn_QrUrFfLp6pu7iZdF1tg/exec","version":"20261104.w11"};</script><script>(function(root){
 'use strict';
 const api={};
 api.id=()=>{if(root.crypto.randomUUID)return root.crypto.randomUUID();const bytes=root.crypto.getRandomValues(new Uint8Array(16));bytes[6]=(bytes[6]&15)|64;bytes[8]=(bytes[8]&63)|128;const hex=[...bytes].map(x=>x.toString(16).padStart(2,'0')).join('');return hex.slice(0,8)+'-'+hex.slice(8,12)+'-'+hex.slice(12,16)+'-'+hex.slice(16,20)+'-'+hex.slice(20);};
@@ -272,9 +273,8 @@ function render(){
   $('cloud-status').textContent=!verified?'この端末からの新しい打刻は停止中':failed?`${failed}件は保存先への確認が必要です` :queue.length?`端末に保存済み・未送信 ${queue.length}件`+(standalone?'（送信済みになるまで閉じないでください）':'') :navigator.onLine===false?'オフライン・端末に保存します':!available?'保存先への接続を確認できません':data.history.length?'保存先へ送信済み':'接続済み・未送信なし';
   for(const b of document.querySelectorAll('[data-punch]'))b.disabled=busy||!verified;
   const rows=ownHistory();punchGuide(rows);
-  const date=$('history-date').value||M.day(Date.now()),selected=M.visible(rows).filter(p=>M.day(p.at)===date);
-  $('history').innerHTML=selected.length?'<div class="history-list">'+selected.map(p=>`<div class="history-row"><span class="history-time">${M.time(p.at)}</span><div class="history-desc"><strong>${esc(p.kind)}</strong><span class="badge ${p.error||!p.sent?'review':''}">${p.error?'確認が必要':p.sent?(p.originalId?'直し済み':'送信済み'):(p.originalId?'直しの送信待ち':'未送信')}</span><p>${esc(historyNote(p))}</p></div>${p.sent&&!p.error?(p.kind==='退勤'&&(!Number.isInteger(p.lunchMinutes)||!Number.isInteger(p.confirmedMinutes))?`<button class="edit-button" data-day="${M.day(p.at)}" ${busy||!verified?'disabled':''}>時間を確認</button>`:`<button class="edit-button" data-correct="${esc(p.id)}" ${busy||!verified?'disabled':''}>打刻を直す</button>`):''}</div>`).join('')+'</div>':'<div class="empty">この日の打刻はまだありません。</div>';
-  $('sync').disabled=sending||!data.queue.some(q=>!q.error);
+  /* 打刻の履歴は表示しない。未送信があるときだけ「今すぐ送る」を出す */
+  $('sync').hidden=!data.queue.some(q=>!q.error);$('sync').disabled=sending;
   if(view==='days')renderDays();
   tick();
 }
@@ -284,7 +284,7 @@ function punchGuide(rows){const last=M.effective(rows||ownHistory()).at(-1),toda
   if(rows===undefined&&key===guideKey)return;guideKey=key;
   for(const b of document.querySelectorAll('[data-punch]')){const on=b.dataset.punch===next;b.classList.toggle('next',on);b.classList.toggle('other',!on);}
   $('status').className='status '+(working?'working':forgot?'resting':'');$('status').innerHTML='<i></i>'+(working?'出勤中（次は退勤）':forgot?'前日の退勤がありません（日別の時間から入れられます）':'未出勤（次は出勤）');}
-function tick(){const now=Date.now();$('clock-date').textContent=new Intl.DateTimeFormat('ja-JP',{timeZone:'Asia/Tokyo',year:'numeric',month:'long',day:'numeric',weekday:'long'}).format(now);$('clock').textContent=M.time(now);const date=$('history-date').value||M.day(now);$('today-label').textContent=date.replaceAll('-',' / ');if(data.session){punchGuide();const rows=ownHistory(),t=M.attendance(rows,date,startOf()),mo=M.month(rows,date,startOf()),hm=m=>Math.floor(m/60)+'<span>時間</span>'+(m%60?m%60+'<span>分</span>':'');
+function tick(){const now=Date.now();$('clock-date').textContent=new Intl.DateTimeFormat('ja-JP',{timeZone:'Asia/Tokyo',year:'numeric',month:'long',day:'numeric',weekday:'long'}).format(now);$('clock').textContent=M.time(now);const date=M.day(now);$('today-label').textContent=date.replaceAll('-',' / ');if(data.session){punchGuide();const rows=ownHistory(),t=M.attendance(rows,date,startOf()),mo=M.month(rows,date,startOf()),hm=m=>Math.floor(m/60)+'<span>時間</span>'+(m%60?m%60+'<span>分</span>':'');
   const lone=t.status==='要確認'?onlyOut(rows,date):null;$('work-total').innerHTML=t.confirmedMinutes===null?esc(lone?'出勤なし':t.status==='勤務中'&&date!==M.day(now)?'退勤なし':t.status):hm(M.floor30(t.confirmedMinutes));
   $('attendance-detail').textContent=t.confirmedMinutes===null?(t.status==='勤務中'&&date!==M.day(now)?'退勤の記録がありません。「この日の時間を入れる」から、退勤した時刻を入れてください。':t.status==='勤務中'?(t.inRec?'出勤 '+M.time(t.inRec.at)+'（'+M.hm(t.startMinutes??startOf())+'始業）。':'')+'退勤のときに時間を確認します。':t.status==='時間を確認'?'「この日の時間を入れる」から、勤務時間を入れてください。':t.status==='要確認'?(lone?'出勤の記録がありません。「この日の時間を入れる」から、出勤した時刻を入れてください。':'出勤・退勤の組み合わせが合いません。「この日の時間を入れる」を押してください。'):'この日の記録はまだありません。'):`30分未満は切り捨てて表示しています（実際 ${M.duration(t.confirmedMinutes)}・昼休憩 ${t.lunchMinutes}分）${t.changed?'。本人変更あり（計算 '+M.duration(t.calculatedMinutes)+'）':''}${t.pending?'。未送信':''}`;
   const dayLocked=isLocked(Date.parse(date+'T12:00:00+09:00'));$('day-edit').hidden=dayLocked||(!t.inRec&&!t.outRec&&t.status!=='要確認')||(t.status==='勤務中'&&date===M.day(now));$('day-edit').textContent=t.status==='時間を確認'||t.status==='勤務中'||t.status==='要確認'?'この日の時間を入れる':'この日の時間を直す';
@@ -396,7 +396,7 @@ const persistRecord=record=>persistRecords([record]);
 function correct(id){const p=ownHistory().find(p=>p.id===id);if(!p)return;
   if(isLocked(p.at)){modal('<h2>直せません</h2><p>'+LOCK_MSG+'</p><div class="buttons"><button class="btn" data-close>戻る</button></div>');return;}
   const inRec=p.kind==='退勤'?M.checkoutIn(ownHistory(),p.at,p.id):null,st=p.kind==='退勤'?dayStart(inRec,p):startOf();
-  modal(`<h2>打刻を直す</h2><p>${md(M.day(p.at))} ／ ${esc(p.kind)}</p><p class="fine-print">押し間違えたときだけ使います。勤務時間だけ直すときは「この日の時間を直す」を使ってください。</p><form id="correction-form" data-exclude="${esc(id)}" data-start="${st}" data-manual="${Number.isInteger(p.confirmedMinutes)?'true':'false'}"><label>打刻の時刻<input class="correction-time" name="time" type="time" step="60" value="${M.time(p.at)}" required></label><details class="correction-options"><summary>日付・出勤／退勤・理由も変える</summary><label>日付<input name="date" type="date" value="${M.day(p.at)}" required></label><label>出勤／退勤<select name="kind"><option ${p.kind==='出勤'?'selected':''}>出勤</option><option ${p.kind==='退勤'?'selected':''}>退勤</option></select></label><label>理由（なくてもよい）<input name="note" maxlength="200"></label></details>${workFields(p,{start:st,editStart:true})}</form><div id="dialog-error" class="error" hidden role="alert"></div>${closeButtons('この内容で保存','correct-save" data-correct-save="'+esc(id))}`);updateWorkForm($('correction-form'));
+  modal(`<h2>押し間違いを直す</h2><p>${md(M.day(p.at))} ／ ${esc(p.kind)}</p><p class="fine-print">押し間違えたときだけ使います。勤務時間だけ直すときは「この日の時間を直す」を使ってください。</p><form id="correction-form" data-exclude="${esc(id)}" data-start="${st}" data-manual="${Number.isInteger(p.confirmedMinutes)?'true':'false'}"><label>打刻の時刻<input class="correction-time" name="time" type="time" step="60" value="${M.time(p.at)}" required></label><details class="correction-options"><summary>日付・出勤／退勤・理由も変える</summary><label>日付<input name="date" type="date" value="${M.day(p.at)}" required></label><label>出勤／退勤<select name="kind"><option ${p.kind==='出勤'?'selected':''}>出勤</option><option ${p.kind==='退勤'?'selected':''}>退勤</option></select></label><label>理由（なくてもよい）<input name="note" maxlength="200"></label></details>${workFields(p,{start:st,editStart:true})}</form><div id="dialog-error" class="error" hidden role="alert"></div>${closeButtons('この内容で保存','correct-save" data-correct-save="'+esc(id))}`);updateWorkForm($('correction-form'));
 }
 async function saveCorrection(id){const f=$('correction-form'),work=readWorkForm(f);if(!work)return;const fields=Object.fromEntries(new FormData(f)),at=Date.parse(fields.date+'T'+fields.time+':00+09:00');if(!Number.isFinite(at))throw Error('正しい日時を入れてください。');if(isLocked(at))throw Error(LOCK_MSG);
   const before=ownHistory().find(p=>p.id===id),keepStart=fields.kind==='出勤'&&Number.isInteger(before?.startMinutes)?{startMinutes:before.startMinutes}:{};
@@ -404,25 +404,28 @@ async function saveCorrection(id){const f=$('correction-form'),work=readWorkForm
   /* 出勤の時刻を直したら、その日の時間も計算し直して確認してもらう */
   if(fields.kind==='出勤'||before?.kind==='出勤'){const day=M.day(at),t=M.attendance(ownHistory(),day,startOf());if(t.outRec)editDay(day,{recalc:true,notice:'出勤の時刻を直したので、この日の時間も確認してください。'});}
 }
+/** その日の打刻の一覧（送信状況つき）。押し間違いのときだけ「押し間違いを直す」 */
+function dayPunches(date){const list=M.visible(ownHistory()).filter(p=>M.day(p.at)===date);if(!list.length)return '';
+  return '<div class="day-punches"><h3>この日の打刻</h3>'+list.map(p=>`<div class="punch-row"><span class="punch-row-time">${M.time(p.at)}</span><span class="punch-row-kind">${esc(p.kind)}</span><span class="badge ${p.error||!p.sent?'review':''}">${p.error?'確認が必要':p.sent?(p.originalId?'直し済み':'送信済み'):'未送信'}</span>${p.error?`<p class="punch-row-note">${esc(p.error)}</p>`:''}${p.sent&&!p.error&&!isLocked(p.at)?`<button class="edit-button" data-correct="${esc(p.id)}">押し間違いを直す</button>`:''}</div>`).join('')+'</div>';}
 /** その日の勤務時間を直す（打刻の時刻はそのまま）。退勤・出勤を押し忘れた日は、その時刻を入れる。 */
 function editDay(date,opts={}){if(!data.session)return;const rows=ownHistory(),t=M.attendance(rows,date,startOf()),today=M.day(Date.now());
   const head=`<h2>${md(date)}の時間</h2>${opts.notice?`<div class="notice-box">${esc(opts.notice)}</div>`:''}`;
-  const close='<div class="buttons"><button class="btn" data-close>戻る</button></div>',err='<div id="dialog-error" class="error" hidden role="alert"></div>';
+  const close=dayPunches(date)+'<div class="buttons"><button class="btn" data-close>戻る</button></div>',err='<div id="dialog-error" class="error" hidden role="alert"></div>';
   if(isLocked(Date.parse(date+'T12:00:00+09:00'))){modal(head+'<p>'+LOCK_MSG+'</p>'+close);return;}
   const dayRows=M.effective(rows).filter(p=>M.day(p.at)===date),ins=dayRows.filter(p=>p.kind==='出勤'),outs=dayRows.filter(p=>p.kind==='退勤');
   if(!ins.length&&outs.length===1){const out=outs[0],st=dayStart(null,out);
-    modal(head+`<p>退勤 ${M.time(out.at)}。出勤の記録がありません。出勤した時刻を入れてください。</p><form id="day-form" data-kind="退勤" data-mode="newin" data-at="${out.at}" data-exclude="${esc(out.id)}" data-start="${st}" data-manual="false"><input type="hidden" name="date" value="${date}"><label>出勤した時刻<input name="in_time" type="time" step="60" required value="${timeValue(startOf())}"></label>${workFields(out,{start:st,editStart:true})}</form>${err}${closeButtons('この内容で保存','save-day')}`);
+    modal(head+`<p>退勤 ${M.time(out.at)}。出勤の記録がありません。出勤した時刻を入れてください。</p><form id="day-form" data-kind="退勤" data-mode="newin" data-at="${out.at}" data-exclude="${esc(out.id)}" data-start="${st}" data-manual="false"><input type="hidden" name="date" value="${date}"><label>出勤した時刻<input name="in_time" type="time" step="60" required value="${timeValue(startOf())}"></label>${workFields(out,{start:st,editStart:true})}</form>${err}${dayPunches(date)}${closeButtons('この内容で保存','save-day')}`);
     updateWorkForm($('day-form'));return;}
-  if(t.status==='要確認'){modal(head+'<p>この日は出勤・退勤の組み合わせが合いません（出勤を2回押したなど）。履歴の「打刻を直す」で、押し間違えた打刻を直してください。</p>'+close);return;}
+  if(t.status==='要確認'){modal(head+'<p>この日は出勤・退勤の組み合わせが合いません（出勤を2回押したなど）。下の「押し間違いを直す」で、押し間違えた打刻を直してください。</p>'+close);return;}
   if(!t.inRec){modal(head+'<p>この日の出勤・退勤の記録がありません。</p>'+close);return;}
   if(!t.outRec){
     if(date===today){modal(head+'<p>出勤 '+M.time(t.inRec.at)+'。勤務中です。退勤のときに時間を確認します。</p>'+close);return;}
     const st=dayStart(t.inRec,null);
-    modal(head+`<p>出勤 ${M.time(t.inRec.at)}。退勤の記録がありません。退勤した時刻を入れてください。</p><form id="day-form" data-kind="退勤" data-mode="new" data-start="${st}" data-manual="false"><input type="hidden" name="date" value="${date}"><label>退勤した時刻<input name="time" type="time" step="60" required value="17:00"></label>${workFields({},{start:st,editStart:true})}</form>${err}${closeButtons('この内容で保存','save-day')}`);
+    modal(head+`<p>出勤 ${M.time(t.inRec.at)}。退勤の記録がありません。退勤した時刻を入れてください。</p><form id="day-form" data-kind="退勤" data-mode="new" data-start="${st}" data-manual="false"><input type="hidden" name="date" value="${date}"><label>退勤した時刻<input name="time" type="time" step="60" required value="17:00"></label>${workFields({},{start:st,editStart:true})}</form>${err}${dayPunches(date)}${closeButtons('この内容で保存','save-day')}`);
     updateWorkForm($('day-form'));return;
   }
   const out=t.outRec,st=dayStart(t.inRec,out),manual=!opts.recalc&&Number.isInteger(out.confirmedMinutes);
-  modal(head+`<p>退勤 ${M.time(out.at)}${out.sent===false?'（未送信）':''}</p><form id="day-form" data-kind="退勤" data-mode="fix" data-at="${out.at}" data-exclude="${esc(out.id)}" data-start="${st}" data-manual="${manual}">${workFields(out,{start:st,editStart:true})}</form>${err}${closeButtons('この内容で保存','save-day')}`);
+  modal(head+`<p>退勤 ${M.time(out.at)}${out.sent===false?'（未送信）':''}</p><form id="day-form" data-kind="退勤" data-mode="fix" data-at="${out.at}" data-exclude="${esc(out.id)}" data-start="${st}" data-manual="${manual}">${workFields(out,{start:st,editStart:true})}</form>${err}${dayPunches(date)}${closeButtons('この内容で保存','save-day')}`);
   updateWorkForm($('day-form'));
 }
 async function saveDay(){const f=$('day-form');if(!f)return;const work=readWorkForm(f);if(!work)return;const date=f.elements.date?.value;
@@ -452,7 +455,7 @@ function settings(){const s=data.session;modal(`<h2>保存・アカウント</h2
 document.addEventListener('click',async ev=>{const b=ev.target.closest('button');if(!b)return;
   if(b.dataset.authMode){authMode=b.dataset.authMode;render();}
   if(b.dataset.punch)preparePunch(b.dataset.punch).catch(err=>{busy=false;render();notify(err.message,true);});
-  if(b.id==='settings')settings();if(b.dataset.day){if(dialog.open)dialog.close();editDay(b.dataset.day);}if(b.id==='day-edit')editDay($('history-date').value||M.day(Date.now()));if(b.id==='days-open'){view='days';daysMonth=0;try{history.pushState({tcDays:1},'');}catch(e){}render();window.scrollTo(0,0);}if(b.id==='days-back'){if(history.state?.tcDays){history.back();}else{view='main';render();window.scrollTo(0,0);}}if(b.dataset.month!==undefined){daysMonth=Number(b.dataset.month);renderDays();}
+  if(b.id==='settings')settings();if(b.dataset.day){if(dialog.open)dialog.close();editDay(b.dataset.day);}if(b.id==='day-edit')editDay(M.day(Date.now()));if(b.id==='days-open'){view='days';daysMonth=0;try{history.pushState({tcDays:1},'');}catch(e){}render();window.scrollTo(0,0);}if(b.id==='days-back'){if(history.state?.tcDays){history.back();}else{view='main';render();window.scrollTo(0,0);}}if(b.dataset.month!==undefined){daysMonth=Number(b.dataset.month);renderDays();}
   if(b.dataset.startToggle!==undefined){const f=b.closest('form');b.hidden=true;const st=f.querySelector('.start-text');if(st)st.hidden=true;f.querySelector('#start-wrap').hidden=false;if(f.id!=='in-form'){f.dataset.manual='false';updateWorkForm(f);}f.elements.start_time.focus();}if(b.id==='sync')flush();if(b.dataset.close!==undefined)dialog.close();if(b.dataset.correct)correct(b.dataset.correct);
   try{
     if(b.dataset.action==='save-day')await saveDay();
