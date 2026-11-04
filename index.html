@@ -50,6 +50,7 @@ dialog label select{display:block;width:100%;margin-top:4px;font-size:17px;paddi
 @media(min-width:700px){.header{margin-left:-32px;margin-right:-32px;padding-left:32px;padding-right:32px}}
 /* ボタンに軽い影（押せる物と分かりやすく） */
 .punch.next{box-shadow:0 4px 10px #215d4833}.punch.other{box-shadow:0 3px 8px #253a321f}.soft-button{box-shadow:0 2px 5px #253a321a}.btn{box-shadow:0 2px 5px #253a321a}.punch:not(:disabled):active,.soft-button:active,.btn:active{box-shadow:none;transform:translateY(1px)}
+.punch.next{box-shadow:0 6px 14px #0b2a1e55,0 2px 4px #0b2a1e33}
 </style></head><body>
 <main class="app">
   <header class="header"><button id="home-link" class="brand" aria-label="打刻の画面へ"><span class="brand-icon">◷</span><span>農園タイムカード<small>FARM TIME CARD</small></span></button><button id="settings" class="icon-button" aria-label="保存・アカウントの設定">⚙</button></header>
@@ -84,7 +85,7 @@ dialog label select{display:block;width:100%;margin-top:4px;font-size:17px;paddi
     <p class="fine-print" id="days-note"></p>
   </div>
   
-</main><dialog id="modal"><div id="modal-body"></div></dialog><script>window.P02_WEB={"apiUrl":"https://script.google.com/macros/s/AKfycby-w8l6me8DyQfZX5PXZDLk5PXUTVT-BY3xomKUANceDVHtCn_QrUrFfLp6pu7iZdF1tg/exec","version":"20261105.w16"};</script><script>(function(root){
+</main><dialog id="modal"><div id="modal-body"></div></dialog><script>window.P02_WEB={"apiUrl":"https://script.google.com/macros/s/AKfycby-w8l6me8DyQfZX5PXZDLk5PXUTVT-BY3xomKUANceDVHtCn_QrUrFfLp6pu7iZdF1tg/exec","version":"20261105.w17"};</script><script>(function(root){
 'use strict';
 const api={};
 api.id=()=>{if(root.crypto.randomUUID)return root.crypto.randomUUID();const bytes=root.crypto.getRandomValues(new Uint8Array(16));bytes[6]=(bytes[6]&15)|64;bytes[8]=(bytes[8]&63)|128;const hex=[...bytes].map(x=>x.toString(16).padStart(2,'0')).join('');return hex.slice(0,8)+'-'+hex.slice(8,12)+'-'+hex.slice(12,16)+'-'+hex.slice(16,20)+'-'+hex.slice(20);};
