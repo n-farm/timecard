@@ -35,7 +35,7 @@ a.btn{display:block;text-align:center;text-decoration:none;margin-top:8px}
     <section class="history-section"><div class="section-heading"><h2>打刻の履歴</h2><label class="date-label"><span class="sr-only">履歴の日付</span><input id="history-date" type="date"></label></div><div id="history"></div><div class="history-footer"><button id="sync" class="text-button">未送信を再送 ↻</button></div></section>
   </div>
   <footer class="footer">打刻は端末に保存してから送信します。<br>「保存先へ送信済み」になったことを確認してください。</footer>
-</main><dialog id="modal"><div id="modal-body"></div></dialog><script>window.P02_WEB={"apiUrl":"https://script.google.com/macros/s/AKfycby-w8l6me8DyQfZX5PXZDLk5PXUTVT-BY3xomKUANceDVHtCn_QrUrFfLp6pu7iZdF1tg/exec","version":"20261104.w3"};</script><script>(function(root){
+</main><dialog id="modal"><div id="modal-body"></div></dialog><script>window.P02_WEB={"apiUrl":"https://script.google.com/macros/s/AKfycby-w8l6me8DyQfZX5PXZDLk5PXUTVT-BY3xomKUANceDVHtCn_QrUrFfLp6pu7iZdF1tg/exec","version":"20261104.w4"};</script><script>(function(root){
 'use strict';
 const api={};
 api.id=()=>{if(root.crypto.randomUUID)return root.crypto.randomUUID();const bytes=root.crypto.getRandomValues(new Uint8Array(16));bytes[6]=(bytes[6]&15)|64;bytes[8]=(bytes[8]&63)|128;const hex=[...bytes].map(x=>x.toString(16).padStart(2,'0')).join('');return hex.slice(0,8)+'-'+hex.slice(8,12)+'-'+hex.slice(12,16)+'-'+hex.slice(16,20)+'-'+hex.slice(20);};
@@ -211,7 +211,7 @@ function render(){
   $('cloud-status').textContent=!verified?'この端末からの新しい打刻は停止中':failed?`${failed}件は保存先への確認が必要です` :queue.length?`端末に保存済み・未送信 ${queue.length}件`+(standalone?'（送信済みになるまで閉じないでください）':'') :navigator.onLine===false?'オフライン・端末に保存します':!available?'保存先への接続を確認できません':data.history.length?'保存先へ送信済み':'接続済み・未送信なし';
   for(const b of document.querySelectorAll('[data-punch]'))b.disabled=busy||!verified;
   const rows=ownHistory();punchGuide(rows);
-  const date=$('history-date').value,selected=M.visible(rows).filter(p=>M.day(p.at)===date);
+  const date=$('history-date').value||M.day(Date.now()),selected=M.visible(rows).filter(p=>M.day(p.at)===date);
   $('history').innerHTML=selected.length?'<div class="history-list">'+selected.map(p=>`<div class="history-row"><span class="history-time">${M.time(p.at)}</span><div class="history-desc"><strong>${esc(p.kind)}</strong><span class="badge ${p.error||!p.sent?'review':''}">${p.error?'要確認':p.sent?(p.originalId?'訂正済':'送信済み'):(p.originalId?'訂正の送信待ち':'未送信')}</span><p>${esc(historyNote(p))}</p></div>${p.sent&&!p.error?`<button class="edit-button" data-correct="${esc(p.id)}" ${busy||!verified?'disabled':''}>${p.kind==='退勤'&&(!Number.isInteger(p.lunchMinutes)||!Number.isInteger(p.confirmedMinutes))?'時間を確認':'打刻を直す'}</button>`:''}</div>`).join('')+'</div>':'<div class="empty">この日の打刻はまだありません。</div>';
   $('sync').disabled=sending||!data.queue.some(q=>!q.error);
   tick();
@@ -316,7 +316,7 @@ document.addEventListener('click',async ev=>{const b=ev.target.closest('button')
     if(['logout','relogin'].includes(b.dataset.action)){if(data.queue.length&&b.dataset.action!=='relogin'){modal('<h2>未送信の記録があります</h2><p>先に送信するか、管理者に確認してください。記録を保護するため、ログアウトはまだ行いません。</p><div class="buttons"><button class="btn" data-close>戻る</button></div>');return;}if(data.session)$('login-name').value=data.session.employee.name;await save(current=>({...current,session:null,history:current.queue.length?current.history:[]}));verified=true;syncUrl();dialog.close();render();}
   }catch(err){const el=$('dialog-error');if(el){el.hidden=false;el.textContent=err.message;}else notify(err.message,true);}
 });
-$('auth-form').addEventListener('submit',authenticate);$('history-date').value=M.day(Date.now());$('history-date').addEventListener('change',render);
+$('auth-form').addEventListener('submit',authenticate);$('history-date').value=M.day(Date.now());/* iPhoneの日付選択の「リセット」で空になったら今日に戻す（空のままだと履歴が全部消えたように見える） */const historyDay=()=>{if(!$('history-date').value)$('history-date').value=M.day(Date.now());render();};$('history-date').addEventListener('change',historyDay);$('history-date').addEventListener('input',historyDay);$('history-date').addEventListener('blur',historyDay);
 document.addEventListener('submit',async ev=>{if(!['punch-form','correction-form'].includes(ev.target.id))return;ev.preventDefault();try{if(ev.target.id==='punch-form'&&pending){const work=readWorkForm(ev.target);if(work)await persistRecord({...pending,...work});}else if(ev.target.id==='correction-form'){await saveCorrection(ev.target.dataset.exclude);}}catch(err){$('dialog-error').hidden=false;$('dialog-error').textContent=err.message;}});
 document.addEventListener('input',ev=>{const form=ev.target.closest('form');if(!form||!['punch-form','correction-form'].includes(form.id))return;if(['confirmed_hours','confirmed_minutes'].includes(ev.target.name))form.dataset.manual='true';if(ev.target.name==='lunch_custom'){form.dataset.manual='false';updateWorkForm(form);}});
 document.addEventListener('change',ev=>{const form=ev.target.closest('form');if(form&&['punch-form','correction-form'].includes(form.id)&&['lunch','time','date','kind'].includes(ev.target.name)){form.dataset.manual='false';updateWorkForm(form);}});
