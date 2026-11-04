@@ -1,0 +1,344 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#215d48"><title>農園タイムカード</title><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="タイムカード"><meta name="apple-mobile-web-app-status-bar-style" content="default"><style>:root{color-scheme:light;--green:#215d48;--deep:#183d31;--ink:#253a32;--muted:#7c8982;--line:#e4e9e4;--bg:#f5f6f2;--orange:#b97b39}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif;font-size:15px;line-height:1.6}button,input,select{font:inherit}button{cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #8fbca3;outline-offset:3px}button:disabled{cursor:default;opacity:.32}button{border:0}input,select{min-width:0;max-width:100%;border:1px solid var(--line);border-radius:10px;background:#fff;padding:11px 12px;color:var(--ink);font-size:16px}.app{width:min(100%,540px);margin:auto;padding:0 25px 28px}.header{display:flex;align-items:center;justify-content:space-between;padding:28px 0 20px}.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--deep);font-size:17px;font-weight:750;letter-spacing:.04em}.brand-icon{font-size:29px;background:var(--green);color:#fff;border-radius:12px;width:43px;height:43px;text-align:center;line-height:39px;font-weight:400}.brand small{display:block;font-size:9px;letter-spacing:.22em;color:#8c9890;margin-top:1px}.icon-button{font-size:23px;background:none;color:#75877c;border:1px solid #e1e7df;width:42px;height:42px;border-radius:50%}.trial{text-align:center;color:#8a938b;font-size:11px;margin:0 -8px 25px}.trial span{font-size:10px;border-radius:4px;background:#e9ede4;color:#68795d;padding:3px 6px;margin-right:5px}.clock-panel{text-align:center}.clock-date{font-size:14px;letter-spacing:.08em;color:#718077}.clock{font-size:70px;line-height:1.2;letter-spacing:-.035em;font-weight:520;font-variant-numeric:tabular-nums;margin:6px 0 23px;color:#183d31}.clock>span{font-size:31px;letter-spacing:0;color:#9aa79e;margin-left:4px}.profile{max-width:290px;margin:0 auto 16px;text-align:left}.profile label{font-size:11px;color:#839085;display:block;margin-bottom:5px}.profile-input{display:flex;background:#fff;border:1px solid var(--line);border-radius:11px;align-items:center;padding:0 13px;gap:9px}.profile-input span{font-size:23px;color:#8d9d91}.profile-input input{width:100%;border:0;background:none;padding:10px 0;border-radius:0;font-weight:600}.status{display:inline-flex;align-items:center;gap:7px;border:1px solid #dfe6df;border-radius:30px;padding:4px 14px;font-size:12px;color:#76867b;margin-bottom:23px}.status i{display:block;width:6px;height:6px;background:#aab4a9;border-radius:50%}.status.working{color:var(--green);background:#eaf0e8;border-color:#d7e4d3}.status.working i{background:#4f9265}.status.resting{color:#9c713b;background:#f7efe0;border-color:#eee0c8}.status.resting i{background:#bd8a47}.punch-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.punch{display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:17px;min-height:142px;position:relative;padding:16px}.punch strong{font-size:23px;letter-spacing:.11em}.punch small{font-size:11px;margin-top:4px;letter-spacing:.03em;opacity:.7}.punch-icon{font-size:28px;line-height:1.15;margin-bottom:9px;font-weight:350}.start{background:var(--green);color:#fff;box-shadow:0 6px 15px #215d4818}.finish{background:#fff;color:var(--green);border:1px solid #cbd9ce}.secondary{min-height:86px;display:flex;flex-direction:row;gap:10px;background:#ebeee7;color:#62765c;border:1px solid #e0e6db}.secondary strong{font-size:16px;letter-spacing:.03em}.secondary .punch-icon{font-size:20px;margin:0}.punch:not(:disabled):active{transform:translateY(1px)}.location-note{font-size:11px;color:#869388;margin:17px 0 0}.location-note span{font-size:16px;vertical-align:-1px;margin-right:3px}#notice{font-size:13px;color:var(--green);min-height:18px;margin-top:6px}#notice.bad{color:#a9533c}.section-heading{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:13px}.section-heading h2{font-size:15px;font-weight:650;letter-spacing:.04em;margin:0}.section-heading>span{font-size:11px;color:#8d988f}.today-section{margin-top:20px}.stats{display:grid;grid-template-columns:1fr 1fr;background:white;border:1px solid var(--line);border-radius:15px;padding:19px 0}.stats article{padding:0 21px}.stats article+article{border-left:1px solid var(--line)}.stats article>span{font-size:11px;color:#8a968d}.stats strong{display:block;font-size:27px;line-height:1.5;font-weight:550;font-variant-numeric:tabular-nums;white-space:nowrap}.stats strong span{font-size:11px;color:#859087;font-weight:400;margin:0 3px}.fine-print{font-size:10px;color:#99a198;margin:7px 1px}.history-section{margin-top:27px}.date-label input{font-size:12px;padding:5px 8px;border-color:#dfe6dd;background:transparent;max-width:145px}.empty{background:#eef0e9;border:1px dashed #dce2d7;text-align:center;border-radius:14px;padding:26px 10px;font-size:12px;color:#929d90}.history-list{background:#fff;border:1px solid var(--line);border-radius:15px;padding:0 17px}.history-row{display:flex;gap:13px;align-items:center;padding:14px 0}.history-row+.history-row{border-top:1px solid #eef0ea}.history-time{font-size:19px;letter-spacing:-.03em;font-variant-numeric:tabular-nums}.history-desc{flex:1;text-align:left}.history-desc strong{font-size:13px;font-weight:600}.history-desc p{font-size:10px;color:#8b978e;margin:2px 0;word-break:break-word}.badge{display:inline-block;font-size:9px;margin-left:7px;color:#778e77;background:#edf3e9;padding:1px 5px;border-radius:4px}.badge.review{background:#f7f0e3;color:#a3783c}.edit-button{font-size:11px;padding:7px 5px;background:none;color:#8a978d}.history-footer{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-top:12px;flex-wrap:wrap}.text-button{font-size:11px;color:var(--green);background:none;padding:4px 0}.text-button>span{margin-left:7px}.history-footer>span{font-size:10px;color:#929c92}.footer{text-align:center;border-top:1px solid #e4e8de;padding-top:19px;margin-top:30px;color:#a2aaa0;font-size:10px;line-height:1.9}.error{background:#f7e7df;color:#a65035;border-radius:10px;padding:12px;font-size:13px}dialog{border:0;border-radius:20px;max-width:min(92vw,470px);width:470px;padding:25px;color:var(--ink);box-shadow:0 20px 80px #13392630;max-height:86dvh;overflow:auto}dialog::backdrop{background:#182b2355;backdrop-filter:blur(3px)}dialog h2{font-size:20px;margin:0 0 8px}dialog p{font-size:13px;color:#7c8c80}dialog label{display:block;text-align:left;font-size:12px;color:#748577;margin-top:13px}dialog label input,dialog label select{display:block;width:100%;margin-top:4px}dialog .buttons{display:flex;gap:8px;justify-content:flex-end;margin-top:22px}.btn{padding:10px 17px;border-radius:10px;color:var(--green);background:#eaf0e6;font-size:13px}.btn.primary{background:var(--green);color:#fff}.btn.danger{background:#f7e9e2;color:#9e4d32}.place{display:flex;gap:8px;align-items:center;border-bottom:1px solid #e8ede4;padding:11px 0}.place>div{flex:1;font-size:13px}.place small{display:block;font-size:10px;color:#8e9a8d}.inline-fields{display:grid;grid-template-columns:1fr 1fr;gap:8px}.location-result{background:#eef3e9;border-radius:12px;padding:15px;font-size:14px}.location-result.review{background:#faf0df}.punch-confirm{font-size:37px;color:var(--deep);font-variant-numeric:tabular-nums;font-weight:500;margin:14px 0}.confirm-name{font-size:13px;color:#8b998d}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}@media(max-width:370px){.app{padding:0 17px 20px}.clock{font-size:62px}.stats article{padding:0 12px}.stats strong{font-size:24px}.punch{min-height:125px}.secondary{min-height:77px}.trial{font-size:10px}}@media(min-width:700px){body{padding:20px 0}.app{background:var(--bg);border:1px solid #e0e6dc;border-radius:28px;box-shadow:0 15px 60px #324d3810;padding:0 32px 30px}.header{padding-top:27px}}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+
+.stats.single{grid-template-columns:1fr}.stats.single article{display:flex;align-items:center;justify-content:space-between}.stats.single strong{font-size:30px}
+
+.lunch-fields{border:0;padding:0;margin:18px 0}.lunch-fields legend{font-size:14px;font-weight:650}.lunch-choices{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px}.lunch-choices label{display:flex;flex-wrap:wrap;align-items:center;gap:5px;border:1px solid var(--line);border-radius:10px;padding:10px 7px;margin:8px 0;font-size:12px;color:var(--ink)}.lunch-choices input{width:auto;margin:0;padding:0;accent-color:var(--green)}.lunch-choices label:has(input:checked){background:#eaf0e6;border-color:#86a894}.work-confirm{border-top:1px solid var(--line);padding-top:15px}.work-confirm h3{font-size:16px;margin:0}.work-inputs{display:grid;grid-template-columns:1fr 1fr;gap:12px}.work-inputs input{font-size:25px}.stats.single strong{white-space:normal;text-align:right}#attendance-detail{font-size:11px}
+
+dialog input.correction-time{font-size:28px;font-variant-numeric:tabular-nums;padding:14px}.correction-options{margin-top:20px;font-size:12px;color:#748577}.correction-options summary{cursor:pointer;padding:8px 0}.history-row .edit-button{white-space:nowrap}
+
+[hidden]{display:none!important}.cloud-status{font-size:12px;text-align:center;color:#4c7860;background:#e8eee4;border:1px solid #dae4d4;border-radius:8px;padding:10px 12px;margin-bottom:23px}.cloud-status.pending{background:#fbf1dc;color:#98702f;border-color:#eadbb8}.profile-name{margin:0 auto 18px;font-size:17px;font-weight:650}.profile-name small{display:block;font-size:10px;font-weight:400;color:#99a194;margin-top:2px}.auth-panel{background:#fff;border:1px solid var(--line);border-radius:15px;padding:22px;margin-top:24px}.auth-panel h1{font-size:19px;margin:0 0 10px}.auth-panel p{font-size:12px;color:#839181;line-height:1.9}.auth-tabs{display:flex;gap:6px;margin:21px 0 15px;border-bottom:1px solid var(--line)}.auth-tabs button{background:none;font-size:12px;padding:8px 10px;border-bottom:2px solid transparent;color:#8b998c}.auth-tabs button.selected{border-color:var(--green);color:var(--green);font-weight:650}.auth-panel label{display:block;color:#748477;font-size:12px;margin:14px 0 5px}.auth-panel input{width:100%}.auth-panel .full{width:100%;margin-top:22px}.auth-panel .error{margin-top:17px}.history-row.superseded{opacity:.55}.history-row.superseded .history-time{text-decoration:line-through}.history-desc p{max-width:250px}.today-section .stats article>span{font-size:10px}.today-section .stats strong{font-size:27px}#auth-panel .fine-print{font-size:10px}.stats.single article{gap:12px}@media(max-width:360px){.auth-panel{padding:17px}.stats.single article{padding:0 15px}.stats.single strong{font-size:23px}}
+a.btn{display:block;text-align:center;text-decoration:none;margin-top:8px}
+</style></head><body>
+<main class="app">
+  <header class="header"><div class="brand"><span class="brand-icon">◷</span><span>農園タイムカード<small>FARM TIME CARD</small></span></div><button id="settings" class="icon-button" aria-label="保存・アカウントの設定">⚙</button></header>
+  <div class="cloud-status" id="cloud-status" role="status" aria-live="polite">接続を確認しています…</div>
+  <div id="fatal" class="error" role="alert" hidden></div>
+  <section id="auth-panel" class="auth-panel" hidden>
+    <h1>お名前とパスワードで登録</h1><p>登録後は、このスマホからスムーズに打刻できます。</p>
+    <div class="auth-tabs"><button data-auth-mode="login" class="selected">ログイン</button><button data-auth-mode="register">初めての登録</button></div>
+    <form id="auth-form"><label for="login-name">お名前</label><input id="login-name" name="name" autocomplete="username" maxlength="40" required>
+      <label for="login-password">パスワード</label><input id="login-password" name="password" type="password" autocomplete="current-password" minlength="8" maxlength="128" required>
+      <div id="confirm-field" hidden><label for="login-confirm">パスワードをもう一度</label><input id="login-confirm" type="password" autocomplete="new-password" minlength="8" maxlength="128"></div>
+      <p id="invite-note" class="fine-print" hidden>初めての登録は、管理者から届いた登録用URLを開いて行ってください。</p>
+      <div id="auth-error" class="error" role="alert" hidden></div><button id="auth-submit" type="submit" class="btn primary full">ログイン</button>
+    </form><p class="fine-print">機種変更時も同じお名前とパスワードで引き継げます。初回の登録・ログインには通信が必要です。</p><p class="fine-print" id="launch-info"></p>
+  </section>
+  <div id="main-panel" hidden>
+    <section class="clock-panel" aria-label="打刻"><div class="clock-date" id="clock-date"></div><div class="clock" id="clock">--:--</div>
+      <div class="profile-name"><span id="worker-name"></span><small id="worker-id"></small></div>
+      <div class="status" id="status"><i></i>打刻履歴を確認</div>
+      <div class="punch-grid"><button class="punch start" data-punch="出勤"><span class="punch-icon">↗</span><strong>出勤</strong><small>お仕事を始める</small></button><button class="punch finish" data-punch="退勤"><span class="punch-icon">↘</span><strong>退勤</strong><small>お仕事を終える</small></button></div>
+      <p class="location-note">⌖ 打刻したときだけ、場所を確認します</p><div id="notice" role="status" aria-live="polite"></div>
+    </section>
+    <section class="today-section"><div class="section-heading"><h2>出勤簿</h2><span id="today-label"></span></div><div class="stats single"><article><span>本人が確認した時間</span><strong id="work-total">—</strong></article></div><p class="fine-print" id="attendance-detail">退勤時に昼休憩と時間を確認します。</p></section>
+    <section class="history-section"><div class="section-heading"><h2>打刻の履歴</h2><label class="date-label"><span class="sr-only">履歴の日付</span><input id="history-date" type="date"></label></div><div id="history"></div><div class="history-footer"><button id="sync" class="text-button">未送信を再送 ↻</button></div></section>
+  </div>
+  <footer class="footer">打刻は端末に保存してから送信します。<br>「保存先へ送信済み」になったことを確認してください。</footer>
+</main><dialog id="modal"><div id="modal-body"></div></dialog><script>window.P02_WEB={"apiUrl":"https://script.google.com/macros/s/AKfycby-w8l6me8DyQfZX5PXZDLk5PXUTVT-BY3xomKUANceDVHtCn_QrUrFfLp6pu7iZdF1tg/exec","version":"20261104.w1"};</script><script>(function(root){
+'use strict';
+const api={};
+api.id=()=>{if(root.crypto.randomUUID)return root.crypto.randomUUID();const bytes=root.crypto.getRandomValues(new Uint8Array(16));bytes[6]=(bytes[6]&15)|64;bytes[8]=(bytes[8]&63)|128;const hex=[...bytes].map(x=>x.toString(16).padStart(2,'0')).join('');return hex.slice(0,8)+'-'+hex.slice(8,12)+'-'+hex.slice(12,16)+'-'+hex.slice(16,20)+'-'+hex.slice(20);};
+api.day=at=>new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Tokyo',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(at));
+api.time=at=>new Intl.DateTimeFormat('ja-JP',{timeZone:'Asia/Tokyo',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).format(new Date(at));
+api.visible=records=>{
+  const replaced=new Set(records.filter(p=>!p.error).map(p=>p.originalId).filter(Boolean));
+  return records.filter(p=>!replaced.has(p.id)).sort((a,b)=>a.at-b.at||a.createdAt-b.createdAt||a.id.localeCompare(b.id));
+};
+api.effective=records=>api.visible(records).filter(p=>!p.error);
+api.minute=at=>Math.floor(at/60000);
+api.duration=minutes=>Math.floor(minutes/60)+'時間'+(minutes%60?minutes%60+'分':'');
+api.checkoutCandidate=(records,at,excludeId='')=>{
+  const prior=api.effective(records).filter(p=>p.id!==excludeId&&p.at<=at),last=prior.at(-1);
+  if(!last||last.kind!=='出勤'||api.day(last.at)!==api.day(at))return null;
+  if(prior.at(-2)?.kind==='出勤')return null;
+  return api.minute(at)-api.minute(last.at);
+};
+api.attendance=(records,date)=>{
+  let start=null,calculated=0,confirmed=0,lunch=0,count=0,uncertain=false,missing=false,open=false,pending=false;
+  for(const p of api.effective(records)){
+    if(p.kind==='出勤'){
+      if(start&&(api.day(start.at)===date||api.day(p.at)===date))uncertain=true;
+      start=p;continue;
+    }
+    if(p.kind!=='退勤')continue;
+    if(!start){if(api.day(p.at)===date)uncertain=true;continue;}
+    if(api.day(p.at)!==api.day(start.at)){if(api.day(p.at)===date||api.day(start.at)===date)uncertain=true;start=null;continue;}
+    if(api.day(p.at)===date){
+      count++;const span=api.minute(p.at)-api.minute(start.at),rest=p.lunchMinutes,value=p.confirmedMinutes;
+      if(!Number.isInteger(rest)||rest<0||rest>span||!Number.isInteger(value)||value<0||value>1440)missing=true;
+      else{calculated+=span-rest;confirmed+=value;lunch+=rest;}
+      pending=pending||p.sent===false||start.sent===false;
+    }
+    start=null;
+  }
+  if(start&&api.day(start.at)===date)open=true;
+  const status=uncertain?'要確認':open?'勤務中':missing?'時間を確認':count?'確認済み':'記録なし';
+  return{status,calculatedMinutes:status==='確認済み'?calculated:null,confirmedMinutes:status==='確認済み'?confirmed:null,lunchMinutes:lunch,count,pending};
+};
+api.merge=(remote,local)=>{const map=new Map(remote.map(p=>[p.id,p]));for(const p of local){if(!map.has(p.id))map.set(p.id,p);}return [...map.values()];};
+api.apply=(queue,results)=>{
+  const response=new Map(results.map(r=>[r.id,r]));
+  return queue.flatMap(p=>{const r=response.get(p.record.id);if(!r)return[p];if(['saved','duplicate'].includes(r.status))return[];return[{...p,error:r.reason||'保存先で受け付けられませんでした。'}];});
+};
+api.interval=(records,date,now=Date.now())=>{
+  const start=Date.parse(date+'T00:00:00+09:00'),end=start+86400000;
+  let open=null,total=0,uncertain=false;
+  for(const p of api.effective(records)){
+    if(p.at>now)continue;
+    if(p.kind==='出勤'){if(open!==null)uncertain=true;else open=p.at;}
+    if(p.kind==='退勤'){if(open===null)uncertain=true;else{total+=Math.max(0,Math.min(p.at,end)-Math.max(open,start));open=null;}}
+  }
+  if(open!==null)total+=Math.max(0,Math.min(now,end)-Math.max(open,start));
+  return{minutes:Math.floor(total/60000),open:open!==null,uncertain};
+};
+api.password=async(password,salt,iterations)=>{
+  if(!root.crypto?.subtle)throw Error('安全な暗号処理を使えません。HTTPSの登録用URLを開いてください。');
+  if(typeof password!=='string'||password.length<8||password.length>128)throw Error('パスワードは8〜128文字で入力してください。');
+  if(!/^[a-f0-9]{32}$/.test(salt)||iterations!==600000)throw Error('認証設定を確認できませんでした。');
+  const enc=new TextEncoder(),key=await root.crypto.subtle.importKey('raw',enc.encode(password),{name:'PBKDF2'},false,['deriveBits']);
+  const bytes=await root.crypto.subtle.deriveBits({name:'PBKDF2',salt:enc.encode(salt),iterations,hash:'SHA-256'},key,256);
+  return [...new Uint8Array(bytes)].map(n=>n.toString(16).padStart(2,'0')).join('');
+};
+api.csv=records=>{
+  const cell=x=>'"'+String(x??'').replace(/^[=+@\-\t\r]/,"'<!-- SCRIPTS -->").replaceAll('"','""')+'"';
+  return '\ufeff'+[['打刻ID','従業員ID','氏名','日付','時刻','種別','訂正元ID','訂正理由','送信状況'],...records.map(p=>[p.id,p.employeeId,p.name,api.day(p.at),api.time(p.at),p.kind,p.originalId||'',p.note||'',p.sent?'送信済み':'端末に保存'])].map(r=>r.map(cell).join(',')).join('\r\n');
+};
+if(typeof module!=='undefined')module.exports=api;else root.TC=api;
+})(typeof window==='undefined'?globalThis:window);
+</script>
+<script>/* A single read/write transaction appends pending punches without tab races.
+   iPhoneではアプリの切り替えなどで保存の接続が閉じられることがあるため、
+   閉じていたら開き直して、その操作を1回だけやり直す（書き込みは未確定のままなので二重にならない）。 */
+window.TCStore={
+  open(name,initial){
+    let db=null;
+    const connect=()=>new Promise((resolve,reject)=>{
+      const req=indexedDB.open(name,1);
+      req.onupgradeneeded=()=>req.result.createObjectStore('state');
+      req.onerror=()=>reject(Error('端末に保存できません。通常のブラウザで開き直してください。'));
+      req.onsuccess=()=>{const d=req.result;d.onclose=()=>{if(db===d)db=null;};d.onversionchange=()=>{d.close();if(db===d)db=null;};db=d;resolve(d);};
+    });
+    const run=(d,write,fn)=>new Promise((ok,ng)=>{
+      let tx;try{tx=d.transaction('state',write?'readwrite':'readonly');}catch(err){ng({reconnect:true,cause:err});return;}
+      const store=tx.objectStore('state'),get=store.get('main');let value,error;
+      get.onsuccess=()=>{try{const current=get.result||structuredClone(initial);if(current.schema!==1||!Array.isArray(current.queue)||!Array.isArray(current.history)||!current.deviceId)throw Error('端末の保存データを読み込めません。');value=fn?fn(current):current;if(write)store.put(value,'main');}catch(err){error=err;tx.abort();}};
+      tx.oncomplete=()=>ok(value);
+      tx.onabort=()=>ng(error||{reconnect:true,cause:tx.error});tx.onerror=()=>{};
+    });
+    const transaction=async(write,fn)=>{
+      if(!db)await connect();
+      try{return await run(db,write,fn);}
+      catch(err){
+        if(!err||!err.reconnect)throw err;
+        db=null;await connect();
+        try{return await run(db,write,fn);}
+        catch(again){if(again&&again.reconnect)throw Error(write?'端末に保存できませんでした。打刻はまだ確定していません。画面を開き直してください。':'端末の保存を読み込めませんでした。画面を開き直してください。');throw again;}
+      }
+    };
+    return connect().then(()=>transaction(true,current=>current)).then(data=>({data,read:()=>transaction(false),update:fn=>transaction(true,fn)}),err=>{throw err&&err.reconnect?Error('端末に保存できません。画面を開き直してください。'):err;});
+  }
+};
+</script>
+<script>(function(){
+'use strict';
+const WEB=window.P02_WEB||null;
+const $=id=>document.getElementById(id),M=window.TC,boot=WEB?{appId:'web',version:WEB.version,invite:(new URLSearchParams(location.search).get('join')||'').slice(0,200),defaultLunchMinutes:60}:(window.P02_BOOTSTRAP||{}),KEY='p02-cloud-timecard-v1-'+(boot.appId||'preview'),dialog=$('modal');
+let data={schema:1,deviceId:M.id(),session:null,queue:[],history:[]},available=false,busy=false,sending=false,verified=true,authMode=boot.invite?'register':'login',pending=null;
+let defaultLunch=Number.isInteger(boot.defaultLunchMinutes)?boot.defaultLunchMinutes:60;
+const CLIENT_VERSION=WEB?WEB.version:'20261104.5';
+const APP_URL='https://script.google.com/macros/s/AKfycby-w8l6me8DyQfZX5PXZDLk5PXUTVT-BY3xomKUANceDVHtCn_QrUrFfLp6pu7iZdF1tg/exec';
+function iconUrl(){const s=data.session;if(!s||!verified||!/^[a-f0-9]{64}$/.test(s.iconKey||'')||!s.employee?.id)return '';return APP_URL+'/i/'+encodeURIComponent(s.employee.id)+'/'+encodeURIComponent(data.deviceId)+'/'+s.iconKey;}
+/* ホーム画面のアイコンは独立した画面で開き、枠内の保存が起動ごとに消えることがある。
+   ログイン情報を上位ページのURL（tk=トークン, dv=端末ID, em=従業員ID）にも持たせ、消えていたら復元する。 */
+const standalone=(()=>{try{return window.matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;}catch(e){return false;}})();
+let launchParams={},urlParams=null,authNotice='',launchInfo='確認中';
+function topLocation(){return new Promise(resolve=>{try{if(!window.google?.script?.url)return resolve(null);google.script.url.getLocation(loc=>resolve(loc||null));}catch(e){resolve(null);}});}
+function setTopParams(params){const key=JSON.stringify(params);if(key===urlParams)return;urlParams=key;try{window.google?.script?.history?.replace(null,params,'');}catch(e){}}
+function syncUrl(){if(WEB){try{if(data.session&&location.search)history.replaceState(null,'',location.pathname);}catch(e){}return;}const s=data.session;if(s&&s.token&&s.employee?.id)setTopParams({tk:s.token,dv:data.deviceId,em:s.employee.id});else if(launchParams.join)setTopParams({join:launchParams.join});else setTopParams({});}
+async function restoreFromUrl(){if(WEB){launchInfo='';return;}
+  const loc=await topLocation(),urlP=loc?.parameter||{},sv=boot.launch||{};
+  /* サーバー（doGet）が受け取ったURLの値を優先し、なければ google.script.url の値を使う */
+  const p={...urlP};if(sv.tk&&sv.dv&&sv.em){p.tk=sv.tk;p.dv=sv.dv;p.em=sv.em;}if(boot.invite&&!p.join)p.join=boot.invite;launchParams=p;
+  launchInfo='サーバー：'+(sv.keys?sv.keys.replaceAll(',','・'):'なし')+'／画面：'+(loc?(Object.keys(urlP).filter(k=>['tk','dv','em','join'].includes(k)).join('・')||'なし'):'読めない')+'／アイコン起動：'+(standalone?'はい':'いいえ')+'／保存：'+(data.session?'ログインあり':'空');urlParams=JSON.stringify(Object.fromEntries(Object.entries(p).filter(([k])=>['tk','dv','em','join'].includes(k))));
+  const why=x=>{launchInfo+='／復元：'+x;};
+  if(data.session){why('不要（ログイン済み）');syncUrl();return;}
+  const tk=String(p.tk||''),dv=String(p.dv||''),em=String(p.em||'');
+  if(!tk&&!dv&&!em){why('なし');return;}
+  if(!/^[a-f0-9]{64}$/i.test(tk)||!/^[a-zA-Z0-9_-]{16,80}$/.test(dv)||!/^[A-Za-z0-9_-]{1,20}$/.test(em)){why('値が不正（'+[tk.length,dv.length,em.length].join('/')+'）');return;}
+  if(data.queue.length&&data.deviceId!==dv){why('未送信'+data.queue.length+'件あり');return;}
+  try{await save(current=>({...current,deviceId:dv,session:{token:tk,iconKey:tk,employee:{id:em,name:''},fromUrl:true}}));}
+  catch(err){data={...data,deviceId:dv,session:{token:tk,iconKey:tk,employee:{id:em,name:''},fromUrl:true}};why('保存失敗・画面内のみ（'+err.message+'）');verified=true;return;}
+  why('実施');verified=true;
+}
+try{navigator.storage?.persist?.();}catch(e){}
+const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let storage=null;
+const ready=TCStore.open(KEY,data).then(value=>{storage=value;data=value.data;}).catch(err=>{$('fatal').hidden=false;$('fatal').textContent=err.message;busy=true;throw err;});
+async function save(fn){await ready;data=await storage.update(fn);return data;}
+function notify(message,error=false){$('notice').textContent=message;$('notice').classList.toggle('bad',error);}
+function request(action,body={}){
+  const payload={...body,action};
+  if(window.P02_PREVIEW_BRIDGE)return window.P02_PREVIEW_BRIDGE(payload);
+  if(WEB){
+    /* text/plain で送ると、Apps Script でも事前確認（CORS）なしで受け取れる */
+    const ctrl=new AbortController(),timer=setTimeout(()=>ctrl.abort(),30000);
+    return fetch(WEB.apiUrl,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload),signal:ctrl.signal,redirect:'follow'})
+      .then(r=>{if(!r.ok)throw Error('通信できませんでした。再送してください。');return r.json();})
+      .catch(err=>{throw Error(err.name==='AbortError'?'応答を確認できませんでした。記録は端末に残しています。':'通信できませんでした。電波を確認して、もう一度お試しください。');})
+      .finally(()=>clearTimeout(timer));
+  }
+  if(!window.google?.script?.run)return Promise.reject(Error('Googleとの接続設定がまだありません。'));
+  return new Promise((resolve,reject)=>{let settled=false;const timeout=setTimeout(()=>{settled=true;reject(Error('応答を確認できませんでした。記録は端末に残しています。'));},30000);
+    google.script.run.withSuccessHandler(result=>{if(settled)return;settled=true;clearTimeout(timeout);resolve(result);}).withFailureHandler(()=>{if(settled)return;settled=true;clearTimeout(timeout);reject(Error('通信できませんでした。再送してください。'));}).timecardRequest(payload);
+  });
+}
+function requireOk(result){if(!result?.ok){const err=Error(result?.message||'保存先から正しい応答がありません。');err.code=result?.error;throw err;}if(Number.isInteger(result.defaultLunchMinutes))defaultLunch=result.defaultLunchMinutes;return result;}
+function historyNote(p){const parts=[];if(p.error)return p.error;if(p.kind==='退勤'){if(Number.isInteger(p.lunchMinutes))parts.push('昼休憩 '+p.lunchMinutes+'分');if(Number.isInteger(p.confirmedMinutes))parts.push('本人確認 '+M.duration(p.confirmedMinutes));}if(!p.originalId&&p.judge)parts.push(p.judge);return parts.join(' ／ ');}
+function ownHistory(){const id=data.session?.employee.id;return M.merge(data.history.filter(p=>p.employeeId===id),data.queue.filter(p=>p.employeeId===id).map(p=>({...p.record,employeeId:id,name:data.session.employee.name,sent:false,error:p.error})));}
+function render(){
+  const s=data.session;$('auth-panel').hidden=!!s;$('main-panel').hidden=!s;
+  document.querySelectorAll('[data-auth-mode]').forEach(b=>b.classList.toggle('selected',b.dataset.authMode===authMode));
+  $('confirm-field').hidden=authMode!=='register';$('login-confirm').required=authMode==='register';$('login-password').autocomplete=authMode==='register'?'new-password':'current-password';
+  $('auth-submit').textContent=busy?'確認しています…':authMode==='register'?'このスマホで登録':'ログイン';$('auth-submit').disabled=busy||!available;
+  $('invite-note').hidden=authMode!=='register'||!!boot.invite;
+  if(!s&&authNotice){$('auth-error').hidden=false;$('auth-error').textContent=authNotice;}
+  $('launch-info').textContent=launchInfo?'起動情報（版 '+CLIENT_VERSION+'）：'+launchInfo:'';
+  if(!s){$('cloud-status').textContent=available?'接続先を確認しました。ログインしてください。':'Googleへの接続待ち';return;}
+  $('worker-name').textContent=s.employee.name?s.employee.name+' さん':'ログインを確認中…';$('worker-id').textContent=s.employee.id;
+  const queue=data.queue.filter(q=>q.employeeId===s.employee.id),failed=queue.filter(q=>q.error).length;
+  $('cloud-status').className='cloud-status '+(queue.length?'pending':'');
+  $('cloud-status').textContent=!verified?'この端末からの新しい打刻は停止中':failed?`${failed}件は保存先への確認が必要です` :queue.length?`端末に保存済み・未送信 ${queue.length}件`+(standalone?'（送信済みになるまで閉じないでください）':'') :navigator.onLine===false?'オフライン・端末に保存します':!available?'保存先への接続を確認できません':data.history.length?'保存先へ送信済み':'接続済み・未送信なし';
+  for(const b of document.querySelectorAll('[data-punch]'))b.disabled=busy||!verified;
+  const rows=ownHistory(),effective=M.effective(rows),last=effective.at(-1),working=last?.kind==='出勤';
+  $('status').className='status '+(working?'working':'');$('status').innerHTML='<i></i>'+(working?'出勤の記録あり':'未出勤・退勤の記録あり');
+  const date=$('history-date').value,selected=M.visible(rows).filter(p=>M.day(p.at)===date);
+  $('history').innerHTML=selected.length?'<div class="history-list">'+selected.map(p=>`<div class="history-row"><span class="history-time">${M.time(p.at)}</span><div class="history-desc"><strong>${esc(p.kind)}</strong><span class="badge ${p.error||!p.sent?'review':''}">${p.error?'要確認':p.sent?(p.originalId?'訂正済':'送信済み'):(p.originalId?'訂正の送信待ち':'未送信')}</span><p>${esc(historyNote(p))}</p></div>${p.sent&&!p.error?`<button class="edit-button" data-correct="${esc(p.id)}" ${busy||!verified?'disabled':''}>${p.kind==='退勤'&&(!Number.isInteger(p.lunchMinutes)||!Number.isInteger(p.confirmedMinutes))?'時間を確認':'打刻を直す'}</button>`:''}</div>`).join('')+'</div>':'<div class="empty">この日の打刻はまだありません。</div>';
+  $('sync').disabled=sending||!data.queue.some(q=>!q.error);
+  tick();
+}
+function tick(){const now=Date.now();$('clock-date').textContent=new Intl.DateTimeFormat('ja-JP',{timeZone:'Asia/Tokyo',year:'numeric',month:'long',day:'numeric',weekday:'long'}).format(now);$('clock').textContent=M.time(now);const date=$('history-date').value||M.day(now);$('today-label').textContent=date.replaceAll('-',' / ');if(data.session){const t=M.attendance(ownHistory(),date);$('work-total').textContent=t.confirmedMinutes===null?t.status:M.duration(t.confirmedMinutes);$('attendance-detail').textContent=t.confirmedMinutes===null?(t.status==='勤務中'?'退勤時に昼休憩と時間を確認します。':t.status==='時間を確認'?'退勤の履歴から「時間を確認」を押してください。':t.status==='要確認'?'出勤・退勤の組み合わせを確認してください。':'選んだ日の記録はまだありません。'):`自動計算 ${M.duration(t.calculatedMinutes)} ／ 昼休憩 ${t.lunchMinutes}分${t.calculatedMinutes!==t.confirmedMinutes?' ／ 本人変更あり':''}${t.pending?' ／ 未送信':''}`;}}
+function authError(err){$('auth-error').hidden=false;$('auth-error').textContent=err.message;}
+async function authenticate(ev){
+  ev.preventDefault();if(busy||!available)return;$('auth-error').hidden=true;
+  const name=$('login-name').value.trim(),password=$('login-password').value;
+  if(authMode==='register'&&password!==$('login-confirm').value){authError(Error('パスワードの確認が一致しません。'));return;}
+  if(authMode==='register'&&!boot.invite){authError(Error('管理者から届いた登録用URLを開いてください。'));return;}
+  busy=true;render();
+  try{
+    const challenge=requireOk(await request('challenge',{name})),verifier=await M.password(password,challenge.salt,challenge.iterations);
+    const result=requireOk(await request(authMode,{name,verifier,salt:challenge.salt,invite:boot.invite,deviceId:data.deviceId,ua:navigator.userAgent,expectedEmployeeId:data.queue[0]?.employeeId||''}));
+    await save(current=>({...current,session:{token:result.token,iconKey:result.iconKey||'',employee:result.employee},history:M.merge(result.history||[],current.history.filter(p=>p.employeeId===result.employee.id))}));verified=true;
+    $('login-password').value='';$('login-confirm').value='';authNotice='';syncUrl();
+    if(result.replacedOther)notify('このスマホに引き継ぎました。以前のスマホの新しい打刻は停止します。');
+    else if(WEB)notify(standalone?'ログインしました。':'ログインしました。ホーム画面に追加すると、アプリのように使えます（⚙に説明があります）。');
+    else notify(standalone?'ログインしました。次からもアイコンで開けるよう、Chromeでログインしてからホーム画面に追加し直してください。':'ログインしました。ホーム画面に追加するなら、いまのこの画面から追加してください。');
+  }catch(err){authError(err);}finally{busy=false;render();flush();}
+}
+async function refresh(sendPending=true){
+  if(!data.session||navigator.onLine===false)return;const token=data.session.token;
+  try{const r=requireOk(await request('me',{token:data.session.token,deviceId:data.deviceId}));if(data.session?.token!==token)return;await save(current=>current.session?.token===token?({...current,session:{...current.session,employee:r.employee,iconKey:r.iconKey||current.session.iconKey||'',fromUrl:false},history:r.history||[]}):current);verified=true;available=true;syncUrl();}
+  catch(err){if(['replaced','invalid-token','inactive'].includes(err.code)){
+    if(data.session?.fromUrl&&!data.queue.length){await save(current=>({...current,session:null,history:[]}));authNotice='このアイコンは使えなくなっています（機種変更などのため）。Chromeでログインし、⚙からアイコンを作り直してください。（'+err.message+'）';syncUrl();}
+    else{verified=false;notify(err.message,true);}
+  }}
+  render();if(sendPending)await flush();
+}
+async function flush(){
+  if(sending||navigator.onLine===false)return;const next=data.queue.find(q=>!q.error);if(!next)return;
+  sending=true;render();let progress=false;const batch=data.queue.filter(q=>q.token===next.token&&q.employeeId===next.employeeId&&!q.error).slice(0,50);
+  try{
+    const r=requireOk(await request('punch',{token:next.token,deviceId:data.deviceId,punches:batch.map(q=>q.record)}));
+    const ids=new Set((r.results||[]).filter(x=>['saved','duplicate'].includes(x.status)).map(x=>x.id));
+    progress=ids.size>0;
+    await save(current=>({...current,queue:M.apply(current.queue,r.results||[]),history:M.merge(current.history,batch.filter(q=>ids.has(q.record.id)).map(q=>({...q.record,employeeId:q.employeeId,name:q.name,sent:true})))}));
+    if(ids.size)await refresh(false);
+  }catch(err){if(['invalid-token','inactive','replaced'].includes(err.code)){const ids=new Set(batch.map(q=>q.record.id));await save(current=>({...current,queue:current.queue.map(q=>ids.has(q.record.id)?{...q,error:err.message}:q)}));if(data.session?.token===next.token)verified=false;progress=true;}notify(err.message,true);}finally{sending=false;render();}
+  if(data.queue.some(q=>!q.error)&&progress)setTimeout(flush,500);
+}
+function position(){return new Promise(resolve=>{
+  if(window.P02_PREVIEW_BRIDGE)return resolve(null);
+  if(!navigator.geolocation)return resolve(null);let done=false;const settle=v=>{if(done)return;done=true;clearTimeout(timer);resolve(v);};
+  const timer=setTimeout(()=>settle(null),10000);navigator.geolocation.getCurrentPosition(p=>settle({lat:p.coords.latitude,lon:p.coords.longitude,accuracy:p.coords.accuracy}),()=>settle(null),{enableHighAccuracy:true,timeout:9000,maximumAge:0});
+});}
+function modal(html){$('modal-body').innerHTML=html;if(!dialog.open)dialog.showModal();}
+function workFields(p){const rest=p.lunchMinutes,custom=Number.isInteger(rest)&&rest!==0&&rest!==defaultLunch,confirmed=p.confirmedMinutes;
+  return `<fieldset id="lunch-fields" class="lunch-fields"><legend>昼休憩</legend><div class="lunch-choices"><label><input type="radio" name="lunch" value="${defaultLunch}" ${rest===defaultLunch?'checked':''} required>あり（${defaultLunch}分）</label><label><input type="radio" name="lunch" value="0" ${rest===0?'checked':''} required>なし</label><label><input type="radio" name="lunch" value="custom" ${custom?'checked':''} required>その他</label></div><label id="lunch-custom-wrap" ${custom?'':'hidden'}>昼休憩の分数<input name="lunch_custom" type="number" inputmode="numeric" min="0" max="1440" step="1" value="${custom?rest:30}"></label></fieldset><section id="work-confirm" class="work-confirm"><h3>勤務時間を確認</h3><p id="work-proposal"></p><div class="work-inputs"><label>時間<input name="confirmed_hours" type="number" inputmode="numeric" min="0" max="24" step="1" value="${Number.isInteger(confirmed)?Math.floor(confirmed/60):''}" required></label><label>分<input name="confirmed_minutes" type="number" inputmode="numeric" min="0" max="59" step="1" value="${Number.isInteger(confirmed)?confirmed%60:''}" required></label></div><p class="fine-print">打刻は参考です。時間が違う場合は直してから、OKを押してください。</p></section>`;
+}
+function formWorkContext(form){const kind=form.elements.kind?.value||form.dataset.kind,at=form.elements.time?Date.parse(form.elements.date.value+'T'+form.elements.time.value+':00+09:00'):Number(form.dataset.at);return{kind,at};}
+function updateWorkForm(form){const context=formWorkContext(form),isOut=context.kind==='退勤',fields=form.querySelector('#lunch-fields'),section=form.querySelector('#work-confirm');fields.hidden=!isOut;fields.disabled=!isOut;section.hidden=!isOut;
+  const hours=form.elements.confirmed_hours,minutes=form.elements.confirmed_minutes;hours.disabled=minutes.disabled=!isOut;if(!isOut)return;
+  const choice=form.querySelector('[name="lunch"]:checked'),custom=choice?.value==='custom',other=form.elements.lunch_custom;form.querySelector('#lunch-custom-wrap').hidden=!custom;other.disabled=!custom;other.required=custom;
+  const rest=choice?(custom?Number(other.value):Number(choice.value)):null,span=M.checkoutCandidate(ownHistory(),context.at,form.dataset.exclude||''),message=form.querySelector('#work-proposal');
+  if(rest===null){message.textContent='昼休憩を選ぶと時間を自動計算します。';return;}
+  if(!Number.isInteger(rest)||rest<0||rest>1440){message.textContent='昼休憩の分数を確認してください。';return;}
+  if(span===null){message.textContent='対応する出勤が見つかりません。記録と勤務時間を確認してください。';return;}
+  if(rest>span){message.textContent='昼休憩が勤務時間より長くなっています。';return;}
+  const calculated=span-rest;message.textContent='自動計算：'+M.duration(calculated);
+  if(form.dataset.manual!=='true'){hours.value=Math.floor(calculated/60);minutes.value=calculated%60;}
+}
+function readWorkForm(form){updateWorkForm(form);if(!form.reportValidity())return null;const context=formWorkContext(form);if(context.kind!=='退勤')return{};
+  const choice=form.querySelector('[name="lunch"]:checked'),rest=choice.value==='custom'?Number(form.elements.lunch_custom.value):Number(choice.value),hours=Number(form.elements.confirmed_hours.value),minutes=Number(form.elements.confirmed_minutes.value),confirmed=hours*60+minutes,span=M.checkoutCandidate(ownHistory(),context.at,form.dataset.exclude||'');
+  if(!Number.isInteger(rest)||rest<0||rest>1440||(span!==null&&rest>span))throw Error('昼休憩の分数を確認してください。');
+  if(!Number.isInteger(hours)||!Number.isInteger(minutes)||minutes<0||minutes>59||confirmed<0||confirmed>1440)throw Error('確認する勤務時間を入力してください。');
+  return{lunchMinutes:rest,confirmedMinutes:confirmed};
+}
+const closeButtons=(label,action)=>`<div class="buttons"><button class="btn" data-close>戻る</button><button class="btn primary" data-action="${action}">${label}</button></div>`;
+async function preparePunch(kind){
+  if(busy||!verified||!data.session)return;busy=true;render();notify('打刻した場所を確認しています…');const at=Date.now();
+  const fix=await position();pending={id:M.id(),kind,at,createdAt:at,lat:fix?.lat??null,lon:fix?.lon??null,accuracy:fix?.accuracy??null,originalId:'',note:''};
+  const last=M.effective(ownHistory()).at(-1),same=last?.kind===kind;
+  modal(`<h2>${esc(kind)}を記録</h2><div class="confirm-name">${esc(data.session.employee.name)} さん</div><div class="punch-confirm">${M.time(at)}</div>${same?'<div class="error">直前も同じ種類の打刻です。打ち直しの場合は、履歴の「打刻を直す」をご利用ください。</div>':''}${kind==='退勤'?`<form id="punch-form" data-kind="退勤" data-at="${at}">${workFields(pending)}</form>`:''}<p>${fix?'打刻時の位置情報も保存します。':'位置情報を取得できなかったため「要確認」として記録します。'}</p><div id="dialog-error" class="error" hidden role="alert"></div>${closeButtons(kind==='退勤'?'この時間でOK':'この内容で記録','save-punch')}`);if(kind==='退勤')updateWorkForm($('punch-form'));
+}
+async function persistRecord(record){
+  const s=data.session,q={employeeId:s.employee.id,name:s.employee.name,token:s.token,record};
+  await save(current=>{if(current.session?.token!==s.token)throw Error('別の画面で登録が変わりました。再読み込みしてご確認ください。');return {...current,queue:current.queue.some(x=>x.record.id===record.id)?current.queue:[...current.queue,q]};});$('history-date').value=M.day(record.at);pending=null;dialog.close();busy=false;render();notify('端末に保存しました。保存先へ送信します。');flush();
+}
+function correct(id){const p=ownHistory().find(p=>p.id===id);if(!p)return;
+  modal(`<h2>打刻・勤務時間の確認</h2><p>${M.day(p.at)} ／ ${esc(p.kind)}</p><form id="correction-form" data-exclude="${esc(id)}" data-manual="${Number.isInteger(p.confirmedMinutes)?'true':'false'}"><label>打刻時刻<input class="correction-time" name="time" type="time" step="60" value="${M.time(p.at)}" required></label><details class="correction-options"><summary>日付・出勤／退勤・理由も変更する</summary><label>日付<input name="date" type="date" value="${M.day(p.at)}" required></label><label>出勤／退勤<select name="kind"><option ${p.kind==='出勤'?'selected':''}>出勤</option><option ${p.kind==='退勤'?'selected':''}>退勤</option></select></label><label>理由（任意）<input name="note" maxlength="200"></label></details>${workFields(p)}</form><div id="dialog-error" class="error" hidden role="alert"></div><div class="buttons"><button class="btn" data-close>戻る</button><button class="btn primary" data-correct-save="${esc(id)}">この内容でOK</button></div>`);updateWorkForm($('correction-form'));
+}
+async function saveCorrection(id){const f=$('correction-form'),work=readWorkForm(f);if(!work)return;const fields=Object.fromEntries(new FormData(f)),at=Date.parse(fields.date+'T'+fields.time+':00+09:00');if(!Number.isFinite(at))throw Error('正しい日時を入力してください。');
+  await persistRecord({id:M.id(),kind:fields.kind,at,createdAt:Date.now(),originalId:id,note:fields.note.trim()||'本人による打刻・勤務時間の確認',lat:null,lon:null,accuracy:null,...work});
+}
+function settings(){const s=data.session;modal(`<h2>保存・アカウント</h2>${s?`<p>${esc(s.employee.name)} ／ ${esc(s.employee.id)}</p><p>未送信 ${data.queue.length}件</p><p>機種変更時は、新しいスマホで同じお名前とパスワードを入力してください。以前のスマホで新たに押した打刻は受け付けません。</p><p>端末内の履歴表示は最近の記録です。長期の原本はスプレッドシートに保持します。</p><h3>ホーム画面のアイコン</h3>${WEB?(standalone?'<p>いまはホーム画面のアイコンから開いています。</p>':'<p>共有ボタン（□に↑のマーク）またはメニューから「ホーム画面に追加」を選ぶと、アプリのように使えます。iPhoneでは、追加したアイコンから最初に開いたときだけ、もう一度ログインしてください。</p>'):standalone?'<p>いまはアイコンから開いています。</p>':(iconUrl()?`<p>下のボタンで、このスマホ専用のページを開き直します。開いたページで「ホーム画面に追加」すると、次からアイコンで開いてもログインしたままになります。Chromeでログインし直しても、このアイコンはそのまま使えます。</p><a class="btn full" id="icon-link" target="_top" href="${esc(iconUrl())}">ホーム画面用のページを開く</a>`:'<p>ホーム画面用のページを作るには、まずこの画面でログインを確認してください（通信が必要です）。</p>')}${WEB?'':'<p class="fine-print">機種変更したときは、アイコンを作り直してください。アイコンのURLは他の人に送らないでください。</p>'}${!verified?'<button class="btn" data-action="relogin">再ログイン</button>':''}<button class="btn" data-action="logout">このスマホからログアウト</button>`:'<p>お名前とパスワードで登録してください。</p>'}<p class="fine-print">画面の版 ${CLIENT_VERSION}${boot.version?' ／ 保存先 '+esc(boot.version):''}</p><div class="buttons"><button class="btn primary" data-close>閉じる</button></div>`);}
+document.addEventListener('click',async ev=>{const b=ev.target.closest('button');if(!b)return;
+  if(b.dataset.authMode){authMode=b.dataset.authMode;render();}
+  if(b.dataset.punch)preparePunch(b.dataset.punch).catch(err=>{busy=false;render();notify(err.message,true);});
+  if(b.id==='settings')settings();if(b.id==='sync')flush();if(b.dataset.close!==undefined)dialog.close();if(b.dataset.correct)correct(b.dataset.correct);
+  try{
+    if(b.dataset.action==='save-punch'&&pending){const work=pending.kind==='退勤'?readWorkForm($('punch-form')):{};if(work)await persistRecord({...pending,...work});}
+    if(b.dataset.correctSave)await saveCorrection(b.dataset.correctSave);
+    if(['logout','relogin'].includes(b.dataset.action)){if(data.queue.length&&b.dataset.action!=='relogin'){modal('<h2>未送信の記録があります</h2><p>先に送信するか、管理者に確認してください。記録を保護するため、ログアウトはまだ行いません。</p><div class="buttons"><button class="btn" data-close>戻る</button></div>');return;}if(data.session)$('login-name').value=data.session.employee.name;await save(current=>({...current,session:null,history:current.queue.length?current.history:[]}));verified=true;syncUrl();dialog.close();render();}
+  }catch(err){const el=$('dialog-error');if(el){el.hidden=false;el.textContent=err.message;}else notify(err.message,true);}
+});
+$('auth-form').addEventListener('submit',authenticate);$('history-date').value=M.day(Date.now());$('history-date').addEventListener('change',render);
+document.addEventListener('submit',async ev=>{if(!['punch-form','correction-form'].includes(ev.target.id))return;ev.preventDefault();try{if(ev.target.id==='punch-form'&&pending){const work=readWorkForm(ev.target);if(work)await persistRecord({...pending,...work});}else if(ev.target.id==='correction-form'){await saveCorrection(ev.target.dataset.exclude);}}catch(err){$('dialog-error').hidden=false;$('dialog-error').textContent=err.message;}});
+document.addEventListener('input',ev=>{const form=ev.target.closest('form');if(!form||!['punch-form','correction-form'].includes(form.id))return;if(['confirmed_hours','confirmed_minutes'].includes(ev.target.name))form.dataset.manual='true';if(ev.target.name==='lunch_custom'){form.dataset.manual='false';updateWorkForm(form);}});
+document.addEventListener('change',ev=>{const form=ev.target.closest('form');if(form&&['punch-form','correction-form'].includes(form.id)&&['lunch','time','date','kind'].includes(ev.target.name)){form.dataset.manual='false';updateWorkForm(form);}});
+dialog.addEventListener('close',()=>{pending=null;busy=false;render();});
+window.addEventListener('online',()=>{refresh();flush();});document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh();});
+setInterval(tick,15000);setInterval(()=>{if(!document.hidden)refresh();},60000);
+/* 新しい版が出ていたら、入力中・未送信がないときに自動で切り替える */
+let updating=false;
+async function checkUpdate(){
+  if(!WEB||updating||navigator.onLine===false)return;
+  try{const r=await fetch('version.json?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.json()).version;
+    if(!v||v===CLIENT_VERSION)return;
+    if(dialog.open||busy||sending||data.queue.some(q=>!q.error)){setTimeout(checkUpdate,30000);return;}
+    /* 同じ版への切り替えは1回だけ（ページのキャッシュが古いままでも、読み込みを繰り返さない） */
+    let tried='';try{tried=sessionStorage.getItem('tc-update-tried')||'';}catch(e){}
+    if(tried===v)return;
+    try{sessionStorage.setItem('tc-update-tried',v);}catch(e){}
+    updating=true;notify('新しい版に切り替えています…');
+    try{const reg=await navigator.serviceWorker?.getRegistration();await reg?.update();}catch(e){}
+    location.replace(location.pathname+'?v='+encodeURIComponent(v));
+  }catch(e){}
+}
+if(WEB){
+  try{const q=new URLSearchParams(location.search);if(q.has('v')){q.delete('v');history.replaceState(null,'',location.pathname+(q.toString()?'?'+q:''));}}catch(e){}
+  if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkUpdate();});
+  setInterval(()=>{if(!document.hidden)checkUpdate();},300000);
+}
+render();ready.then(restoreFromUrl).then(()=>render()).then(()=>request('hello')).then(requireOk).then(()=>{available=true;render();refresh();checkUpdate();}).catch(err=>{available=false;$('cloud-status').textContent=err.message;});
+})();
+</script></body></html>
