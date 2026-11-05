@@ -125,7 +125,7 @@ dialog label select{display:block;width:100%;margin-top:4px;font-size:17px;paddi
     <p class="fine-print" id="days-note"></p>
   </div>
   
-</main><dialog id="modal"><div id="modal-body"></div></dialog><script>window.P02_WEB={"apiUrl":"https://script.google.com/macros/s/AKfycby-w8l6me8DyQfZX5PXZDLk5PXUTVT-BY3xomKUANceDVHtCn_QrUrFfLp6pu7iZdF1tg/exec","version":"20261106.w25"};</script><script>(function(root){
+</main><dialog id="modal"><div id="modal-body"></div></dialog><script>window.P02_WEB={"apiUrl":"https://script.google.com/macros/s/AKfycby-w8l6me8DyQfZX5PXZDLk5PXUTVT-BY3xomKUANceDVHtCn_QrUrFfLp6pu7iZdF1tg/exec","version":"20261106.w26"};</script><script>(function(root){
 'use strict';
 const api={};
 api.id=()=>{if(root.crypto.randomUUID)return root.crypto.randomUUID();const bytes=root.crypto.getRandomValues(new Uint8Array(16));bytes[6]=(bytes[6]&15)|64;bytes[8]=(bytes[8]&63)|128;const hex=[...bytes].map(x=>x.toString(16).padStart(2,'0')).join('');return hex.slice(0,8)+'-'+hex.slice(8,12)+'-'+hex.slice(12,16)+'-'+hex.slice(16,20)+'-'+hex.slice(20);};
@@ -516,13 +516,27 @@ async function savePunch(){
   if(f.dataset.noin){const d=f.elements.date.value,inV=f.elements.in_time.value;if(!inV)throw Error('仕事を始めた時刻を選んでください。');
     const inAt=Date.parse(d+'T'+inV+':00+09:00');if(!Number.isFinite(inAt)||inAt>=pending.at)throw Error('始めた時刻は、今より前にしてください。');
     /* 始めた時刻は「出勤」の行として残す（前の版でもそのまま読める形） */
-    await persistRecords([{id:M.id(),kind:'出勤',at:inAt,createdAt:Date.now(),originalId:'',note:'始めた時刻（退勤のときに入力）',lat:null,lon:null,accuracy:null,startMinutes:work.startMinutes,declared:true},out]);return;}
-  await persistRecord(out);
+    await persistRecords([{id:M.id(),kind:'出勤',at:inAt,createdAt:Date.now(),originalId:'',note:'始めた時刻（退勤のときに入力）',lat:null,lon:null,accuracy:null,startMinutes:work.startMinutes,declared:true},out],{farewell:true});return;}
+  await persistRecords([out],{farewell:true});
 }
-async function persistRecords(records){
+async function persistRecords(records,opts={}){
   const s=data.session,test=isTest(),qs=records.map(record=>({employeeId:s.employee.id,name:s.employee.name,token:s.token,record:test?{...record,test:true}:record}));
   await save(current=>{if(current.session?.token!==s.token)throw Error('別の画面で登録が変わりました。再読み込みしてご確認ください。');const ids=new Set(current.queue.map(x=>x.record.id));return {...current,queue:[...current.queue,...qs.filter(q=>!ids.has(q.record.id))]};});
-  $('history-date').value=M.day(records.at(-1).at);pending=null;dialog.close();busy=false;render();notify('記録しました。');flush();
+  $('history-date').value=M.day(records.at(-1).at);pending=null;
+  if(opts.farewell){await farewell(records.map(r=>r.id));return;}
+  dialog.close();busy=false;render();notify('記録しました。');flush();
+}
+/** 退勤を記録したとき：「お疲れさまでした」を出して送信し、終わったら最初の画面に戻る */
+async function farewell(ids){
+  const want=new Set(ids),left=()=>data.queue.filter(q=>want.has(q.record.id)),failed=()=>left().filter(q=>q.error);
+  modal('<h2>お仕事お疲れさまでした。</h2><p class="big-note" id="farewell-note">記録を送信していますのでお待ちください。</p>');
+  busy=false;const until=Date.now()+30000;
+  while(left().some(q=>!q.error)&&navigator.onLine!==false&&Date.now()<until){if(!sending)await flush();else await new Promise(r=>setTimeout(r,300));if(left().some(q=>!q.error))await new Promise(r=>setTimeout(r,500));}
+  const bad=failed();
+  if(bad.length){modal(`<h2>記録を送れませんでした</h2><p class="big-note">${esc(bad[0].error)}</p><div class="buttons"><button class="btn primary" data-close>閉じる</button></div>`);view='main';render();return;}
+  if(left().length){const n=$('farewell-note');if(n)n.textContent='電波がつながらないので、スマホに保存しました。つながったら自動で送ります。';await new Promise(r=>setTimeout(r,3000));}
+  else{const n=$('farewell-note');if(n)n.textContent='送信しました。';await new Promise(r=>setTimeout(r,1200));}
+  if(dialog.open)dialog.close();view='main';render();window.scrollTo(0,0);notify(left().length?'記録はスマホに保存しています。つながったら自動で送ります。':'記録しました（送信済み）。',false,5000);
 }
 const persistRecord=record=>persistRecords([record]);
 function correct(id){const p=ownHistory().find(p=>p.id===id);if(!p)return;
