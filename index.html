@@ -100,7 +100,7 @@ dialog label select{display:block;width:100%;margin-top:4px;font-size:17px;paddi
     <p class="fine-print" id="days-note"></p>
   </div>
   
-</main><dialog id="modal"><div id="modal-body"></div></dialog><script>window.P02_WEB={"apiUrl":"https://script.google.com/macros/s/AKfycby-w8l6me8DyQfZX5PXZDLk5PXUTVT-BY3xomKUANceDVHtCn_QrUrFfLp6pu7iZdF1tg/exec","version":"20261105.w21"};</script><script>(function(root){
+</main><dialog id="modal"><div id="modal-body"></div></dialog><script>window.P02_WEB={"apiUrl":"https://script.google.com/macros/s/AKfycby-w8l6me8DyQfZX5PXZDLk5PXUTVT-BY3xomKUANceDVHtCn_QrUrFfLp6pu7iZdF1tg/exec","version":"20261106.w22"};</script><script>(function(root){
 'use strict';
 const api={};
 api.id=()=>{if(root.crypto.randomUUID)return root.crypto.randomUUID();const bytes=root.crypto.getRandomValues(new Uint8Array(16));bytes[6]=(bytes[6]&15)|64;bytes[8]=(bytes[8]&63)|128;const hex=[...bytes].map(x=>x.toString(16).padStart(2,'0')).join('');return hex.slice(0,8)+'-'+hex.slice(8,12)+'-'+hex.slice(12,16)+'-'+hex.slice(16,20)+'-'+hex.slice(20);};
@@ -384,7 +384,7 @@ function startPicker(st,opts={}){const own=st!==startOf();return `<div class="wo
 function workFields(p,opts={}){const rest=Number.isInteger(p.lunchMinutes)?p.lunchMinutes:defaultLunch,custom=rest!==0&&rest!==defaultLunch,confirmed=p.confirmedMinutes,st=Number.isInteger(opts.start)?opts.start:startOf();
   return `<fieldset id="lunch-fields" class="lunch-fields"><legend>昼休憩</legend><div class="lunch-choices"><label><input type="radio" name="lunch" value="${defaultLunch}" ${rest===defaultLunch?'checked':''} required><span>あり<small>${defaultLunch}分</small></span></label><label><input type="radio" name="lunch" value="0" ${rest===0?'checked':''} required>なし</label><label><input type="radio" name="lunch" value="custom" ${custom?'checked':''} required>その他</label></div><label id="lunch-custom-wrap" ${custom?'':'hidden'}>昼休憩の分数<input name="lunch_custom" type="number" inputmode="numeric" min="0" max="1440" step="1" value="${custom?rest:30}"></label>${breakNote?`<p class="break-note">${esc(breakNote)}</p>`:''}</fieldset><section id="work-confirm" class="work-confirm"><h3>勤務時間</h3><p id="work-start-text" class="work-start-text"></p>${opts.editStart?startPicker(st):''}<div class="work-inputs"><label>時間<input name="confirmed_hours" type="number" inputmode="numeric" min="0" max="24" step="1" value="${Number.isInteger(confirmed)?Math.floor(confirmed/60):''}" required></label><label>分<select name="confirmed_minutes" required>${[...new Set([0,30,...(Number.isInteger(confirmed)?[confirmed%60]:[])])].sort((a,b)=>a-b).map(m=>`<option value="${m}" ${Number.isInteger(confirmed)&&confirmed%60===m?'selected':''}>${String(m).padStart(2,'0')}</option>`).join('')}</select></label></div><p id="work-proposal" class="work-proposal"></p><p class="fine-print">違う場合は直してから保存してください。</p></section>`;
 }
-function formWorkContext(form){const kind=form.elements.kind?.value||form.dataset.kind,at=form.elements.time?Date.parse(form.elements.date.value+'T'+form.elements.time.value+':00+09:00'):Number(form.dataset.at);return{kind,at};}
+function formWorkContext(form){const kind=form.elements.kind?.value||form.dataset.kind,ov=form.elements.out_time?.value,at=ov?Date.parse(form.elements.date.value+'T'+ov+':00+09:00'):form.elements.time?Date.parse(form.elements.date.value+'T'+form.elements.time.value+':00+09:00'):Number(form.dataset.at);return{kind,at};}
 /** 計算に使う始業：「今日は始業が違う」で入れた時刻、なければその日の始業 */
 function formStart(form){const wrap=form.querySelector('#start-wrap'),v=form.elements.start_time;if(wrap&&!wrap.hidden&&v){const m=M.parseHm(v.value);if(m!==null)return m;}const d=Number(form.dataset.start);return Number.isInteger(d)&&form.dataset.start!==''?d:startOf();}
 /** 出勤（押し忘れの入力欄があればそれ）から退勤までの時間。始業より前は数えない */
@@ -400,7 +400,7 @@ function updateWorkForm(form){const w=workSpan(form),isOut=w.kind==='退勤',fie
   const rest=choice?(custom?Number(other.value):Number(choice.value)):null,message=form.querySelector('#work-proposal');
   if(rest===null){message.textContent='昼休憩を選ぶと時間を計算します。';return;}
   if(!Number.isInteger(rest)||rest<0||rest>1440){message.textContent='昼休憩の分数を確認してください。';return;}
-  if(w.span===null){message.textContent=form.elements.in_time?'仕事を始めた時刻を選んでください。':'出勤の記録が見つかりません。勤務時間を選んでください。';return;}
+  if(w.span===null){message.textContent=form.elements.in_time?(form.elements.in_time.value&&form.elements.out_time?'始めた時刻は、終えた時刻より前にしてください。':'仕事を始めた時刻を選んでください。'):'出勤の記録が見つかりません。勤務時間を選んでください。';if(form.elements.in_time&&form.dataset.manual!=='true'){hours.value='';}return;}
   if(rest>w.raw){message.textContent='昼休憩が勤務時間より長くなっています。';return;}
   const calculated=Math.max(0,w.span-rest),shown=M.floor30(calculated);
   message.textContent='計算：'+M.duration(calculated)+(shown!==calculated?' → '+M.duration(shown)+'（30分未満切り捨て）':'')+(form.dataset.manual==='true'&&Number(hours.value)*60+Number(minutes.value)!==shown?'。下の時間は前に入れたままです。':'');
@@ -410,6 +410,7 @@ function readWorkForm(form){updateWorkForm(form);if(!form.reportValidity())retur
   const choice=form.querySelector('[name="lunch"]:checked'),rest=choice.value==='custom'?Number(form.elements.lunch_custom.value):Number(choice.value),hours=Number(form.elements.confirmed_hours.value),minutes=Number(form.elements.confirmed_minutes.value),confirmed=hours*60+minutes;
   if(!Number.isInteger(rest)||rest<0||rest>1440||(w.raw!==null&&rest>w.raw))throw Error('昼休憩の分数を確認してください。');
   if(!Number.isInteger(hours)||!Number.isInteger(minutes)||minutes<0||minutes>59||confirmed<0||confirmed>1440)throw Error('勤務時間を入れてください。');
+  if(w.raw!==null&&confirmed>w.raw)throw Error(`時間が長すぎます。${M.time(w.inAt)}〜${M.time(w.at)}は最大${M.duration(Math.max(0,w.raw))}です。`);
   const calc=w.span===null?null:Math.max(0,w.span-rest);
   return{lunchMinutes:rest,confirmedMinutes:confirmed,startMinutes:w.st,...(calc!==null&&confirmed!==calc&&confirmed!==M.floor30(calc)?{selfChanged:true}:{})};
 }
@@ -438,7 +439,8 @@ async function preparePunch(kind,opts={}){
   if(kind==='退勤'){
     const inRec=M.checkoutIn(rows,at,opts.redo||''),noIn=!inRec&&!eff.some(p=>p.kind==='出勤'&&M.day(p.at)===today),st=dayStart(inRec,null);
     /* 出勤を押し忘れていたら、ここで何時に始めたかを聞く */
-    const ask=noIn?`<div class="ask-box"><strong>今日の出勤が押されていません。</strong><label>何時に仕事を始めましたか？<select name="in_time">${halfHourOptions(240,Math.max(240,Math.floor((nowMin-30)/30)*30),Math.min(st,Math.max(240,Math.floor((nowMin-30)/30)*30)))}</select></label></div>`:'';
+    const endMax=Math.floor(nowMin/30)*30,from=endMax-30>=240?240:0;
+    const ask=noIn?`<div class="ask-box"><strong>今日の出勤が押されていません。</strong><label>何時に仕事を始めましたか？<select name="in_time" required>${halfHourOptions(from,endMax-30,-1,'<option value="" selected>選んでください</option>')}</select></label><label>何時に仕事を終えましたか？<select name="out_time" required>${halfHourOptions(from+30,endMax,endMax)}</select></label></div>`:'';
     body=`<form id="punch-form" data-kind="退勤" data-at="${at}" data-start="${st}" data-noin="${noIn?1:''}" data-exclude="${esc(opts.redo||'')}"><input type="hidden" name="date" value="${today}">${ask}${workFields(pending,{start:st})}</form>`;
   }else{
     /* 前回の退勤を押し忘れていたら、ここで何時に終わったかを聞く */
@@ -453,10 +455,11 @@ async function preparePunch(kind,opts={}){
   if(kind==='退勤')updateWorkForm($('punch-form'));else updateInForm($('in-form'));
 }
 async function savePunch(){
-  if(locating){const btn=document.querySelector('dialog [data-action=save-punch]');if(btn){btn.disabled=true;btn.textContent='記録しています…';}await Promise.race([locating,new Promise(r=>setTimeout(r,4000))]);if(btn)btn.disabled=false;}
+  if(locating){const btn=document.querySelector('dialog [data-action=save-punch]'),label=btn?.textContent;if(btn){btn.disabled=true;btn.textContent='記録しています…';}try{await Promise.race([locating,new Promise(r=>setTimeout(r,4000))]);}finally{if(btn){btn.disabled=false;btn.textContent=label;}}}
   if(pending.kind==='退勤'){const f=$('punch-form'),work=readWorkForm(f);if(!work)return;
-    if(f.dataset.noin){const inAt=Date.parse(f.elements.date.value+'T'+f.elements.in_time.value+':00+09:00');if(!Number.isFinite(inAt)||inAt>=pending.at)throw Error('仕事を始めた時刻を選んでください。');
-      await persistRecords([{id:M.id(),kind:'出勤',at:inAt,createdAt:Date.now(),originalId:'',note:'出勤の押し忘れ（退勤のときに入力）',lat:null,lon:null,accuracy:null,startMinutes:work.startMinutes},{...pending,...work}]);return;}
+    if(f.dataset.noin){const d=f.elements.date.value,inV=f.elements.in_time.value,outV=f.elements.out_time.value;if(!inV)throw Error('仕事を始めた時刻を選んでください。');
+      const inAt=Date.parse(d+'T'+inV+':00+09:00'),outAt=Date.parse(d+'T'+outV+':00+09:00');if(!Number.isFinite(inAt)||!Number.isFinite(outAt)||inAt>=outAt||outAt>pending.at)throw Error('始めた時刻は、終えた時刻より前にしてください。');
+      await persistRecords([{id:M.id(),kind:'出勤',at:inAt,createdAt:Date.now(),originalId:'',note:'出勤の押し忘れ（退勤のときに入力）',lat:null,lon:null,accuracy:null,startMinutes:work.startMinutes},{...pending,at:outAt,note:outAt<pending.at-10*60000?'退勤の押し忘れ（'+M.time(pending.at)+'に入力）':pending.note,...work}]);return;}
     await persistRecord({...pending,...work});return;}
   const f=$('in-form'),box=f.querySelector('[data-prev-day]'),rec={...pending,startMinutes:formStart(f)};
   if(box&&f.elements.prev_out.value){await persistRecords([prevOutRecord(box,f.elements.prev_out.value),rec]);return;}
