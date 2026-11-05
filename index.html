@@ -125,7 +125,7 @@ dialog label select{display:block;width:100%;margin-top:4px;font-size:17px;paddi
     <p class="fine-print" id="days-note"></p>
   </div>
   
-</main><dialog id="modal"><div id="modal-body"></div></dialog><script>window.P02_WEB={"apiUrl":"https://script.google.com/macros/s/AKfycby-w8l6me8DyQfZX5PXZDLk5PXUTVT-BY3xomKUANceDVHtCn_QrUrFfLp6pu7iZdF1tg/exec","version":"20261106.w24"};</script><script>(function(root){
+</main><dialog id="modal"><div id="modal-body"></div></dialog><script>window.P02_WEB={"apiUrl":"https://script.google.com/macros/s/AKfycby-w8l6me8DyQfZX5PXZDLk5PXUTVT-BY3xomKUANceDVHtCn_QrUrFfLp6pu7iZdF1tg/exec","version":"20261106.w25"};</script><script>(function(root){
 'use strict';
 const api={};
 api.id=()=>{if(root.crypto.randomUUID)return root.crypto.randomUUID();const bytes=root.crypto.getRandomValues(new Uint8Array(16));bytes[6]=(bytes[6]&15)|64;bytes[8]=(bytes[8]&63)|128;const hex=[...bytes].map(x=>x.toString(16).padStart(2,'0')).join('');return hex.slice(0,8)+'-'+hex.slice(8,12)+'-'+hex.slice(12,16)+'-'+hex.slice(16,20)+'-'+hex.slice(20);};
@@ -432,8 +432,8 @@ function workFields(p,opts={}){const rest=Number.isInteger(p.lunchMinutes)?p.lun
 function formWorkContext(form){const kind=form.elements.kind?.value||form.dataset.kind,ov=form.elements.out_time?.value,at=ov?Date.parse(form.elements.date.value+'T'+ov+':00+09:00'):form.elements.time?Date.parse(form.elements.date.value+'T'+form.elements.time.value+':00+09:00'):Number(form.dataset.at);return{kind,at};}
 /** 計算に使う始業：「今日は始業が違う」で入れた時刻、なければその日の始業 */
 function formStart(form){const wrap=form.querySelector('#start-wrap'),v=form.elements.start_time;if(wrap&&!wrap.hidden&&v){const m=M.parseHm(v.value);if(m!==null)return m;}const d0=Number(form.dataset.start),d=Number.isInteger(d0)&&form.dataset.start!==''?d0:startOf();
-  /* 退勤の画面は始業の欄を出さない。始業が押した時刻より後なら、始めた時刻を始業として数える */
-  if(form.id==='punch-form'&&!wrap&&d>nowMinutes(Number(form.dataset.at))){const m=form.elements.in_time?.value?M.parseHm(form.elements.in_time.value):null;if(m!==null)return m;}
+  /* 退勤の画面は始業の欄を出さない。選んだ「始めた時刻」から数える（最初の値は始業。管理者が始業の設定を忘れた日も、選び直せばその時刻から数える） */
+  if(form.id==='punch-form'&&!wrap){const m=form.elements.in_time?.value?M.parseHm(form.elements.in_time.value):null;if(m!==null)return m;}
   return d;}
 /** 出勤（押し忘れの入力欄があればそれ）から退勤までの時間。始業より前は数えない */
 function workSpan(form){const c=formWorkContext(form);let inAt=null;
@@ -771,7 +771,7 @@ document.addEventListener('click',async ev=>{const b=ev.target.closest('button,t
 /* 日別の時間ページは、スライドやAndroidの戻るボタンでも打刻の画面へ戻れるようにする */window.addEventListener('popstate',()=>{if(view==='admin'&&!history.state?.tcAdmin){view='main';if(dialog.open)dialog.close();render();window.scrollTo(0,0);return;}if(view==='days'&&!history.state?.tcDays){view='main';if(dialog.open)dialog.close();render();window.scrollTo(0,0);}});
 $('auth-form').addEventListener('submit',authenticate);$('history-date').value=M.day(Date.now());/* iPhoneの日付選択の「リセット」で空になったら今日に戻す（空のままだと履歴が全部消えたように見える） */const historyDay=()=>{if(!$('history-date').value)$('history-date').value=M.day(Date.now());render();};$('history-date').addEventListener('change',historyDay);$('history-date').addEventListener('input',historyDay);$('history-date').addEventListener('blur',historyDay);
 document.addEventListener('submit',async ev=>{if(!['punch-form','correction-form','day-form'].includes(ev.target.id))return;ev.preventDefault();if(ev.target.id==='day-form'){try{reviewDay();}catch(err){$('dialog-error').hidden=false;$('dialog-error').textContent=err.message;}return;}try{if(ev.target.id==='punch-form'&&pending){await savePunch();}else if(ev.target.id==='correction-form'){await saveCorrection(ev.target.dataset.exclude);}}catch(err){$('dialog-error').hidden=false;$('dialog-error').textContent=err.message;}});
-document.addEventListener('input',ev=>{const form=ev.target.closest('form');if(!form||!['punch-form','correction-form','day-form'].includes(form.id))return;if(['start_time','time','in_time','out_time'].includes(ev.target.name)&&form.id==='day-form'||ev.target.name==='start_time'){form.dataset.manual='false';updateWorkForm(form);}if(['confirmed_hours','confirmed_minutes'].includes(ev.target.name))form.dataset.manual='true';if(ev.target.name==='lunch_custom'){form.dataset.manual='false';updateWorkForm(form);}});
+document.addEventListener('input',ev=>{const form=ev.target.closest('form');if(!form||!['punch-form','correction-form','day-form'].includes(form.id))return;if(['start_time','time','in_time','out_time'].includes(ev.target.name)&&form.id==='day-form'||ev.target.name==='start_time'||ev.target.name==='in_time'&&form.id==='punch-form'){form.dataset.manual='false';updateWorkForm(form);}if(['confirmed_hours','confirmed_minutes'].includes(ev.target.name))form.dataset.manual='true';if(ev.target.name==='lunch_custom'){form.dataset.manual='false';updateWorkForm(form);}});
 document.addEventListener('change',ev=>{const form=ev.target.closest('form');if(form?.id==='punch-form'){if(ev.target.name==='in_time')form.dataset.inTouched='1';if(ev.target.name==='start_time')form.dataset.startTouched='1';}if(form?.id==='admin-form'){if(['a_hours','a_minutes'].includes(ev.target.name))form.dataset.manual='true';else{form.dataset.manual='false';updateAdminForm(form);}return;}if(form&&['punch-form','correction-form','day-form'].includes(form.id)&&['lunch','time','date','kind','start_time','in_time','out_time'].includes(ev.target.name)){form.dataset.manual='false';updateWorkForm(form);}});
 dialog.addEventListener('close',()=>{pending=null;busy=false;render();});
 window.addEventListener('online',()=>{refresh();flush();});document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh();});
