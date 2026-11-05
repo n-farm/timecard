@@ -125,7 +125,7 @@ dialog label select{display:block;width:100%;margin-top:4px;font-size:17px;paddi
     <p class="fine-print" id="days-note"></p>
   </div>
   
-</main><dialog id="modal"><div id="modal-body"></div></dialog><script>window.P02_WEB={"apiUrl":"https://script.google.com/macros/s/AKfycby-w8l6me8DyQfZX5PXZDLk5PXUTVT-BY3xomKUANceDVHtCn_QrUrFfLp6pu7iZdF1tg/exec","version":"20261106.w26"};</script><script>(function(root){
+</main><dialog id="modal"><div id="modal-body"></div></dialog><script>window.P02_WEB={"apiUrl":"https://script.google.com/macros/s/AKfycby-w8l6me8DyQfZX5PXZDLk5PXUTVT-BY3xomKUANceDVHtCn_QrUrFfLp6pu7iZdF1tg/exec","version":"20261106.w27"};</script><script>(function(root){
 'use strict';
 const api={};
 api.id=()=>{if(root.crypto.randomUUID)return root.crypto.randomUUID();const bytes=root.crypto.getRandomValues(new Uint8Array(16));bytes[6]=(bytes[6]&15)|64;bytes[8]=(bytes[8]&63)|128;const hex=[...bytes].map(x=>x.toString(16).padStart(2,'0')).join('');return hex.slice(0,8)+'-'+hex.slice(8,12)+'-'+hex.slice(12,16)+'-'+hex.slice(16,20)+'-'+hex.slice(20);};
@@ -433,7 +433,7 @@ function formWorkContext(form){const kind=form.elements.kind?.value||form.datase
 /** 計算に使う始業：「今日は始業が違う」で入れた時刻、なければその日の始業 */
 function formStart(form){const wrap=form.querySelector('#start-wrap'),v=form.elements.start_time;if(wrap&&!wrap.hidden&&v){const m=M.parseHm(v.value);if(m!==null)return m;}const d0=Number(form.dataset.start),d=Number.isInteger(d0)&&form.dataset.start!==''?d0:startOf();
   /* 退勤の画面は始業の欄を出さない。選んだ「始めた時刻」から数える（最初の値は始業。管理者が始業の設定を忘れた日も、選び直せばその時刻から数える） */
-  if(form.id==='punch-form'&&!wrap){const m=form.elements.in_time?.value?M.parseHm(form.elements.in_time.value):null;if(m!==null)return m;}
+  if((form.id==='punch-form'||form.elements.in_time)&&!wrap){const m=form.elements.in_time?.value?M.parseHm(form.elements.in_time.value):null;if(m!==null)return m;}
   return d;}
 /** 出勤（押し忘れの入力欄があればそれ）から退勤までの時間。始業より前は数えない */
 function workSpan(form){const c=formWorkContext(form);let inAt=null;
@@ -451,7 +451,7 @@ function updateWorkForm(form){const w=workSpan(form),isOut=w.kind==='退勤',fie
   if(w.span===null){message.textContent=form.elements.in_time?(form.elements.in_time.value&&form.elements.out_time?'始めた時刻は、終えた時刻より前にしてください。':'仕事を始めた時刻を選んでください。'):'出勤の記録が見つかりません。勤務時間を選んでください。';if(form.elements.in_time&&form.dataset.manual!=='true'){hours.value='';}return;}
   if(rest>w.raw){message.textContent='昼休憩が勤務時間より長くなっています。';return;}
   const calculated=Math.max(0,w.span-rest),shown=M.floor30(calculated);
-  message.textContent=form.id==='punch-form'?'':'計算：'+M.duration(calculated)+(shown!==calculated?' → '+M.duration(shown)+'（30分未満切り捨て）':'')+(form.dataset.manual==='true'&&Number(hours.value)*60+Number(minutes.value)!==shown?'。下の時間は前に入れたままです。':'');
+  message.textContent=form.id==='punch-form'||form.elements.in_time?'':'計算：'+M.duration(calculated)+(shown!==calculated?' → '+M.duration(shown)+'（30分未満切り捨て）':'')+(form.dataset.manual==='true'&&Number(hours.value)*60+Number(minutes.value)!==shown?'。下の時間は前に入れたままです。':'');
   if(form.dataset.manual!=='true'){hours.value=Math.floor(shown/60);minutes.value=shown%60;}
 }
 function readWorkForm(form){updateWorkForm(form);if(!form.reportValidity())return null;const w=workSpan(form);if(w.kind!=='退勤')return{};
@@ -570,14 +570,14 @@ function editDayForm(date,opts={}){if(!data.session)return;const rows=ownHistory
   if(isLocked(Date.parse(date+'T12:00:00+09:00'))){modal(head+'<p>'+LOCK_MSG+'</p>'+close);return;}
   const dayRows=M.effective(rows).filter(p=>M.day(p.at)===date),ins=dayRows.filter(p=>p.kind==='出勤'),outs=dayRows.filter(p=>p.kind==='退勤');
   if(!ins.length&&outs.length===1){const out=outs[0],st=dayStart(null,out);
-    modal(head+`<p>退勤 ${M.time(out.at)}。出勤の記録がありません。出勤した時刻を入れてください。</p><form id="day-form" data-kind="退勤" data-mode="newin" data-at="${out.at}" data-exclude="${esc(out.id)}" data-start="${st}" data-manual="${Number.isInteger(out.confirmedMinutes)}" data-before="${out.confirmedMinutes??''}"><input type="hidden" name="date" value="${date}"><label>何時に仕事を始めましたか？<select name="in_time">${halfHourOptions(isTest()?0:SELF_EARLIEST,Math.min(1410,Math.floor((Math.floor((out.at-Date.parse(date+'T00:00:00+09:00'))/60000)-30)/30)*30),startOf())}</select></label>${workFields(out,{start:st,editStart:true})}</form>${err}<div id="day-confirm" class="day-confirm" hidden></div>${HELP_NOTE}<div class="buttons" id="day-buttons"><button class="btn" data-close>戻る</button><button class="btn primary" data-action="day-review">内容確認</button></div>`);
+    modal(head+`<p>退勤 ${M.time(out.at)}。出勤の記録がありません。出勤した時刻を入れてください。</p><form id="day-form" data-kind="退勤" data-mode="newin" data-at="${out.at}" data-exclude="${esc(out.id)}" data-start="${st}" data-manual="${Number.isInteger(out.confirmedMinutes)}" data-before="${out.confirmedMinutes??''}"><input type="hidden" name="date" value="${date}"><label>何時に仕事を始めましたか？<select name="in_time">${halfHourOptions(isTest()?0:SELF_EARLIEST,Math.min(1410,Math.floor((Math.floor((out.at-Date.parse(date+'T00:00:00+09:00'))/60000)-30)/30)*30),startOf())}</select></label>${workFields(out,{start:st})}</form>${err}<div id="day-confirm" class="day-confirm" hidden></div>${HELP_NOTE}<div class="buttons" id="day-buttons"><button class="btn" data-close>戻る</button><button class="btn primary" data-action="day-review">内容確認</button></div>`);
     updateWorkForm($('day-form'));return;}
   if(t.status==='要確認'){modal(head+'<p>この日は出勤・退勤の組み合わせが合いません。管理者に伝えてください。</p>'+close);return;}
   if(!t.inRec&&!dayRows.length){
     if(date>=today&&!isTest()){modal(head+'<p>今日の分は、仕事を終えるときに「退勤」を押してください。</p>'+close);return;}
     /* 記録のない日：始めた時刻・終えた時刻・昼休憩・勤務時間を入れる（後から入力 → 管理者が確認） */
     const st=startOf(),from=isTest()?0:SELF_EARLIEST;
-    modal(head+`<p>この日の記録がありません。働いた日なら、時刻を入れてください。</p><form id="day-form" data-kind="退勤" data-mode="blank" data-start="${st}" data-manual="false"><input type="hidden" name="date" value="${date}"><div class="ask-box"><label>何時に仕事を始めましたか？<select name="in_time" required>${halfHourOptions(from,1380,st)}</select></label><label>何時に仕事を終えましたか？<select name="out_time" required>${halfHourOptions(from+30,1410,Math.min(1410,st+540))}</select></label></div>${workFields({},{start:st,editStart:true})}</form>${err}<div id="day-confirm" class="day-confirm" hidden></div>${HELP_NOTE}<div class="buttons" id="day-buttons"><button class="btn" data-close>戻る</button><button class="btn primary" data-action="day-review">内容確認</button></div>`);
+    modal(head+`<p>この日の記録がありません。働いた日なら、時刻を入れてください。</p><form id="day-form" data-kind="退勤" data-mode="blank" data-start="${st}" data-manual="false"><input type="hidden" name="date" value="${date}"><div class="ask-box"><label>何時に仕事を始めましたか？<select name="in_time" required>${halfHourOptions(from,1380,st)}</select></label><label>何時に仕事を終えましたか？<select name="out_time" required>${halfHourOptions(from+30,1410,Math.min(1410,st+540))}</select></label></div>${workFields({},{start:st})}</form>${err}<div id="day-confirm" class="day-confirm" hidden></div>${HELP_NOTE}<div class="buttons" id="day-buttons"><button class="btn" data-close>戻る</button><button class="btn primary" data-action="day-review">内容確認</button></div>`);
     updateWorkForm($('day-form'));return;}
   if(!t.inRec){modal(head+'<p>この日の出勤・退勤の記録がありません。</p>'+close);return;}
   if(!t.outRec){
