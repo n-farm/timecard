@@ -1,6 +1,6 @@
 {
-  "name": "農園タイムカード",
-  "short_name": "タイムカード",
+  "name": "農園出勤簿",
+  "short_name": "出勤簿",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
