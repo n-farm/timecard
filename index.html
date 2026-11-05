@@ -83,6 +83,11 @@ dialog label select{display:block;width:100%;margin-top:4px;font-size:17px;paddi
 .place-reason-row{display:block;font-size:13px;color:#8a6230;margin-top:3px}
 .day-row.day-empty .day-times{color:#9aa39c}
 .today-start{margin-top:6px}
+.admin-guide{background:#fbf3e4;color:#5d4520;border-radius:12px;padding:10px 14px;margin:6px 0 12px;font-size:15px;line-height:1.6}
+.admin-guide h3{font-size:15px;margin:0 0 4px}
+.admin-guide ul{margin:0;padding-left:1.2em}
+.admin-guide li{margin:2px 0}
+.admin-guide p{margin:4px 0 0}
 </style></head><body>
 <main class="app">
   <header class="header"><button id="home-link" class="brand" aria-label="最初の画面へ"><span class="brand-icon">◷</span><span><span id="brand-title">農園出勤簿</span><small id="brand-sub">FARM ATTENDANCE BOOK</small></span></button><button id="settings" class="icon-button" aria-label="保存・アカウントの設定">⚙</button></header>
@@ -125,7 +130,7 @@ dialog label select{display:block;width:100%;margin-top:4px;font-size:17px;paddi
     <p class="fine-print" id="days-note"></p>
   </div>
   
-</main><dialog id="modal"><div id="modal-body"></div></dialog><script>window.P02_WEB={"apiUrl":"https://script.google.com/macros/s/AKfycby-w8l6me8DyQfZX5PXZDLk5PXUTVT-BY3xomKUANceDVHtCn_QrUrFfLp6pu7iZdF1tg/exec","version":"20261106.w27"};</script><script>(function(root){
+</main><dialog id="modal"><div id="modal-body"></div></dialog><script>window.P02_WEB={"apiUrl":"https://script.google.com/macros/s/AKfycby-w8l6me8DyQfZX5PXZDLk5PXUTVT-BY3xomKUANceDVHtCn_QrUrFfLp6pu7iZdF1tg/exec","version":"20261106.w28"};</script><script>(function(root){
 'use strict';
 const api={};
 api.id=()=>{if(root.crypto.randomUUID)return root.crypto.randomUUID();const bytes=root.crypto.getRandomValues(new Uint8Array(16));bytes[6]=(bytes[6]&15)|64;bytes[8]=(bytes[8]&63)|128;const hex=[...bytes].map(x=>x.toString(16).padStart(2,'0')).join('');return hex.slice(0,8)+'-'+hex.slice(8,12)+'-'+hex.slice(12,16)+'-'+hex.slice(16,20)+'-'+hex.slice(20);};
@@ -169,7 +174,7 @@ api.attendance=(records,date,startMinutes=null)=>{
     if(api.day(p.at)===date){
       count++;const st=Number.isInteger(p.startMinutes)?p.startMinutes:Number.isInteger(start.startMinutes)?start.startMinutes:startMinutes,span=Math.max(0,api.minute(p.at)-api.countFrom(start.at,st)),rest=p.lunchMinutes,value=p.confirmedMinutes;
       if(!Number.isInteger(rest)||rest<0||rest>api.minute(p.at)-api.minute(start.at)||!Number.isInteger(value)||value<0||value>1440)missing=true;
-      else{const calc=Math.max(0,span-rest);calculated+=calc;confirmed+=value;lunch+=rest;if(value!==calc&&value!==api.floor30(calc))changed=true;}
+      else{const calc=Math.max(0,span-rest);calculated+=calc;confirmed+=value;lunch+=rest;if(value!==calc&&value!==api.floor30(calc)&&value!==Math.max(60,api.floor30(calc)))changed=true;}
       inRec=start;outRec=p;startUsed=st;
       pending=pending||p.sent===false||start.sent===false;
     }
@@ -475,7 +480,7 @@ function readWorkForm(form){updateWorkForm(form);if(!form.reportValidity())retur
     if(w.inAt!==null&&w.inAt>now)throw Error('これからの時刻は入れられません。');
     if(form.querySelector('#start-wrap')&&date===M.day(now)&&Number.isInteger(w.st)&&w.st>nowMinutes(now))throw Error('始業がまだ来ていません（'+M.hm(w.st)+'）。この日の始業を選び直してください。');}
   const calc=w.span===null?null:Math.max(0,w.span-rest);
-  return{lunchMinutes:rest,confirmedMinutes:confirmed,startMinutes:w.st,...(calc!==null&&confirmed!==calc&&confirmed!==M.floor30(calc)?{selfChanged:true}:{})};
+  return{lunchMinutes:rest,confirmedMinutes:confirmed,startMinutes:w.st,...(calc!==null&&confirmed!==calc&&confirmed!==M.floor30(calc)&&confirmed!==Math.max(MIN_WORK,M.floor30(calc))?{selfChanged:true}:{})};
 }
 const closeButtons=(label,action)=>`<div class="buttons"><button class="btn" data-close>戻る</button><button class="btn primary" data-action="${action}">${label}</button></div>`;
 const LOCATION_HELP='<div class="notice-box"><strong>位置情報がオフになっています。</strong>打刻は記録できますが、場所を確認できません。<br>iPhone：設定 → プライバシーとセキュリティ → 位置情報サービス → 使っているブラウザ（SafariやChrome）→「使用中のみ」<br>Android：ブラウザのアドレス欄の左の印 → 権限（サイトの設定）→ 位置情報 →「許可」</div>';
@@ -705,7 +710,7 @@ function adminEditDay(empId,date){const e=adminEmp(empId);if(!e)return;const r=a
   const conf=outRec?.confirmedMinutes;
   if(r.selfCancels.length&&!r.has){const orig=r.selfCancels.map(c=>r.raw.find(p=>p.id===c.originalId)||c).sort((a,b)=>a.at-b.at);
     modal(`<h2>${esc(e.name)}　${md(date)}</h2><div class="notice-box" data-ack-emp="${esc(e.id)}" data-ack-date="${date}">本人が「この日は出勤していない」として記録を取り消しました。</div><p>取り消した記録：${orig.map(p=>esc(p.kind)+' '+M.time(p.at)+(Number.isInteger(p.confirmedMinutes)?'（'+M.hm(p.confirmedMinutes)+'）':'')).join('、')}</p><p class="fine-print">「確認しました」で一覧から外れます。記録を入れ直すときは、確認したあとにもう一度この日を開いてください。</p><div id="dialog-error" class="error" hidden role="alert"></div><div class="buttons"><button class="btn" data-close>戻る</button><button class="btn primary" data-action="admin-ack">確認しました</button></div>`);return;}
-  modal(`<h2>${esc(e.name)}　${md(date)}</h2>${adminPlaces(r.pushed)}<form id="admin-form" data-emp="${esc(e.id)}" data-date="${date}" data-manual="${Number.isInteger(conf)}" data-new-day="${outRec?'':1}">
+  modal(`<h2>${esc(e.name)}　${md(date)}</h2>${adminGuide(r)}${adminPlaces(r.pushed)}<form id="admin-form" data-emp="${esc(e.id)}" data-date="${date}" data-manual="${Number.isInteger(conf)}" data-new-day="${outRec?'':1}">
     <div class="admin-grid"><label>出勤<select name="a_in">${opt(inRec,r.has?null:st)}</select></label><label>退勤<select name="a_out">${opt(outRec,r.has?null:st+540)}</select></label>
     <label>昼休憩<select name="a_lunch">${lunchOpts.map(m=>`<option value="${m}" ${m===lunch?'selected':''}>${m}分</option>`).join('')}</select></label></div>
     <p id="admin-calc" class="work-proposal"></p>
@@ -714,6 +719,19 @@ function adminEditDay(empId,date){const e=adminEmp(empId);if(!e)return;const r=a
     ${r.has?'<button type="button" class="soft-button danger-soft" data-admin-cancel>この日を「勤務なし」にする</button>':''}
   </form><div id="dialog-error" class="error" hidden role="alert"></div>${closeButtons('この内容で保存','admin-save')}`);
   updateAdminForm($('admin-form'));}
+/** 個別の画面の日付の下に「何を確認するか」を書く */
+const ADMIN_CHECK={
+  '退勤なし':'退勤の記録がありません。本人に聞いて、退勤の時刻と勤務時間を入れてください。',
+  '出勤なし':'始めた時刻（出勤）の記録がありません。本人に聞いて、出勤の時刻を入れてください。',
+  '組み合わせ':'出勤・退勤の記録が重なったり足りなかったりしています。正しい出勤・退勤を選び直してください。',
+  '時間なし':'勤務時間が入っていません。出勤・退勤・昼休憩を確かめて、勤務時間を入れてください。',
+  '後から入力':'本人が後から時刻を入れた日です。始めた時刻・終えた時刻・昼休憩・勤務時間が合っているか確かめてください。',
+  '本人変更':'本人が時刻や勤務時間を直した日、または計算と違う勤務時間を入れた日です。直した内容が合っているか確かめてください。',
+  '場所の外':'登録した場所の外（または位置が取れない所）で退勤が押されました。下の「押した場所」と理由を見て、問題がないか確かめてください。'};
+function adminGuide(r){const items=r.reasons.filter(x=>ADMIN_CHECK[x]);
+  const notes=[...new Set(r.dayRecs.filter(p=>/本人/.test(p.judge||'')&&p.note).map(p=>p.note))];
+  if(!items.length)return '<div class="admin-guide"><p>確認が必要なことはありません。直すときだけ使います。</p></div>';
+  return '<div class="admin-guide"><h3>確認すること</h3><ul>'+items.map(x=>`<li><strong>${esc(x)}</strong>：${esc(ADMIN_CHECK[x])}</li>`).join('')+'</ul>'+(notes.length?'<p class="fine-print">本人のメモ：'+notes.map(esc).join('、')+'</p>':'')+'<p class="fine-print">合っていれば、そのまま「この内容で保存」で確認済みになります。</p></div>';}
 /** その日の打刻ごとの場所（例「退勤 17:05 倉庫」「登録した場所の外（誤差約15m）」「位置なし」）と、地図で見るリンク */
 function placeLabel(p){const j=p.judge||'',acc=Number.isFinite(p.accuracy)?'（誤差約'+Math.round(p.accuracy)+'m）':'';
   if(/退勤時に入力/.test(j))return '退勤のときに入力（位置なし）';if(/管理者/.test(j))return '管理者が入力';if(/後から/.test(j))return '後から入力（位置なし）';if(/本人修正/.test(j))return '本人が直した';
