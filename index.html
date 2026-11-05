@@ -53,6 +53,8 @@ dialog label select{display:block;width:100%;margin-top:4px;font-size:17px;paddi
 .punch.next{box-shadow:0 6px 14px #0b2a1e55,0 2px 4px #0b2a1e33}
 .big-note{font-size:17px!important;color:#253a32!important;line-height:1.8}
 .admin-h{font-size:17px;margin:18px 0 8px;color:var(--deep)}.admin-name{font-size:16px;color:var(--ink)}.admin-back{width:100%;margin-bottom:10px}.day-empty .day-times{color:#a8b2aa}.admin-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px 10px}.admin-grid label{margin-top:8px}.danger-soft{width:100%;margin-top:16px;background:#fbefe9;color:#9e4d32;border-color:#f0d4c8}
+.day-confirm h3{font-size:18px;margin:4px 0 10px}.confirm-date{font-size:16px!important;color:#4f5f55!important;margin:0}.confirm-change{font-size:22px!important;color:var(--deep)!important;margin:6px 0 14px}.confirm-change strong{font-size:28px}.place-note:empty{display:none}
+.year-total{margin-top:8px}
 </style></head><body>
 <main class="app">
   <header class="header"><button id="home-link" class="brand" aria-label="打刻の画面へ"><span class="brand-icon">◷</span><span>農園タイムカード<small>FARM TIME CARD</small></span></button><button id="settings" class="icon-button" aria-label="保存・アカウントの設定">⚙</button></header>
@@ -73,7 +75,7 @@ dialog label select{display:block;width:100%;margin-top:4px;font-size:17px;paddi
       <div class="profile-name"><span id="worker-name"></span><small id="worker-id"></small></div>
       
       <div class="punch-grid"><button class="punch start" data-punch="出勤"><span class="punch-icon">↗</span><strong>出勤</strong><small>お仕事を始める</small></button><button class="punch finish" data-punch="退勤"><span class="punch-icon">↘</span><strong>退勤</strong><small>お仕事を終える</small></button></div>
-      <p class="location-note">⌖ 打刻したときだけ、場所を確認します</p><div id="notice" role="status" aria-live="polite"></div>
+      <p class="location-note">⌖ 打刻したときだけ、打刻した場所を送信します</p><div id="notice" role="status" aria-live="polite"></div>
     </section>
     <section class="today-section"><div class="section-heading"><h2>出勤簿</h2><span id="today-label" hidden></span></div><div class="stats single"><article><span>今日の時間</span><strong id="work-total">—</strong></article><article><span id="month-label">今月の合計</span><strong id="month-total">—</strong></article></div><div class="book-actions"><button id="days-open" class="soft-button">日別の時間を見る（修正もこちら） ›</button></div></section>
     <input id="history-date" type="hidden">
@@ -89,11 +91,11 @@ dialog label select{display:block;width:100%;margin-top:4px;font-size:17px;paddi
     <h2 id="days-title" class="days-title">日別の時間</h2>
     <div class="month-tabs"><button data-month="-1">前月</button><button data-month="0">今月</button></div>
     <p id="days-hint" class="days-hint">直したい日があれば、その日を押してください。</p><div id="days-list" class="days-list"></div>
-    <div class="days-total"><span>合計</span><strong id="days-total">—</strong></div>
+    <div class="days-total"><span id="days-total-label">今月の合計</span><strong id="days-total">—</strong></div><div class="days-total year-total" id="year-total-box" hidden><span id="year-total-label">年間の合計</span><strong id="year-total">—</strong></div>
     <p class="fine-print" id="days-note"></p>
   </div>
   
-</main><dialog id="modal"><div id="modal-body"></div></dialog><script>window.P02_WEB={"apiUrl":"https://script.google.com/macros/s/AKfycby-w8l6me8DyQfZX5PXZDLk5PXUTVT-BY3xomKUANceDVHtCn_QrUrFfLp6pu7iZdF1tg/exec","version":"20261105.w19"};</script><script>(function(root){
+</main><dialog id="modal"><div id="modal-body"></div></dialog><script>window.P02_WEB={"apiUrl":"https://script.google.com/macros/s/AKfycby-w8l6me8DyQfZX5PXZDLk5PXUTVT-BY3xomKUANceDVHtCn_QrUrFfLp6pu7iZdF1tg/exec","version":"20261105.w20"};</script><script>(function(root){
 'use strict';
 const api={};
 api.id=()=>{if(root.crypto.randomUUID)return root.crypto.randomUUID();const bytes=root.crypto.getRandomValues(new Uint8Array(16));bytes[6]=(bytes[6]&15)|64;bytes[8]=(bytes[8]&63)|128;const hex=[...bytes].map(x=>x.toString(16).padStart(2,'0')).join('');return hex.slice(0,8)+'-'+hex.slice(8,12)+'-'+hex.slice(12,16)+'-'+hex.slice(16,20)+'-'+hex.slice(20);};
@@ -335,7 +337,7 @@ async function authenticate(ev){
 }
 async function refresh(sendPending=true){
   if(!data.session||navigator.onLine===false)return;const token=data.session.token;
-  try{const r=requireOk(await request('me',{token:data.session.token,deviceId:data.deviceId}));if(data.session?.token!==token)return;await save(current=>current.session?.token===token?({...current,session:{...current.session,employee:r.employee,iconKey:r.iconKey||current.session.iconKey||'',fromUrl:false},history:r.history||[]}):current);verified=true;available=true;syncUrl();}
+  try{const r=requireOk(await request('me',{token:data.session.token,deviceId:data.deviceId}));if(data.session?.token!==token)return;await save(current=>current.session?.token===token?({...current,session:{...current.session,employee:r.employee,year:r.year||null,iconKey:r.iconKey||current.session.iconKey||'',fromUrl:false},history:r.history||[]}):current);verified=true;available=true;syncUrl();}
   catch(err){if(['replaced','invalid-token','inactive'].includes(err.code)){
     if(data.session?.fromUrl&&!data.queue.length){await save(current=>({...current,session:null,history:[]}));authNotice='このアイコンは使えなくなっています（機種変更などのため）。Chromeでログインし、⚙からアイコンを作り直してください。（'+err.message+'）';syncUrl();}
     else{verified=false;notify(err.message,true);}
@@ -375,7 +377,7 @@ function startOptions(st){const list=[];for(let m=240;m<=780;m+=30)list.push(m);
 function startPicker(st,opts={}){const own=st!==startOf();return `<div class="work-start">${opts.noText?'':`<span class="start-text" ${own?'hidden':''}>始業 ${M.hm(startOf())}</span>`}<button type="button" class="soft-button" data-start-toggle ${own?'hidden':''}>今日は始業が違う</button><label id="start-wrap" ${own?'':'hidden'}>この日の始業<select name="start_time">${startOptions(st)}</select></label></div>`;}
 /** 退勤の確認・直す画面の中身。昼休憩は最初から基本時間を選んでおく */
 function workFields(p,opts={}){const rest=Number.isInteger(p.lunchMinutes)?p.lunchMinutes:defaultLunch,custom=rest!==0&&rest!==defaultLunch,confirmed=p.confirmedMinutes,st=Number.isInteger(opts.start)?opts.start:startOf();
-  return `<fieldset id="lunch-fields" class="lunch-fields"><legend>昼休憩</legend><div class="lunch-choices"><label><input type="radio" name="lunch" value="${defaultLunch}" ${rest===defaultLunch?'checked':''} required><span>あり<small>${defaultLunch}分</small></span></label><label><input type="radio" name="lunch" value="0" ${rest===0?'checked':''} required>なし</label><label><input type="radio" name="lunch" value="custom" ${custom?'checked':''} required>その他</label></div><label id="lunch-custom-wrap" ${custom?'':'hidden'}>昼休憩の分数<input name="lunch_custom" type="number" inputmode="numeric" min="0" max="1440" step="1" value="${custom?rest:30}"></label><p class="break-note">小休憩：午前・午後 各15分（8時間勤務の場合）</p></fieldset><section id="work-confirm" class="work-confirm"><h3>勤務時間</h3><p id="work-start-text" class="work-start-text"></p>${opts.editStart?startPicker(st):''}<p id="work-proposal" class="work-proposal"></p><div class="work-inputs"><label>時間<input name="confirmed_hours" type="number" inputmode="numeric" min="0" max="24" step="1" value="${Number.isInteger(confirmed)?Math.floor(confirmed/60):''}" required></label><label>分<select name="confirmed_minutes" required>${[...new Set([0,30,...(Number.isInteger(confirmed)?[confirmed%60]:[])])].sort((a,b)=>a-b).map(m=>`<option value="${m}" ${Number.isInteger(confirmed)&&confirmed%60===m?'selected':''}>${String(m).padStart(2,'0')}</option>`).join('')}</select></label></div><p class="fine-print">30分未満は切り捨てて入れています。違う場合は直してから保存してください（分は00か30）。</p></section>`;
+  return `<fieldset id="lunch-fields" class="lunch-fields"><legend>昼休憩</legend><div class="lunch-choices"><label><input type="radio" name="lunch" value="${defaultLunch}" ${rest===defaultLunch?'checked':''} required><span>あり<small>${defaultLunch}分</small></span></label><label><input type="radio" name="lunch" value="0" ${rest===0?'checked':''} required>なし</label><label><input type="radio" name="lunch" value="custom" ${custom?'checked':''} required>その他</label></div><label id="lunch-custom-wrap" ${custom?'':'hidden'}>昼休憩の分数<input name="lunch_custom" type="number" inputmode="numeric" min="0" max="1440" step="1" value="${custom?rest:30}"></label><p class="break-note">小休憩：午前・午後 各15分（8時間勤務の場合）</p></fieldset><section id="work-confirm" class="work-confirm"><h3>勤務時間</h3><p id="work-start-text" class="work-start-text"></p>${opts.editStart?startPicker(st):''}<div class="work-inputs"><label>時間<input name="confirmed_hours" type="number" inputmode="numeric" min="0" max="24" step="1" value="${Number.isInteger(confirmed)?Math.floor(confirmed/60):''}" required></label><label>分<select name="confirmed_minutes" required>${[...new Set([0,30,...(Number.isInteger(confirmed)?[confirmed%60]:[])])].sort((a,b)=>a-b).map(m=>`<option value="${m}" ${Number.isInteger(confirmed)&&confirmed%60===m?'selected':''}>${String(m).padStart(2,'0')}</option>`).join('')}</select></label></div><p id="work-proposal" class="work-proposal"></p><p class="fine-print">違う場合は直してから保存してください。</p></section>`;
 }
 function formWorkContext(form){const kind=form.elements.kind?.value||form.dataset.kind,at=form.elements.time?Date.parse(form.elements.date.value+'T'+form.elements.time.value+':00+09:00'):Number(form.dataset.at);return{kind,at};}
 /** 計算に使う始業：「今日は始業が違う」で入れた時刻、なければその日の始業 */
@@ -424,7 +426,7 @@ async function preparePunch(kind,opts={}){
   busy=true;render();
   /* 位置は裏で取りに行き、確認画面はすぐ出す。打刻の時刻は押した瞬間 */
   pending={id:M.id(),kind,at,createdAt:at,lat:null,lon:null,accuracy:null,originalId:opts.redo||'',note:opts.redo?'退勤を押し直した':''};
-  const myPending=pending;locating=position().then(fix=>{if(pending!==myPending)return fix;if(fix&&fix.lat!=null){pending.lat=fix.lat;pending.lon=fix.lon;pending.accuracy=fix.accuracy;}const el=$('place-note');if(el)el.innerHTML=fix&&fix.lat!=null?'押した場所も記録します。':fix?.denied?LOCATION_HELP:'場所を確認できませんでした。このまま記録できます。';return fix;});
+  const myPending=pending;locating=position().then(fix=>{if(pending!==myPending)return fix;if(fix&&fix.lat!=null){pending.lat=fix.lat;pending.lon=fix.lon;pending.accuracy=fix.accuracy;}const el=$('place-note');if(el)el.innerHTML=fix?.denied?LOCATION_HELP:'';return fix;});
   const rows=ownHistory(),eff=M.effective(rows),last=eff.at(-1),today=M.day(at),nowMin=Math.floor((at-Date.parse(today+'T00:00:00+09:00'))/60000);
   const same=false;
   let body='';
@@ -442,7 +444,7 @@ async function preparePunch(kind,opts={}){
     body=`<form id="in-form" data-start="${startOf()}">${ask}${startPicker(startOf(),{noText:true})}</form>`;
   }
   const head=kind==='出勤'?`<div class="punch-confirm">${M.time(at)}<span class="punch-start" id="in-start-label">（始業 ${M.hm(startOf())}）</span></div>`:`<div class="punch-confirm">${M.time(at)}</div>`;
-  modal(`<h2>${esc(kind)}を記録</h2><div class="confirm-name">${esc(data.session.employee.name)} さん</div>${head}${same?'<div class="error">さっきも同じ「'+esc(kind)+'」を押しています。押し間違いなら「戻る」を押してください。</div>':''}${body}<div id="place-note" class="place-note">場所を確認しています…</div><div id="dialog-error" class="error" hidden role="alert"></div>${closeButtons(kind==='退勤'?'この時間でOK':'この内容で記録','save-punch')}`);
+  modal(`<h2>${esc(kind)}を記録</h2><div class="confirm-name">${esc(data.session.employee.name)} さん</div>${head}${same?'<div class="error">さっきも同じ「'+esc(kind)+'」を押しています。押し間違いなら「戻る」を押してください。</div>':''}${body}<div id="place-note" class="place-note"></div><div id="dialog-error" class="error" hidden role="alert"></div>${closeButtons(kind==='退勤'?'この時間でOK':'この内容で記録','save-punch')}`);
   if(kind==='退勤')updateWorkForm($('punch-form'));else updateInForm($('in-form'));
 }
 async function savePunch(){
@@ -485,25 +487,34 @@ function dayPunches(date){const list=M.visible(ownHistory()).filter(p=>M.day(p.a
   return '<div class="day-punches"><h3>この日の打刻</h3>'+list.map(p=>`<div class="punch-row"><span class="punch-row-time">${M.time(p.at)}</span><span class="punch-row-kind">${esc(p.kind)}</span><span class="badge ${p.error||!p.sent?'review':''}">${p.error?'確認が必要':p.sent?(p.originalId?'直し済み':'送信済み'):'未送信'}</span>${p.error?`<p class="punch-row-note">${esc(p.error)}</p>`:''}${p.sent&&!p.error&&!isLocked(p.at)?`<button class="edit-button" data-correct="${esc(p.id)}">押し間違いを直す</button>`:''}</div>`).join('')+'</div>';}
 /** その日の勤務時間を直す（打刻の時刻はそのまま）。退勤・出勤を押し忘れた日は、その時刻を入れる。 */
 function editDay(date,opts={}){if(!data.session)return;const rows=ownHistory(),t=M.attendance(rows,date,startOf()),today=M.day(Date.now());
-  const head=`<h2>${md(date)}の時間</h2>${opts.notice?`<div class="notice-box">${esc(opts.notice)}</div>`:''}`;
+  const head=`<h2>${md(date)}の時間修正</h2>${opts.notice?`<div class="notice-box">${esc(opts.notice)}</div>`:''}`;
   const close='<div class="buttons"><button class="btn" data-close>戻る</button></div>',err='<div id="dialog-error" class="error" hidden role="alert"></div>';
   if(isLocked(Date.parse(date+'T12:00:00+09:00'))){modal(head+'<p>'+LOCK_MSG+'</p>'+close);return;}
   const dayRows=M.effective(rows).filter(p=>M.day(p.at)===date),ins=dayRows.filter(p=>p.kind==='出勤'),outs=dayRows.filter(p=>p.kind==='退勤');
   if(!ins.length&&outs.length===1){const out=outs[0],st=dayStart(null,out);
-    modal(head+`<p>退勤 ${M.time(out.at)}。出勤の記録がありません。出勤した時刻を入れてください。</p><form id="day-form" data-kind="退勤" data-mode="newin" data-at="${out.at}" data-exclude="${esc(out.id)}" data-start="${st}" data-manual="${Number.isInteger(out.confirmedMinutes)}"><input type="hidden" name="date" value="${date}"><label>何時に仕事を始めましたか？<select name="in_time">${halfHourOptions(240,Math.min(1410,Math.floor((Math.floor((out.at-Date.parse(date+'T00:00:00+09:00'))/60000)-30)/30)*30),startOf())}</select></label>${workFields(out,{start:st,editStart:true})}</form>${err}${closeButtons('この内容で保存','save-day')}`);
+    modal(head+`<p>退勤 ${M.time(out.at)}。出勤の記録がありません。出勤した時刻を入れてください。</p><form id="day-form" data-kind="退勤" data-mode="newin" data-at="${out.at}" data-exclude="${esc(out.id)}" data-start="${st}" data-manual="${Number.isInteger(out.confirmedMinutes)}" data-before="${out.confirmedMinutes??''}"><input type="hidden" name="date" value="${date}"><label>何時に仕事を始めましたか？<select name="in_time">${halfHourOptions(240,Math.min(1410,Math.floor((Math.floor((out.at-Date.parse(date+'T00:00:00+09:00'))/60000)-30)/30)*30),startOf())}</select></label>${workFields(out,{start:st,editStart:true})}</form>${err}<div id="day-confirm" class="day-confirm" hidden></div><div class="buttons" id="day-buttons"><button class="btn" data-close>戻る</button><button class="btn primary" data-action="day-review">内容確認</button></div>`);
     updateWorkForm($('day-form'));return;}
   if(t.status==='要確認'){modal(head+'<p>この日は出勤・退勤の組み合わせが合いません。管理者に伝えてください。</p>'+close);return;}
   if(!t.inRec){modal(head+'<p>この日の出勤・退勤の記録がありません。</p>'+close);return;}
   if(!t.outRec){
     if(date===today){modal(head+'<p>出勤 '+M.time(t.inRec.at)+'。勤務中です。退勤のときに時間を確認します。</p>'+close);return;}
     const st=dayStart(t.inRec,null);
-    modal(head+`<p>出勤 ${M.time(t.inRec.at)}。退勤の記録がありません。退勤した時刻を入れてください。</p><form id="day-form" data-kind="退勤" data-mode="new" data-start="${st}" data-manual="false"><input type="hidden" name="date" value="${date}"><label>何時に仕事を終えましたか？<select name="time">${halfHourOptions(Math.min(1410,Math.ceil((Math.floor((t.inRec.at-Date.parse(date+'T00:00:00+09:00'))/60000)+30)/30)*30),1410,Math.max(st+540,Math.ceil((Math.floor((t.inRec.at-Date.parse(date+'T00:00:00+09:00'))/60000)+30)/30)*30))}</select></label>${workFields({},{start:st,editStart:true})}</form>${err}${closeButtons('この内容で保存','save-day')}`);
+    modal(head+`<p>出勤 ${M.time(t.inRec.at)}。退勤の記録がありません。退勤した時刻を入れてください。</p><form id="day-form" data-kind="退勤" data-mode="new" data-start="${st}" data-manual="false"><input type="hidden" name="date" value="${date}"><label>何時に仕事を終えましたか？<select name="time">${halfHourOptions(Math.min(1410,Math.ceil((Math.floor((t.inRec.at-Date.parse(date+'T00:00:00+09:00'))/60000)+30)/30)*30),1410,Math.max(st+540,Math.ceil((Math.floor((t.inRec.at-Date.parse(date+'T00:00:00+09:00'))/60000)+30)/30)*30))}</select></label>${workFields({},{start:st,editStart:true})}</form>${err}<div id="day-confirm" class="day-confirm" hidden></div><div class="buttons" id="day-buttons"><button class="btn" data-close>戻る</button><button class="btn primary" data-action="day-review">内容確認</button></div>`);
     updateWorkForm($('day-form'));return;
   }
   const out=t.outRec,st=dayStart(t.inRec,out),manual=!opts.recalc&&Number.isInteger(out.confirmedMinutes);
-  modal(head+`<form id="day-form" data-kind="退勤" data-mode="fix" data-at="${out.at}" data-exclude="${esc(out.id)}" data-start="${st}" data-manual="${manual}">${workFields(out,{start:st,editStart:true})}</form>${err}${closeButtons('この内容で保存','save-day')}`);
+  modal(head+`<form id="day-form" data-kind="退勤" data-mode="fix" data-at="${out.at}" data-exclude="${esc(out.id)}" data-start="${st}" data-manual="${manual}" data-before="${out.confirmedMinutes??''}" data-before-lunch="${out.lunchMinutes??''}" data-before-start="${Number.isInteger(out.startMinutes)?out.startMinutes:''}">${workFields(out,{start:st,editStart:true})}</form>${err}<div id="day-confirm" class="day-confirm" hidden></div><div class="buttons" id="day-buttons"><button class="btn" data-close>戻る</button><button class="btn primary" data-action="day-review">内容確認</button></div>`);
   updateWorkForm($('day-form'));
 }
+/** 時間修正の確認：前の時間→新しい時間を見せてから保存する。何も変わっていなければ保存しない */
+function reviewDay(){const f=$('day-form');if(!f)return;const work=readWorkForm(f);if(!work)return;
+  const before=f.dataset.before===''||f.dataset.before===undefined?null:Number(f.dataset.before),after=work.confirmedMinutes,date=f.elements.date?.value||M.day(Number(f.dataset.at));
+  const same=f.dataset.mode==='fix'&&before===after&&String(work.lunchMinutes)===f.dataset.beforeLunch&&(f.dataset.beforeStart===''||Number(f.dataset.beforeStart)===work.startMinutes);
+  const box=$('day-confirm');
+  box.innerHTML=same?'<h3>内容の確認</h3><p class="big-note">変更はありません。</p>':`<h3>内容の確認</h3><p class="confirm-date">${md(date)}の勤務時間</p><p class="confirm-change">${before===null?'なし':M.duration(before)} → <strong>${M.duration(after)}</strong></p><p class="big-note">保存すると、管理者が内容を確認します。</p>`;
+  f.hidden=true;box.hidden=false;
+  $('day-buttons').innerHTML=`<button class="btn" data-action="day-back">戻る</button>${same?'':'<button class="btn primary" data-action="save-day">この内容で保存</button>'}`;}
+function backDay(){const f=$('day-form');if(!f)return;f.hidden=false;$('day-confirm').hidden=true;$('day-buttons').innerHTML='<button class="btn" data-close>戻る</button><button class="btn primary" data-action="day-review">内容確認</button>';}
 async function saveDay(){const f=$('day-form');if(!f)return;const work=readWorkForm(f);if(!work)return;const date=f.elements.date?.value;
   if(f.dataset.mode==='new'){const at=Date.parse(date+'T'+f.elements.time.value+':00+09:00');if(!Number.isFinite(at))throw Error('退勤した時刻を入れてください。');if(at>Date.now())throw Error('これからの時刻は入れられません。');if(isLocked(at))throw Error(LOCK_MSG);
     if(!M.checkoutIn(ownHistory(),at))throw Error('出勤より後の時刻を入れてください。');
@@ -524,7 +535,8 @@ function renderDays(){const first=monthOf(daysMonth),mo=M.month(ownHistory(),fir
       const lone=t.status==='要確認'?onlyOut(ownHistory(),t.date):null;
       if(t.adminFixed)tags.push('<span class="tag">管理者修正</span>');else if(t.changed)tags.push('<span class="tag">本人変更</span>');if(lone)tags.push('<span class="tag warn">出勤なし</span>');else if(t.status==='要確認'||t.status==='時間を確認')tags.push('<span class="tag warn">'+(t.status==='要確認'?'確認が必要':'時間を入れる')+'</span>');if(t.status==='勤務中')tags.push(t.date===today?'<span class="tag">勤務中</span>':'<span class="tag warn">退勤なし</span>');if(t.pending)tags.push('<span class="tag warn">未送信</span>');
       return `<button class="day-row" data-day="${t.date}"><span class="day-date">${md(t.date)}</span><span class="day-times">${t.inRec?M.time(t.inRec.at):'—'} – ${t.outRec?M.time(t.outRec.at):lone?M.time(lone.at):'—'}${tags.length?'<br>'+tags.join(''):''}</span><strong>${ok?hm(M.floor30(t.confirmedMinutes)):'—'}</strong><span class="chev">›</span></button>`;}).join(''):'<div class="empty">この月の記録はまだありません。</div>';
-  $('days-total').innerHTML=hm(mo.shownMinutes);
+  $('days-total').innerHTML=hm(mo.shownMinutes);$('days-total-label').textContent=Number(first.slice(5,7))+'月の合計';
+  /* 年間の合計（常勤・常勤バイトだけ。保存先で1年分を数える） */const yr=data.session?.year;$('year-total-box').hidden=!yr;if(yr){$('year-total-label').textContent=yr.year+'年の合計';$('year-total').innerHTML=hm(yr.minutes);}
   $('days-note').hidden=true;void `30分未満は切り捨てて表示しています。${mo.days}日`+(mo.check+noOut?`。確認が必要な日 ${mo.check+noOut}日`:'')+(isLocked(Date.parse(first+'T12:00:00+09:00'))?'。この月は締めました。':'');
 }
 /* ===== 管理者モード（従業員シートの権限が「管理者」の人だけ） ===== */
@@ -620,6 +632,7 @@ document.addEventListener('click',async ev=>{const b=ev.target.closest('button')
   if(b.id==='settings')settings();if(b.dataset.day){if(dialog.open)dialog.close();editDay(b.dataset.day);}if(b.id==='days-open'){view='days';daysMonth=0;try{history.pushState({tcDays:1},'');}catch(e){}render();window.scrollTo(0,0);}if(b.id==='days-back'){if(history.state?.tcDays){history.back();}else{view='main';render();window.scrollTo(0,0);}}if(b.dataset.month!==undefined){daysMonth=Number(b.dataset.month);renderDays();}
   if(b.dataset.startToggle!==undefined){const f=b.closest('form');b.hidden=true;const st=f.querySelector('.start-text');if(st)st.hidden=true;f.querySelector('#start-wrap').hidden=false;if(f.id!=='in-form'){f.dataset.manual='false';updateWorkForm(f);}else updateInForm(f);f.elements.start_time.focus();}if(b.id==='sync')flush();if(b.dataset.close!==undefined)dialog.close();if(b.dataset.correct)correct(b.dataset.correct);
   try{
+    if(b.dataset.action==='day-review')reviewDay();if(b.dataset.action==='day-back')backDay();
     if(b.dataset.action==='save-day')await saveDay();
     if(b.dataset.action==='admin-save')await adminSaveDay(false);
     if(b.dataset.adminCancel!==undefined){if(b.dataset.confirmed){await adminSaveDay(true);}else{b.dataset.confirmed='1';b.textContent='もう一度押すと「勤務なし」にします';}}
@@ -630,7 +643,7 @@ document.addEventListener('click',async ev=>{const b=ev.target.closest('button')
 });
 /* 日別の時間ページは、スライドやAndroidの戻るボタンでも打刻の画面へ戻れるようにする */window.addEventListener('popstate',()=>{if(view==='admin'&&!history.state?.tcAdmin){view='main';if(dialog.open)dialog.close();render();window.scrollTo(0,0);return;}if(view==='days'&&!history.state?.tcDays){view='main';if(dialog.open)dialog.close();render();window.scrollTo(0,0);}});
 $('auth-form').addEventListener('submit',authenticate);$('history-date').value=M.day(Date.now());/* iPhoneの日付選択の「リセット」で空になったら今日に戻す（空のままだと履歴が全部消えたように見える） */const historyDay=()=>{if(!$('history-date').value)$('history-date').value=M.day(Date.now());render();};$('history-date').addEventListener('change',historyDay);$('history-date').addEventListener('input',historyDay);$('history-date').addEventListener('blur',historyDay);
-document.addEventListener('submit',async ev=>{if(!['punch-form','correction-form','day-form'].includes(ev.target.id))return;ev.preventDefault();if(ev.target.id==='day-form'){try{await saveDay();}catch(err){$('dialog-error').hidden=false;$('dialog-error').textContent=err.message;}return;}try{if(ev.target.id==='punch-form'&&pending){const work=readWorkForm(ev.target);if(work)await persistRecord({...pending,...work});}else if(ev.target.id==='correction-form'){await saveCorrection(ev.target.dataset.exclude);}}catch(err){$('dialog-error').hidden=false;$('dialog-error').textContent=err.message;}});
+document.addEventListener('submit',async ev=>{if(!['punch-form','correction-form','day-form'].includes(ev.target.id))return;ev.preventDefault();if(ev.target.id==='day-form'){try{reviewDay();}catch(err){$('dialog-error').hidden=false;$('dialog-error').textContent=err.message;}return;}try{if(ev.target.id==='punch-form'&&pending){const work=readWorkForm(ev.target);if(work)await persistRecord({...pending,...work});}else if(ev.target.id==='correction-form'){await saveCorrection(ev.target.dataset.exclude);}}catch(err){$('dialog-error').hidden=false;$('dialog-error').textContent=err.message;}});
 document.addEventListener('input',ev=>{const form=ev.target.closest('form');if(!form||!['punch-form','correction-form','day-form'].includes(form.id))return;if(['start_time','time','in_time'].includes(ev.target.name)&&form.id==='day-form'||ev.target.name==='start_time'){form.dataset.manual='false';updateWorkForm(form);}if(['confirmed_hours','confirmed_minutes'].includes(ev.target.name))form.dataset.manual='true';if(ev.target.name==='lunch_custom'){form.dataset.manual='false';updateWorkForm(form);}});
 document.addEventListener('change',ev=>{const form=ev.target.closest('form');if(form?.id==='in-form'){updateInForm(form);return;}if(form?.id==='admin-form'){if(['a_hours','a_minutes'].includes(ev.target.name))form.dataset.manual='true';else{form.dataset.manual='false';updateAdminForm(form);}return;}if(form&&['punch-form','correction-form','day-form'].includes(form.id)&&['lunch','time','date','kind','start_time','in_time'].includes(ev.target.name)){form.dataset.manual='false';updateWorkForm(form);}});
 dialog.addEventListener('close',()=>{pending=null;busy=false;render();});
