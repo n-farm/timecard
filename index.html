@@ -125,7 +125,7 @@ dialog label select{display:block;width:100%;margin-top:4px;font-size:17px;paddi
     <p class="fine-print" id="days-note"></p>
   </div>
   
-</main><dialog id="modal"><div id="modal-body"></div></dialog><script>window.P02_WEB={"apiUrl":"https://script.google.com/macros/s/AKfycby-w8l6me8DyQfZX5PXZDLk5PXUTVT-BY3xomKUANceDVHtCn_QrUrFfLp6pu7iZdF1tg/exec","version":"20261106.w23"};</script><script>(function(root){
+</main><dialog id="modal"><div id="modal-body"></div></dialog><script>window.P02_WEB={"apiUrl":"https://script.google.com/macros/s/AKfycby-w8l6me8DyQfZX5PXZDLk5PXUTVT-BY3xomKUANceDVHtCn_QrUrFfLp6pu7iZdF1tg/exec","version":"20261106.w24"};</script><script>(function(root){
 'use strict';
 const api={};
 api.id=()=>{if(root.crypto.randomUUID)return root.crypto.randomUUID();const bytes=root.crypto.getRandomValues(new Uint8Array(16));bytes[6]=(bytes[6]&15)|64;bytes[8]=(bytes[8]&63)|128;const hex=[...bytes].map(x=>x.toString(16).padStart(2,'0')).join('');return hex.slice(0,8)+'-'+hex.slice(8,12)+'-'+hex.slice(12,16)+'-'+hex.slice(16,20)+'-'+hex.slice(20);};
@@ -423,7 +423,7 @@ const timeValue=minutes=>M.hm(minutes).padStart(5,'0');
 /** 30分ごとの時刻の選択肢（値は 08:00 の形） */
 function halfHourOptions(from,to,selected,extra=''){let h=extra;for(let m=from;m<=to;m+=30)h+=`<option value="${timeValue(m)}" ${m===selected?'selected':''}>${M.hm(m)}</option>`;return h;}
 /** 始業の選択肢は30分ごと（4:00〜13:00）。以前の記録などで半端な時刻ならそれも残す */
-function startOptions(st){const list=[];for(let m=240;m<=780;m+=30)list.push(m);if(!list.includes(st))list.push(st);return list.sort((a,b)=>a-b).map(m=>`<option value="${M.hm(m)}" ${m===st?'selected':''}>${M.hm(m)}</option>`).join('');}
+function startOptions(st){const list=[];for(let m=SELF_EARLIEST;m<=780;m+=30)list.push(m);if(!list.includes(st))list.push(st);return list.sort((a,b)=>a-b).map(m=>`<option value="${M.hm(m)}" ${m===st?'selected':''}>${M.hm(m)}</option>`).join('');}
 function startPicker(st,opts={}){const own=st!==startOf();return `<div class="work-start">${opts.noText?'':`<span class="start-text" ${own?'hidden':''}>始業 ${M.hm(startOf())}</span>`}<button type="button" class="soft-button" data-start-toggle ${own?'hidden':''}>今日は始業が違う</button><label id="start-wrap" ${own?'':'hidden'}>この日の始業<select name="start_time">${startOptions(st)}</select></label></div>`;}
 /** 退勤の確認・直す画面の中身。昼休憩は最初から基本時間を選んでおく */
 function workFields(p,opts={}){const rest=Number.isInteger(p.lunchMinutes)?p.lunchMinutes:defaultLunch,custom=rest!==0&&rest!==defaultLunch,confirmed=p.confirmedMinutes,st=Number.isInteger(opts.start)?opts.start:startOf();
@@ -431,7 +431,10 @@ function workFields(p,opts={}){const rest=Number.isInteger(p.lunchMinutes)?p.lun
 }
 function formWorkContext(form){const kind=form.elements.kind?.value||form.dataset.kind,ov=form.elements.out_time?.value,at=ov?Date.parse(form.elements.date.value+'T'+ov+':00+09:00'):form.elements.time?Date.parse(form.elements.date.value+'T'+form.elements.time.value+':00+09:00'):Number(form.dataset.at);return{kind,at};}
 /** 計算に使う始業：「今日は始業が違う」で入れた時刻、なければその日の始業 */
-function formStart(form){const wrap=form.querySelector('#start-wrap'),v=form.elements.start_time;if(wrap&&!wrap.hidden&&v){const m=M.parseHm(v.value);if(m!==null)return m;}const d=Number(form.dataset.start);return Number.isInteger(d)&&form.dataset.start!==''?d:startOf();}
+function formStart(form){const wrap=form.querySelector('#start-wrap'),v=form.elements.start_time;if(wrap&&!wrap.hidden&&v){const m=M.parseHm(v.value);if(m!==null)return m;}const d0=Number(form.dataset.start),d=Number.isInteger(d0)&&form.dataset.start!==''?d0:startOf();
+  /* 退勤の画面は始業の欄を出さない。始業が押した時刻より後なら、始めた時刻を始業として数える */
+  if(form.id==='punch-form'&&!wrap&&d>nowMinutes(Number(form.dataset.at))){const m=form.elements.in_time?.value?M.parseHm(form.elements.in_time.value):null;if(m!==null)return m;}
+  return d;}
 /** 出勤（押し忘れの入力欄があればそれ）から退勤までの時間。始業より前は数えない */
 function workSpan(form){const c=formWorkContext(form);let inAt=null;
   if(form.elements.in_time){const v=form.elements.in_time.value;inAt=v?Date.parse(form.elements.date.value+'T'+v+':00+09:00'):null;}
@@ -448,7 +451,7 @@ function updateWorkForm(form){const w=workSpan(form),isOut=w.kind==='退勤',fie
   if(w.span===null){message.textContent=form.elements.in_time?(form.elements.in_time.value&&form.elements.out_time?'始めた時刻は、終えた時刻より前にしてください。':'仕事を始めた時刻を選んでください。'):'出勤の記録が見つかりません。勤務時間を選んでください。';if(form.elements.in_time&&form.dataset.manual!=='true'){hours.value='';}return;}
   if(rest>w.raw){message.textContent='昼休憩が勤務時間より長くなっています。';return;}
   const calculated=Math.max(0,w.span-rest),shown=M.floor30(calculated);
-  message.textContent='計算：'+M.duration(calculated)+(shown!==calculated?' → '+M.duration(shown)+'（30分未満切り捨て）':'')+(form.dataset.manual==='true'&&Number(hours.value)*60+Number(minutes.value)!==shown?'。下の時間は前に入れたままです。':'');
+  message.textContent=form.id==='punch-form'?'':'計算：'+M.duration(calculated)+(shown!==calculated?' → '+M.duration(shown)+'（30分未満切り捨て）':'')+(form.dataset.manual==='true'&&Number(hours.value)*60+Number(minutes.value)!==shown?'。下の時間は前に入れたままです。':'');
   if(form.dataset.manual!=='true'){hours.value=Math.floor(shown/60);minutes.value=shown%60;}
 }
 function readWorkForm(form){updateWorkForm(form);if(!form.reportValidity())return null;const w=workSpan(form);if(w.kind!=='退勤')return{};
@@ -460,7 +463,7 @@ function readWorkForm(form){updateWorkForm(form);if(!form.reportValidity())retur
   if(!isTest()){const date=form.elements.date?.value||M.day(w.at),now=Date.now();
     if(Number.isFinite(w.at)&&w.at>now+60000)throw Error('これからの時刻は入れられません。');
     if(w.inAt!==null&&w.inAt>now)throw Error('これからの時刻は入れられません。');
-    if(date===M.day(now)&&Number.isInteger(w.st)&&w.st>nowMinutes(now))throw Error('始業がまだ来ていません（'+M.hm(w.st)+'）。この日の始業を選び直してください。');}
+    if(form.querySelector('#start-wrap')&&date===M.day(now)&&Number.isInteger(w.st)&&w.st>nowMinutes(now))throw Error('始業がまだ来ていません（'+M.hm(w.st)+'）。この日の始業を選び直してください。');}
   const calc=w.span===null?null:Math.max(0,w.span-rest);
   return{lunchMinutes:rest,confirmedMinutes:confirmed,startMinutes:w.st,...(calc!==null&&confirmed!==calc&&confirmed!==M.floor30(calc)?{selfChanged:true}:{})};
 }
@@ -493,7 +496,7 @@ async function preparePunch(kind,opts={}){
   const myPending=pending;locating=position().then(fix=>{if(pending!==myPending)return fix;if(fix&&fix.lat!=null){pending.lat=fix.lat;pending.lon=fix.lon;pending.accuracy=fix.accuracy;}pending.located=true;placeNote(fix);return fix;});
   const def=st>=from&&st<=last?st:-1;
   const ask=inRec?'':`<div class="ask-box"><label>何時に仕事を始めましたか？<select name="in_time" required>${halfHourOptions(from,last,def,'<option value="" '+(def<0?'selected':'')+'>選んでください</option>')}</select></label></div>`;
-  const body=`<form id="punch-form" data-kind="退勤" data-at="${at}" data-start="${st}" data-noin="${inRec?'':1}" data-exclude="${esc(opts.redo||'')}"><input type="hidden" name="date" value="${today}">${ask}${workFields(pending,{start:st,editStart:true})}</form>`;
+  const body=`<form id="punch-form" data-kind="退勤" data-at="${at}" data-start="${st}" data-noin="${inRec?'':1}" data-exclude="${esc(opts.redo||'')}"><input type="hidden" name="date" value="${today}">${ask}${workFields(pending,{start:st})}</form>`;
   modal(`<h2>退勤を記録</h2><div class="confirm-name">${esc(data.session.employee.name)} さん</div><div class="punch-confirm">${M.time(at)}</div>${inRec?`<p class="fine-print">出勤 ${M.time(inRec.at)}</p>`:''}${body}<div id="place-note" class="place-note"><p class="fine-print">場所を確認しています…</p></div><div id="dialog-error" class="error" hidden role="alert"></div>${closeButtons('この内容で記録','save-punch')}`);
   updateWorkForm($('punch-form'));
   /* 始業は押したときに保存先から取り直す（今日だけの始業などをアプリを閉じずに反映）。まだ触っていなければ選び直す */
@@ -732,7 +735,7 @@ function adminSettings(){const d=admin.data;if(!d)return;const ds=Number.isInteg
   const own=e=>`<label class="admin-emp-start">${esc(e.name)}<select name="s_${esc(e.id)}" data-emp-start="${esc(e.id)}"><option value="" ${Number.isInteger(e.ownStart)?'':'selected'}>全員共通（${M.hm(ds)}）</option>${(()=>{const l=[];for(let m=240;m<=780;m+=30)l.push(m);if(Number.isInteger(e.ownStart)&&!l.includes(e.ownStart))l.push(e.ownStart);return l.sort((x,y)=>x-y).map(m=>`<option value="${M.hm(m)}" ${m===e.ownStart?'selected':''}>${M.hm(m)}</option>`).join('');})()}</select></label>`;
   modal(`<h2>始業・昼休憩・小休憩</h2><form id="admin-settings-form"><label>始業（全員共通）<select name="d_start">${startOptions(ds)}</select></label><label>昼休憩の基本<select name="d_lunch">${lunchOpts.map(m=>`<option value="${m}" ${m===dl?'selected':''}>${m}分</option>`).join('')}</select></label><label>小休憩の文言（退勤の画面に出します。空にすると出しません）<textarea name="d_note" rows="2" maxlength="100">${esc(d.breakNote??breakNote)}</textarea></label><h3 class="admin-h">人ごとの始業</h3><p class="fine-print">その人だけ違う始業にするときに選びます。</p>${emps.map(own).join('')}<p class="fine-print">これから押す打刻に使います。保存済みの記録は変わりません。</p>${todayFields(d,emps)}</form><div id="dialog-error" class="error" hidden role="alert"></div><div class="buttons"><button class="btn" data-close>戻る</button><button class="btn primary" data-action="admin-settings-save">この内容で保存</button></div>`);}
 /** 今日だけの始業（全員・人ごと）。翌日には自動で元に戻る */
-function todayFields(d,emps){const ts=d.todayStart||{all:null,emps:{}},today=M.day(Date.now()),opts=sel=>{let h='<option value="">いつも通り</option>';for(let m=240;m<=840;m+=30)h+=`<option value="${M.hm(m)}" ${m===sel?'selected':''}>${M.hm(m)}</option>`;if(Number.isInteger(sel)&&(sel<240||sel>840||sel%30))h+=`<option value="${M.hm(sel)}" selected>${M.hm(sel)}</option>`;return h;};
+function todayFields(d,emps){const ts=d.todayStart||{all:null,emps:{}},today=M.day(Date.now()),opts=sel=>{let h='<option value="">いつも通り</option>';for(let m=SELF_EARLIEST;m<=840;m+=30)h+=`<option value="${M.hm(m)}" ${m===sel?'selected':''}>${M.hm(m)}</option>`;if(Number.isInteger(sel)&&(sel<SELF_EARLIEST||sel>840||sel%30))h+=`<option value="${M.hm(sel)}" selected>${M.hm(sel)}</option>`;return h;};
   return `<h3 class="admin-h">今日だけの始業（${md(today)}）</h3><p class="fine-print">急に始業が変わった日に使います。明日には自動で元に戻ります。退勤のときの「始めた時刻」の最初の値になります。</p><label class="today-start">全員<select name="t_all">${opts(ts.all)}</select></label>${emps.map(e=>`<label class="admin-emp-start">${esc(e.name)}<select data-today-start="${esc(e.id)}">${opts(Number.isInteger(ts.emps?.[e.id])?ts.emps[e.id]:null)}</select></label>`).join('')}`;}
 async function adminSettingsSave(){const f=$('admin-settings-form');if(!f)return;const toMin=v=>{const m=/^(\d{1,2}):(\d{2})$/.exec(v||'');return m?Number(m[1])*60+Number(m[2]):null;};
   const starts={};f.querySelectorAll('[data-emp-start]').forEach(s=>{const e=adminEmp(s.dataset.empStart),v=s.value===''?null:toMin(s.value);if(e&&(Number.isInteger(e.ownStart)?e.ownStart:null)!==v)starts[e.id]=v;});
