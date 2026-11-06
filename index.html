@@ -145,7 +145,7 @@ dialog label select{display:block;width:100%;margin-top:4px;font-size:17px;paddi
     <p class="fine-print" id="days-note"></p>
   </div>
   
-</main><dialog id="modal"><div id="modal-body"></div></dialog><script>window.P02_WEB={"apiUrl":"https://script.google.com/macros/s/AKfycby-w8l6me8DyQfZX5PXZDLk5PXUTVT-BY3xomKUANceDVHtCn_QrUrFfLp6pu7iZdF1tg/exec","version":"20261106.w34"};</script><script>(function(root){
+</main><dialog id="modal"><div id="modal-body"></div></dialog><script>window.P02_WEB={"apiUrl":"https://script.google.com/macros/s/AKfycby-w8l6me8DyQfZX5PXZDLk5PXUTVT-BY3xomKUANceDVHtCn_QrUrFfLp6pu7iZdF1tg/exec","version":"20261106.w35"};</script><script>(function(root){
 'use strict';
 const api={};
 api.id=()=>{if(root.crypto.randomUUID)return root.crypto.randomUUID();const bytes=root.crypto.getRandomValues(new Uint8Array(16));bytes[6]=(bytes[6]&15)|64;bytes[8]=(bytes[8]&63)|128;const hex=[...bytes].map(x=>x.toString(16).padStart(2,'0')).join('');return hex.slice(0,8)+'-'+hex.slice(8,12)+'-'+hex.slice(12,16)+'-'+hex.slice(16,20)+'-'+hex.slice(20);};
@@ -807,9 +807,11 @@ async function adminEmpStatus(b){if(b.dataset.empBulk!==undefined&&!b.dataset.co
   let r;try{r=requireOk(await request('adminEmpStatus',{token:data.session.token,deviceId:data.deviceId,ym:monthOf(0).slice(0,7),ids,status:b.dataset.empStatus}));}catch(err){b.disabled=false;b.textContent=label;throw err;}
   admin.data=r;renderAdmin();adminEmps();notify(b.dataset.empStatus==='無効'?'外しました。':'戻しました。',false,3000);}
 /** パスワードを変える（本人。管理者も同じ） */
-function passwordForm(){modal(`<h2>パスワードを変える</h2><form id="password-form"><label for="pw-now">今のパスワード</label><input id="pw-now" type="password" inputmode="numeric" autocomplete="current-password" minlength="6" maxlength="128" required><label for="pw-new">新しいパスワード（数字6桁）</label><input id="pw-new" type="password" inputmode="numeric" autocomplete="new-password" minlength="6" maxlength="6" required><label for="pw-again">新しいパスワードをもう一度</label><input id="pw-again" type="password" inputmode="numeric" autocomplete="new-password" minlength="6" maxlength="6" required></form><p class="fine-print">次からは新しいパスワードでログインします。このスマホはログインしたままです。</p><div id="dialog-error" class="error" hidden role="alert"></div>${closeButtons('変える','password-save')}`);}
+/** パスワードを変える：従業員は数字6桁。管理者だけは8文字以上の英数字・記号も使える（数字6桁も可） */
+function passwordForm(){const adm=isAdmin(),now=adm?'text':'numeric',nw=adm?'type="password" autocomplete="new-password" minlength="6" maxlength="128"':'type="password" inputmode="numeric" autocomplete="new-password" minlength="6" maxlength="6"';
+  modal(`<h2>パスワードを変える</h2><form id="password-form"><label for="pw-now">今のパスワード</label><input id="pw-now" type="password" ${adm?'':'inputmode="numeric"'} autocomplete="current-password" minlength="6" maxlength="128" required><label for="pw-new">新しいパスワード（${adm?'数字6桁、または8文字以上の英数字・記号':'数字6桁'}）</label><input id="pw-new" ${nw} required><label for="pw-again">新しいパスワードをもう一度</label><input id="pw-again" ${nw} required></form><p class="fine-print">次からは新しいパスワードでログインします。このスマホはログインしたままです。${adm?'英字や記号を入れた時は、ログイン画面の「英字を含むパスワードの人はこちら」を押してから入れます。':''}</p><div id="dialog-error" class="error" hidden role="alert"></div>${closeButtons('変える','password-save')}`);}
 async function passwordSave(){const now=$('pw-now').value,next=$('pw-new').value;
-  if(next!==$('pw-again').value)throw Error('新しいパスワードの確認が一致しません。');if(!/^\d{6}$/.test(next))throw Error('新しいパスワードは数字6桁にしてください。');if(now===next)throw Error('今と違うパスワードにしてください。');
+  if(next!==$('pw-again').value)throw Error('新しいパスワードの確認が一致しません。');if(isAdmin()?!(/^\d{6}$/.test(next)||(next.length>=8&&next.length<=128&&/^[\x21-\x7e]+$/.test(next))):!/^\d{6}$/.test(next))throw Error(isAdmin()?'新しいパスワードは数字6桁か、8文字以上の英数字・記号にしてください（空白・全角は使えません）。':'新しいパスワードは数字6桁にしてください。');if(now===next)throw Error('今と違うパスワードにしてください。');
   const btn=document.querySelector('dialog [data-action=password-save]');if(btn){btn.disabled=true;btn.textContent='確認しています…';}
   try{const c=requireOk(await request('challenge',{name:data.session.employee.name})),verifier=await M.password(now,c.salt,c.iterations),newVerifier=await M.password(next,c.salt,c.iterations);
     requireOk(await request('changePassword',{token:data.session.token,deviceId:data.deviceId,verifier,newVerifier}));}
