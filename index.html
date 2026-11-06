@@ -141,7 +141,7 @@ dialog label select{display:block;width:100%;margin-top:4px;font-size:17px;paddi
     <p class="fine-print" id="days-note"></p>
   </div>
   
-</main><dialog id="modal"><div id="modal-body"></div></dialog><script>window.P02_WEB={"apiUrl":"https://script.google.com/macros/s/AKfycby-w8l6me8DyQfZX5PXZDLk5PXUTVT-BY3xomKUANceDVHtCn_QrUrFfLp6pu7iZdF1tg/exec","version":"20261106.w32"};</script><script>(function(root){
+</main><dialog id="modal"><div id="modal-body"></div></dialog><script>window.P02_WEB={"apiUrl":"https://script.google.com/macros/s/AKfycby-w8l6me8DyQfZX5PXZDLk5PXUTVT-BY3xomKUANceDVHtCn_QrUrFfLp6pu7iZdF1tg/exec","version":"20261106.w33"};</script><script>(function(root){
 'use strict';
 const api={};
 api.id=()=>{if(root.crypto.randomUUID)return root.crypto.randomUUID();const bytes=root.crypto.getRandomValues(new Uint8Array(16));bytes[6]=(bytes[6]&15)|64;bytes[8]=(bytes[8]&63)|128;const hex=[...bytes].map(x=>x.toString(16).padStart(2,'0')).join('');return hex.slice(0,8)+'-'+hex.slice(8,12)+'-'+hex.slice(12,16)+'-'+hex.slice(16,20)+'-'+hex.slice(20);};
@@ -346,11 +346,11 @@ function request(action,body={}){
     const ctrl=new AbortController(),timer=setTimeout(()=>ctrl.abort(),30000);
     return fetch(WEB.apiUrl,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload),signal:ctrl.signal,redirect:'follow'})
       .then(r=>{if(!r.ok)throw Error('通信できませんでした。再送してください。');return r.json();})
-      .catch(err=>{throw Error(err.name==='AbortError'?'応答を確認できませんでした。記録は端末に残しています。':'通信できませんでした。電波を確認して、もう一度お試しください。');})
+      .catch(err=>{throw Error(err.name==='AbortError'?'応答を確認できませんでした。あとで自動で送ります。':'通信できませんでした。電波を確認して、もう一度お試しください。');})
       .finally(()=>clearTimeout(timer));
   }
   if(!window.google?.script?.run)return Promise.reject(Error('Googleとの接続設定がまだありません。'));
-  return new Promise((resolve,reject)=>{let settled=false;const timeout=setTimeout(()=>{settled=true;reject(Error('応答を確認できませんでした。記録は端末に残しています。'));},30000);
+  return new Promise((resolve,reject)=>{let settled=false;const timeout=setTimeout(()=>{settled=true;reject(Error('応答を確認できませんでした。あとで自動で送ります。'));},30000);
     google.script.run.withSuccessHandler(result=>{if(settled)return;settled=true;clearTimeout(timeout);resolve(result);}).withFailureHandler(()=>{if(settled)return;settled=true;clearTimeout(timeout);reject(Error('通信できませんでした。再送してください。'));}).timecardRequest(payload);
   });
 }
