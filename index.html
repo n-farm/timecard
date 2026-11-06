@@ -102,6 +102,13 @@ dialog label select{display:block;width:100%;margin-top:4px;font-size:17px;paddi
 .year-cats{display:flex;flex-wrap:wrap;gap:8px 18px;margin:6px 0 4px}
 .year-cats .check{display:flex;align-items:center;gap:6px;font-size:16px}
 .year-cats input{width:20px;height:20px}
+.grid-order{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:6px 0}
+.grid-order span{font-size:13px;color:#5b6b62;margin-right:2px}
+.grid-order .chip{border:1px solid #c9d3cb;background:#fff;border-radius:999px;padding:5px 12px;font-size:14px}
+.grid-order .chip.on{background:var(--green);border-color:var(--green);color:#fff}
+.cat-select{display:block;margin-top:4px;font-size:14px;padding:4px 6px;border-radius:8px;border:1px solid #c9d3cb;background:#fff}
+.cat-missing{background:#fbf3e4;color:#6f4f22;border-radius:10px;padding:8px 12px;margin:10px 0;font-size:14px}
+.cat-missing .text-button{font-size:14px;margin-left:4px}
 </style></head><body>
 <main class="app">
   <header class="header"><button id="home-link" class="brand" aria-label="最初の画面へ"><span class="brand-icon">◷</span><span><span id="brand-title">農園出勤簿</span><small id="brand-sub">FARM ATTENDANCE BOOK</small></span></button><button id="settings" class="icon-button" aria-label="保存・アカウントの設定">⚙</button></header>
@@ -145,7 +152,7 @@ dialog label select{display:block;width:100%;margin-top:4px;font-size:17px;paddi
     <p class="fine-print" id="days-note"></p>
   </div>
   
-</main><dialog id="modal"><div id="modal-body"></div></dialog><script>window.P02_WEB={"apiUrl":"https://script.google.com/macros/s/AKfycby-w8l6me8DyQfZX5PXZDLk5PXUTVT-BY3xomKUANceDVHtCn_QrUrFfLp6pu7iZdF1tg/exec","version":"20261106.w35"};</script><script>(function(root){
+</main><dialog id="modal"><div id="modal-body"></div></dialog><script>window.P02_WEB={"apiUrl":"https://script.google.com/macros/s/AKfycby-w8l6me8DyQfZX5PXZDLk5PXUTVT-BY3xomKUANceDVHtCn_QrUrFfLp6pu7iZdF1tg/exec","version":"20261106.w36"};</script><script>(function(root){
 'use strict';
 const api={};
 api.id=()=>{if(root.crypto.randomUUID)return root.crypto.randomUUID();const bytes=root.crypto.getRandomValues(new Uint8Array(16));bytes[6]=(bytes[6]&15)|64;bytes[8]=(bytes[8]&63)|128;const hex=[...bytes].map(x=>x.toString(16).padStart(2,'0')).join('');return hex.slice(0,8)+'-'+hex.slice(8,12)+'-'+hex.slice(12,16)+'-'+hex.slice(16,20)+'-'+hex.slice(20);};
@@ -580,7 +587,7 @@ function editDay(date,opts={}){editDayForm(date,opts);if(!data.session||!dialog.
   const dayRows=M.effective(ownHistory()).filter(p=>M.day(p.at)===date);if(!dayRows.length)return;
   const bs=[...$('modal-body').querySelectorAll('.buttons')].at(-1);if(!bs)return;
   /* 管理者が直した日は、本人が取り消さず管理者に伝えてもらう */
-  if(dayRows.some(p=>/管理者/.test(p.judge||''))){bs.insertAdjacentHTML('beforebegin','<p class="fine-print">この日は管理者が直しました。出勤していなかったときは、管理者に伝えてください。</p>');return;}
+  if(dayRows.some(p=>/管理者修正|管理者取消/.test(p.judge||''))){bs.insertAdjacentHTML('beforebegin','<p class="fine-print">この日は管理者が直しました。出勤していなかったときは、管理者に伝えてください。</p>');return;}
   bs.insertAdjacentHTML('beforebegin',`<button type="button" class="soft-button danger-soft" data-day-cancel="${date}">この日は出勤していない（記録を取り消す）</button><p class="fine-print">間違えて出勤を押したときなどに使います。取り消すと、管理者が内容を確認します。</p>`);}
 async function cancelDay(date){const rows=M.effective(ownHistory()).filter(p=>M.day(p.at)===date);if(!rows.length){dialog.close();return;}
   if(rows.some(p=>isLocked(p.at)))throw Error(LOCK_MSG);const now=Date.now();
@@ -684,7 +691,8 @@ function adminDay(emp,date){const recs=adminRecs(emp.id),t=M.attendance(recs,dat
   if(!touched){if(dayRecs.some(p=>/後から/.test(p.judge||'')))reasons.push('後から入力');if(placeRecs.length)reasons.push('場所の外');if(t.changed||dayRecs.some(p=>/本人/.test(p.judge||'')))reasons.push('本人変更');}
   const raw=adminRecs(emp.id).filter(p=>M.day(p.at)===date),acked=new Set(raw.filter(p=>/管理者確認/.test(p.judge||'')).map(p=>p.originalId)),selfCancels=raw.filter(p=>/^本人取消/.test(p.judge||'')&&!acked.has(p.id));
   if(selfCancels.length)reasons.push('本人取消');
-  return{t,dayRecs,lone,touched,reasons,selfCancels,raw,has:dayRecs.length>0,placeRecs,pushed,test:dayRecs.some(p=>/試験/.test(p.judge||''))};}
+  const fixed=raw.some(p=>/管理者修正|管理者取消/.test(p.judge||''));
+  return{t,dayRecs,lone,touched,fixed,reasons,selfCancels,raw,has:dayRecs.length>0,placeRecs,pushed,test:dayRecs.some(p=>/試験/.test(p.judge||''))};}
 /** 本人が取り消した日を、管理者が見たことにする（「管理者確認（本人取消）」の行を足す） */
 async function adminAck(){const el=document.querySelector('[data-ack-emp]');if(!el)return;const e=adminEmp(el.dataset.ackEmp),r=adminDay(e,el.dataset.ackDate);
   const list=r.selfCancels.map(p=>({kind:p.kind,at:p.at,originalId:p.id,ack:true}));if(!list.length){dialog.close();return;}
@@ -705,16 +713,22 @@ function renderAdmin(){const p=$('admin-panel');if(!p)return;const ym=monthOf(ad
     const all=totals.reduce((a,x)=>({days:a.days+x.days,sum:a.sum+x.sum}),{days:0,sum:0});
     body.innerHTML=status+'<h3 class="admin-h">従業員一覧</h3><table class="emp-table"><thead><tr><th>名前</th><th>日数</th><th>時間</th><th>確認</th></tr></thead><tbody>'+totals.map(x=>`<tr data-admin-emp="${esc(x.e.id)}" tabindex="0"><td><strong>${esc(x.e.name)}</strong>${x.e.category?`<small>${esc(x.e.category)}</small>`:''}${x.e.status==='無効'?'<small>無効</small>':''}</td><td>${x.days}日</td><td>${hm(x.sum)}</td><td>${x.check?`<span class="tag warn">${x.check}</span>`:'—'}</td></tr>`).join('')+`</tbody><tfoot><tr><td>合計（${totals.length}人）</td><td>${all.days}日</td><td>${hm(all.sum)}</td><td>${items.length||'—'}</td></tr></tfoot></table><p class="fine-print">名前を押すと、その人の日別を開きます。</p><button class="soft-button wide" data-admin-grid>日ごとの表（出勤簿の形）</button>`
       +`<h3 class="admin-h">確認が必要な日（${items.length}件）</h3>`+(items.length?'<div class="days-list">'+items.map(x=>`<button class="day-row" data-admin-day="${esc(x.e.id)}|${x.d}"><span class="day-date">${md(x.d)}</span><span class="day-times"><strong class="admin-name">${esc(x.e.name)}</strong><br>${x.r.reasons.map(s=>'<span class="tag warn">'+s+'</span>').join('')}${x.r.test?'<span class="tag">試験</span>':''}${x.r.reasons.includes('場所の外')?x.r.placeRecs.map(p=>'<span class="place-reason-row">'+esc(p.kind)+' '+M.time(p.at)+'：'+(p.placeReason?'理由「'+esc(p.placeReason)+'」':'理由なし')+'</span>').join(''):''}</span><span class="chev">›</span></button>`).join('')+'</div>':'<div class="empty">ありません。</div>')
+      +(()=>{const none=admin.data.employees.filter(e=>e.status!=='無効'&&e.role!=='管理者'&&!e.category);return none.length?`<div class="cat-missing">区分が未設定の人がいます（${none.map(e=>esc(e.name)).join('、')}）。<button class="text-button" data-admin-emps>従業員の表示で選ぶ ›</button></div>`:'';})()
       +'<h3 class="admin-h">設定</h3><button class="soft-button wide" data-admin-settings>始業（今日だけの始業も）・昼休憩・小休憩の文言</button><button class="soft-button wide" data-admin-emps>従業員の表示（シーズン終わり・戻す）</button>';
     return;}
   if(admin.emp==='__grid'){const days=adminDays(),W='日月火水木金土';
-    const cols=emps.map(e=>({e,cells:days.map(d=>{const r=adminDay(e,d);return{d,r,min:r.t.confirmedMinutes!==null?M.floor30(r.t.confirmedMinutes):null};})}));
+    /* 人（列）の並び：登録順・名前順・区分順。選んだ並びはこのスマホで覚える */
+    let order='reg';try{order=localStorage.getItem('tc-grid-order')||'reg';}catch(err){}
+    const CAT={'常勤':0,'常勤バイト':1,'バイター':2},byName=(a,b)=>String(a.name).localeCompare(String(b.name),'ja');
+    const sorted=emps.slice().sort(order==='name'?byName:order==='cat'?((a,b)=>(CAT[a.category]??3)-(CAT[b.category]??3)||byName(a,b)):(()=>0));
+    const orderBar='<div class="grid-order" role="group" aria-label="人の並び"><span>並び</span>'+[['reg','登録順'],['name','名前順'],['cat','区分順']].map(([k,l])=>`<button class="chip ${order===k?'on':''}" data-grid-order="${k}">${l}</button>`).join('')+'</div>';
+    const cols=sorted.map(e=>({e,cells:days.map(d=>{const r=adminDay(e,d);return{d,r,min:r.t.confirmedMinutes!==null?M.floor30(r.t.confirmedMinutes):null};})}));
     const cell=(e,c)=>`<td class="${c.r.reasons.length?'warn':''}" data-admin-day="${esc(e.id)}|${c.d}">${c.min!==null?(c.min/60):c.r.has||c.r.selfCancels.length?'？':''}</td>`;
-    body.innerHTML=status+`<button class="soft-button admin-back" data-admin-list>＜ 一覧へ戻る</button><p class="days-hint">数字は時間（8.5＝8時間30分）。黄色は確認が必要な日。マスを押すとその日を直せます。</p><div class="grid-wrap"><table class="day-grid"><thead><tr><th>日付</th>${cols.map(c=>`<th>${esc(c.e.name)}</th>`).join('')}</tr></thead><tbody>${days.map((d,i)=>{const w=new Date(d+'T12:00:00+09:00').getDay();return `<tr class="${w===0?'sun':w===6?'sat':''}"><th>${Number(d.slice(8))}（${W[w]}）</th>${cols.map(c=>cell(c.e,c.cells[i])).join('')}</tr>`;}).join('')}</tbody><tfoot><tr><th>合計</th>${cols.map(c=>`<td>${c.cells.reduce((a,x)=>a+(x.min||0),0)/60}</td>`).join('')}</tr><tr><th>日数</th>${cols.map(c=>`<td>${c.cells.filter(x=>x.min!==null).length}</td>`).join('')}</tr></tfoot></table></div>`;return;}
+    body.innerHTML=status+`<button class="soft-button admin-back" data-admin-list>＜ 一覧へ戻る</button>${orderBar}<p class="days-hint">数字は時間（8.5＝8時間30分）。黄色は確認が必要な日。マスを押すとその日を直せます。</p><div class="grid-wrap"><table class="day-grid"><thead><tr><th>日付</th>${cols.map(c=>`<th>${esc(c.e.name)}</th>`).join('')}</tr></thead><tbody>${days.map((d,i)=>{const w=new Date(d+'T12:00:00+09:00').getDay();return `<tr class="${w===0?'sun':w===6?'sat':''}"><th>${Number(d.slice(8))}（${W[w]}）</th>${cols.map(c=>cell(c.e,c.cells[i])).join('')}</tr>`;}).join('')}</tbody><tfoot><tr><th>合計</th>${cols.map(c=>`<td>${c.cells.reduce((a,x)=>a+(x.min||0),0)/60}</td>`).join('')}</tr><tr><th>日数</th>${cols.map(c=>`<td>${c.cells.filter(x=>x.min!==null).length}</td>`).join('')}</tr></tfoot></table></div>`;return;}
   const e=adminEmp(admin.emp);if(!e){admin.emp=null;renderAdmin();return;}
   let sum=0;const rows=adminDays().map(d=>{const r=adminDay(e,d),t=r.t,ok=t.confirmedMinutes!==null;if(ok)sum+=M.floor30(t.confirmedMinutes);
     const inT=t.inRec?M.time(t.inRec.at):r.dayRecs.find(p=>p.kind==='出勤')?M.time(r.dayRecs.find(p=>p.kind==='出勤').at):'',outT=t.outRec?M.time(t.outRec.at):r.lone?M.time(r.lone.at):'';
-    const tags=r.reasons.filter(s=>s!=='場所の外').map(s=>'<span class="tag warn">'+s+'</span>').join('')+(r.placeRecs.length?'<span class="tag place">場所</span>':'')+(r.touched?'<span class="tag">管理者修正</span>':'')+(r.test?'<span class="tag">試験</span>':'');
+    const tags=r.reasons.filter(s=>s!=='場所の外').map(s=>'<span class="tag warn">'+s+'</span>').join('')+(r.placeRecs.length?'<span class="tag place">場所</span>':'')+(r.touched?'<span class="tag">'+(r.fixed?'管理者修正':'管理者確認')+'</span>':'')+(r.test?'<span class="tag">試験</span>':'');
     return `<button class="day-row${r.has?'':' day-empty'}" data-admin-day="${esc(e.id)}|${d}"><span class="day-date">${md(d)}</span><span class="day-times">${r.has?(inT||'—')+' – '+(outT||'—'):'記録なし'}${tags?'<br>'+tags:''}</span><strong>${ok?hm(M.floor30(t.confirmedMinutes)):'—'}</strong><span class="chev">›</span></button>`;}).join('');
   body.innerHTML=status+`<button class="soft-button admin-back" data-admin-list>＜ 一覧へ戻る</button><p class="days-hint">直したい日を押してください（記録のない日も足せます）。</p><div class="days-list">${rows}</div><div class="days-total"><span>合計</span><strong>${hm(sum)}</strong></div>`;
 }
@@ -781,7 +795,9 @@ async function adminSaveDay(cancelAll){const f=$('admin-form');if(!f)return;cons
     else{const h=Number(f.elements.a_hours.value),mi=Number(f.elements.a_minutes.value),conf=h*60+mi;if(!Number.isInteger(h)||h<0||h>24||f.elements.a_hours.value==='')throw Error('勤務時間を入れてください。');
       if(conf<MIN_WORK)throw Error('勤務時間は最低1時間です。働いていない日は「勤務なし」にしてください。');
       if(v.inAt!==null&&conf>Math.max(MIN_WORK,M.minute(v.outAt)-M.minute(v.inAt)))throw Error('勤務時間が、出勤から退勤まで（'+M.duration(M.minute(v.outAt)-M.minute(v.inAt))+'）より長くなっています。');
-      list.push({kind:'退勤',at:v.outAt,...(outRec?{originalId:outRec.id}:{}),lunchMinutes:v.lunch,confirmedMinutes:conf,startMinutes:v.st});}
+      /* 中身を変えずに保存したら「管理者確認」（直したのではなく、確かめた印） */
+      const same=!list.length&&inRec&&outRec&&inRec.at===v.inAt&&outRec.at===v.outAt&&outRec.lunchMinutes===v.lunch&&outRec.confirmedMinutes===conf;
+      list.push({kind:'退勤',at:v.outAt,...(outRec?{originalId:outRec.id}:{}),lunchMinutes:v.lunch,confirmedMinutes:conf,startMinutes:same&&Number.isInteger(outRec.startMinutes)?outRec.startMinutes:v.st,...(same?{confirm:true}:{})});}
   }
   r.selfCancels.forEach(p=>list.push({kind:p.kind,at:p.at,originalId:p.id,ack:true}));
   if(!list.length){dialog.close();return;}
@@ -800,8 +816,8 @@ function todayFields(d,emps){const ts=d.todayStart||{all:null,emps:{}},today=M.d
   return `<h3 class="admin-h">今日だけの始業（${md(today)}）</h3><p class="fine-print">急に始業が変わった日に使います。明日には自動で元に戻ります。退勤のときの「始めた時刻」の最初の値になります。</p><label class="today-start">全員<select name="t_all">${opts(ts.all)}</select></label>${emps.map(e=>`<label class="admin-emp-start">${esc(e.name)}<select data-today-start="${esc(e.id)}">${opts(Number.isInteger(ts.emps?.[e.id])?ts.emps[e.id]:null)}</select></label>`).join('')}`;}
 /** 従業員の表示：今シーズンが終わった人（バイターなど）を外す・戻す。外した人はログインできず、記録のない月の一覧にも出ない。記録は残る */
 function adminEmps(){const d=admin.data;if(!d)return;const me=data.session.employee.id,list=d.employees.slice().sort((a,b)=>(a.status==='無効')-(b.status==='無効')||String(a.category).localeCompare(String(b.category))),baiter=list.filter(e=>e.status!=='無効'&&e.category==='バイター'&&e.role!=='管理者'&&e.id!==me);
-  const row=e=>{const off=e.status==='無効',fixed=e.role==='管理者'||e.id===me;return `<div class="emp-status-row ${off?'off':''}"><span>${esc(e.name)}<small>${esc(e.category||'区分なし')}${off?'・外しています':''}</small></span>${fixed?'<small>管理者</small>':`<button class="btn ${off?'primary':''}" data-emp-status="${off?'有効':'無効'}" data-emp-ids="${esc(e.id)}">${off?'戻す':'今シーズンは終わり'}</button>`}</div>`;};
-  modal(`<h2>従業員の表示</h2><p class="fine-print">「今シーズンは終わり」にした人はログインできなくなり、記録のない月の一覧・日ごとの表に出なくなります。記録は消えず、働いた月の出勤簿や合計には出ます。来シーズンにまた来る人は、新しい登録URLから同じお名前で登録し直してもらえば、同じ人として記録が続きます（ここで「戻す」を押しても使えます）。</p>${baiter.length?`<button class="btn wide" data-emp-status="無効" data-emp-ids="${esc(baiter.map(e=>e.id).join(','))}" data-emp-bulk>バイター ${baiter.length}人をまとめて「今シーズンは終わり」にする</button>`:''}<div class="emp-status-list">${list.map(row).join('')}</div><div id="dialog-error" class="error" hidden role="alert"></div><div class="buttons"><button class="btn" data-close>閉じる</button></div>`);}
+  const row=e=>{const off=e.status==='無効',fixed=e.role==='管理者'||e.id===me;return `<div class="emp-status-row ${off?'off':''}"><span>${esc(e.name)}<small>${off?'外しています':''}</small><select class="cat-select" data-emp-cat="${esc(e.id)}" aria-label="${esc(e.name)}さんの区分">${['','常勤','常勤バイト','バイター'].map(c=>`<option value="${c}" ${(e.category||'')===c?'selected':''}>${c||'区分：未設定'}</option>`).join('')}</select></span>${fixed?'<small>管理者</small>':`<button class="btn ${off?'primary':''}" data-emp-status="${off?'有効':'無効'}" data-emp-ids="${esc(e.id)}">${off?'戻す':'今シーズンは終わり'}</button>`}</div>`;};
+  modal(`<h2>従業員の表示</h2><p class="fine-print">区分（常勤／常勤バイト／バイター）は名前の下で選びます。選ぶとすぐ保存します。本人の画面には出ません。</p><p class="fine-print">「今シーズンは終わり」にした人はログインできなくなり、記録のない月の一覧・日ごとの表に出なくなります。記録は消えず、働いた月の出勤簿や合計には出ます。来シーズンにまた来る人は、新しい登録URLから同じお名前で登録し直してもらえば、同じ人として記録が続きます（ここで「戻す」を押しても使えます）。</p>${baiter.length?`<button class="btn wide" data-emp-status="無効" data-emp-ids="${esc(baiter.map(e=>e.id).join(','))}" data-emp-bulk>バイター ${baiter.length}人をまとめて「今シーズンは終わり」にする</button>`:''}<div class="emp-status-list">${list.map(row).join('')}</div><div id="dialog-error" class="error" hidden role="alert"></div><div class="buttons"><button class="btn" data-close>閉じる</button></div>`);}
 async function adminEmpStatus(b){if(b.dataset.empBulk!==undefined&&!b.dataset.confirmed){b.dataset.confirmed='1';b.textContent='もう一度押すと、まとめて外します';return;}
   const ids=b.dataset.empIds.split(',').filter(Boolean),label=b.textContent;b.disabled=true;b.textContent='保存しています…';
   let r;try{r=requireOk(await request('adminEmpStatus',{token:data.session.token,deviceId:data.deviceId,ym:monthOf(0).slice(0,7),ids,status:b.dataset.empStatus}));}catch(err){b.disabled=false;b.textContent=label;throw err;}
@@ -829,7 +845,7 @@ document.addEventListener('click',async ev=>{const b=ev.target.closest('button,t
   if(b.dataset.authMode){authMode=b.dataset.authMode;render();}
   if(b.dataset.punch)preparePunch(b.dataset.punch).catch(err=>{busy=false;render();notify(err.message,true);});
   if(b.id==='home-link'||b.id==='admin-back-top'){if(dialog.open)dialog.close();if(view!=='main'){if(history.state?.tcDays||history.state?.tcAdmin)history.back();else{view='main';render();}}window.scrollTo(0,0);}
-  if(b.dataset.adminOpen!==undefined)openAdmin();if(b.dataset.adminMonth!==undefined){admin.month=Number(b.dataset.adminMonth);if(admin.emp!=='__grid')admin.emp=null;renderAdmin();}if(b.dataset.adminSettings!==undefined)adminSettings();if(b.dataset.adminEmps!==undefined)adminEmps();if(b.dataset.adminGrid!==undefined){admin.emp='__grid';renderAdmin();window.scrollTo(0,0);}if(b.dataset.adminReload!==undefined)loadAdmin();if(b.dataset.adminEmp){admin.emp=b.dataset.adminEmp;renderAdmin();window.scrollTo(0,0);}if(b.dataset.adminList!==undefined){admin.emp=null;renderAdmin();window.scrollTo(0,0);}
+  if(b.dataset.adminOpen!==undefined)openAdmin();if(b.dataset.adminMonth!==undefined){admin.month=Number(b.dataset.adminMonth);if(admin.emp!=='__grid')admin.emp=null;renderAdmin();}if(b.dataset.adminSettings!==undefined)adminSettings();if(b.dataset.adminEmps!==undefined)adminEmps();if(b.dataset.gridOrder){try{localStorage.setItem('tc-grid-order',b.dataset.gridOrder);}catch(err){}renderAdmin();}if(b.dataset.adminGrid!==undefined){admin.emp='__grid';renderAdmin();window.scrollTo(0,0);}if(b.dataset.adminReload!==undefined)loadAdmin();if(b.dataset.adminEmp){admin.emp=b.dataset.adminEmp;renderAdmin();window.scrollTo(0,0);}if(b.dataset.adminList!==undefined){admin.emp=null;renderAdmin();window.scrollTo(0,0);}
   if(b.dataset.adminDay){const [id,d]=b.dataset.adminDay.split('|');adminEditDay(id,d);}
   if(b.id==='settings')settings();if(b.dataset.day){if(dialog.open)dialog.close();editDay(b.dataset.day);}if(b.id==='days-open'){view='days';daysMonth=0;try{history.pushState({tcDays:1},'');}catch(e){}render();window.scrollTo(0,0);}if(b.id==='days-back'){if(history.state?.tcDays){history.back();}else{view='main';render();window.scrollTo(0,0);}}if(b.dataset.month!==undefined){daysMonth=Number(b.dataset.month);renderDays();}
   if(b.dataset.startToggle!==undefined){const f=b.closest('form');b.hidden=true;const st=f.querySelector('.start-text');if(st)st.hidden=true;f.querySelector('#start-wrap').hidden=false;f.dataset.startTouched='1';f.dataset.manual='false';updateWorkForm(f);f.elements.start_time.focus();}if(b.id==='sync')flush();if(b.dataset.close!==undefined)dialog.close();
@@ -854,7 +870,12 @@ $('auth-form').addEventListener('submit',authenticate);$('history-date').value=M
 document.addEventListener('submit',async ev=>{if(!['punch-form','day-form'].includes(ev.target.id))return;ev.preventDefault();if(ev.target.id==='day-form'){try{reviewDay();}catch(err){$('dialog-error').hidden=false;$('dialog-error').textContent=err.message;}return;}try{if(ev.target.id==='punch-form'&&pending){await savePunch();}}catch(err){$('dialog-error').hidden=false;$('dialog-error').textContent=err.message;}});
 document.addEventListener('input',ev=>{const form=ev.target.closest('form');if(form&&['lunch','lunch_custom','a_lunch'].includes(ev.target.name))form.dataset.lunchTouched='1';if(!form||!['punch-form','day-form'].includes(form.id))return;if(['start_time','time','in_time','out_time'].includes(ev.target.name)&&form.id==='day-form'||ev.target.name==='start_time'||ev.target.name==='in_time'&&form.id==='punch-form'){form.dataset.manual='false';updateWorkForm(form);}if(['confirmed_hours','confirmed_minutes'].includes(ev.target.name))form.dataset.manual='true';if(ev.target.name==='lunch_custom'){form.dataset.manual='false';updateWorkForm(form);}});
 $('pw-keyboard').addEventListener('click',()=>{const f=$('login-password');f.inputMode='text';$('pw-keyboard').hidden=true;f.blur();f.focus();});
-document.addEventListener('change',ev=>{const form=ev.target.closest('form');if(form?.id==='punch-form'){if(ev.target.name==='in_time')form.dataset.inTouched='1';if(ev.target.name==='start_time')form.dataset.startTouched='1';}if(form&&['lunch','lunch_custom','a_lunch'].includes(ev.target.name))form.dataset.lunchTouched='1';if(form?.id==='admin-form'){if(['a_hours','a_minutes'].includes(ev.target.name))form.dataset.manual='true';else{form.dataset.manual='false';updateAdminForm(form);}return;}if(form&&['punch-form','day-form'].includes(form.id)&&['lunch','time','date','kind','start_time','in_time','out_time'].includes(ev.target.name)){form.dataset.manual='false';updateWorkForm(form);}});
+document.addEventListener('change',async ev=>{
+  /* 従業員の区分を変える */
+  if(ev.target.dataset?.empCat){const sel=ev.target,id=sel.dataset.empCat;sel.disabled=true;
+    try{admin.data=requireOk(await request('adminEmpCategory',{token:data.session.token,deviceId:data.deviceId,ym:monthOf(0).slice(0,7),id,category:sel.value}));renderAdmin();adminEmps();notify('区分を保存しました。',false,2500);}
+    catch(err){sel.disabled=false;const el=$('dialog-error');if(el){el.hidden=false;el.textContent=err.message;}}
+    return;}const form=ev.target.closest('form');if(form?.id==='punch-form'){if(ev.target.name==='in_time')form.dataset.inTouched='1';if(ev.target.name==='start_time')form.dataset.startTouched='1';}if(form&&['lunch','lunch_custom','a_lunch'].includes(ev.target.name))form.dataset.lunchTouched='1';if(form?.id==='admin-form'){if(['a_hours','a_minutes'].includes(ev.target.name))form.dataset.manual='true';else{form.dataset.manual='false';updateAdminForm(form);}return;}if(form&&['punch-form','day-form'].includes(form.id)&&['lunch','time','date','kind','start_time','in_time','out_time'].includes(ev.target.name)){form.dataset.manual='false';updateWorkForm(form);}});
 dialog.addEventListener('close',()=>{pending=null;busy=false;render();});
 window.addEventListener('online',()=>{refresh();flush();});document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh();});
 setInterval(tick,15000);setInterval(()=>{if(!document.hidden)refresh();},60000);
