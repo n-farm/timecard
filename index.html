@@ -141,7 +141,7 @@ dialog label select{display:block;width:100%;margin-top:4px;font-size:17px;paddi
     <p class="fine-print" id="days-note"></p>
   </div>
   
-</main><dialog id="modal"><div id="modal-body"></div></dialog><script>window.P02_WEB={"apiUrl":"https://script.google.com/macros/s/AKfycby-w8l6me8DyQfZX5PXZDLk5PXUTVT-BY3xomKUANceDVHtCn_QrUrFfLp6pu7iZdF1tg/exec","version":"20261106.w31"};</script><script>(function(root){
+</main><dialog id="modal"><div id="modal-body"></div></dialog><script>window.P02_WEB={"apiUrl":"https://script.google.com/macros/s/AKfycby-w8l6me8DyQfZX5PXZDLk5PXUTVT-BY3xomKUANceDVHtCn_QrUrFfLp6pu7iZdF1tg/exec","version":"20261106.w32"};</script><script>(function(root){
 'use strict';
 const api={};
 api.id=()=>{if(root.crypto.randomUUID)return root.crypto.randomUUID();const bytes=root.crypto.getRandomValues(new Uint8Array(16));bytes[6]=(bytes[6]&15)|64;bytes[8]=(bytes[8]&63)|128;const hex=[...bytes].map(x=>x.toString(16).padStart(2,'0')).join('');return hex.slice(0,8)+'-'+hex.slice(8,12)+'-'+hex.slice(12,16)+'-'+hex.slice(16,20)+'-'+hex.slice(20);};
@@ -378,7 +378,7 @@ function render(){
   const queue=data.queue.filter(q=>q.employeeId===s.employee.id),failed=queue.filter(q=>q.error).length;
   $('cloud-status').className='cloud-status '+(queue.length?'pending':'');
   /* 上の帯は困ったときだけ出す */
-  const problem=!verified?'このスマホからは打刻できません。⚙からもう一度ログインしてください。':failed?`${failed}件の打刻を保存先が受け付けませんでした。管理者に伝えてください。`:queue.length&&!sending&&!quietSend?`まだ送れていない打刻が ${queue.length}件 あります。電波のよい所で自動で送ります。`:navigator.onLine===false?'電波がありません。打刻はスマホに残し、あとで送ります。':!available?'保存先につながりません。打刻はスマホに残し、あとで送ります。':'';
+  const problem=!verified?'このスマホからは打刻できません。⚙からもう一度ログインしてください。':failed?`${failed}件の打刻を保存先が受け付けませんでした。管理者に伝えてください。`:queue.length&&!sending&&!quietSend?`まだ送れていない記録が ${queue.length}件 あります。電波が戻ったら自動で送ります。`:navigator.onLine===false?'電波がありません。電波が戻ったら自動で送ります。':!available?'保存先につながりません。つながったら自動で送ります。':'';
   $('cloud-status').textContent=problem;$('cloud-status').hidden=!problem;
   nightState();
   /* 打刻の履歴は表示しない。未送信があるときだけ「今すぐ送る」を出す */
@@ -558,11 +558,13 @@ async function farewell(ids){quietSend=true;try{await farewellRun(ids);}finally{
 async function farewellRun(ids){
   const want=new Set(ids),left=()=>data.queue.filter(q=>want.has(q.record.id)),failed=()=>left().filter(q=>q.error);
   modal('<h2>お仕事お疲れさまでした。</h2><p class="big-note" id="farewell-note">記録を送信していますのでお待ちください。</p>');
-  busy=false;const until=Date.now()+30000;
-  while(left().some(q=>!q.error)&&navigator.onLine!==false&&Date.now()<until){if(!sending)await flush();else await new Promise(r=>setTimeout(r,300));if(left().some(q=>!q.error))await new Promise(r=>setTimeout(r,500));}
+  busy=false;const until=Date.now()+10000;
+  /* 送信が止まっていても10秒で区切る（送信はそのまま続き、届けば消える） */
+  const sleep=ms=>new Promise(r=>setTimeout(r,Math.max(0,ms)));
+  while(left().some(q=>!q.error)&&navigator.onLine!==false&&Date.now()<until){await Promise.race([sending?sleep(300):flush(),sleep(until-Date.now())]);if(left().some(q=>!q.error)&&Date.now()<until)await sleep(Math.min(500,until-Date.now()));}
   const bad=failed();
   if(bad.length){modal(`<h2>記録を送れませんでした</h2><p class="big-note">${esc(bad[0].error)}</p><div class="buttons"><button class="btn primary" data-close>閉じる</button></div>`);view='main';render();return;}
-  if(left().length){const n=$('farewell-note');if(n)n.textContent='電波がつながらないので、スマホに保存しました。つながったら自動で送ります。';await new Promise(r=>setTimeout(r,3000));}
+  if(left().length){const n=$('farewell-note');if(n)n.textContent='電波が弱いため、記録はあとで自動で送ります。このまま閉じて大丈夫です。';await new Promise(r=>setTimeout(r,3000));}
   else{const n=$('farewell-note');if(n)n.textContent='送信しました。';await new Promise(r=>setTimeout(r,1200));}
   if(dialog.open)dialog.close();view='main';render();window.scrollTo(0,0);notify('');
 }
@@ -804,7 +806,7 @@ async function adminSettingsSave(){const f=$('admin-settings-form');if(!f)return
   let r;try{r=requireOk(await request('adminSettings',body));}finally{if(btn){btn.disabled=false;btn.textContent='この内容で保存';}}
   admin.data=r;dialog.close();notify('設定を保存しました。',false,3000);renderAdmin();refresh(false);}
 function settings(){const s=data.session,pendingCount=data.queue.filter(q=>!q.error).length;
-  modal(`<h2>設定</h2>${s?`<p class="settings-name">${esc(s.employee.name)} さん</p>${pendingCount?`<p>まだ送れていない打刻が ${pendingCount}件 あります。電波のよい所で開くと、自動で送ります。</p>`:'<p>打刻はすべて送れています。</p>'}<h3>ホーム画面に置く</h3>${standalone?'<p>いまはホーム画面のアイコンから開いています。</p>':'<p>ブラウザの共有ボタン（□に↑の印）やメニューから「ホーム画面に追加」を選ぶと、次からアイコンで開けます。</p>'}<h3>スマホを替えたとき</h3><p>新しいスマホで、同じお名前とパスワードでログインしてください。前のスマホでは打刻できなくなります。</p>${isAdmin()?`<h3>管理者</h3><button class="btn primary" data-admin-open>管理者の画面</button><h3>試験モード</h3><p>動作を確かめるとき用です。オンの間は、時刻の制限（0:00〜4:59・これからの時刻・締め・6:00より前）なしで記録でき、記録は「試験」として出勤簿・集計から外します。場所の理由の欄と、勤務時間の長さの確認はそのままです。</p><button class="btn" data-action="test-mode">${data.testMode?'試験モードをオフにする（いまオン）':'試験モードをオンにする'}</button>`:''}${!verified?'<button class="btn" data-action="relogin">もう一度ログインする</button>':''}<button class="btn" data-action="logout">このスマホからログアウト</button>`:'<p>お名前とパスワードでログインしてください。</p>'}<p class="fine-print">アプリの版 ${esc(CLIENT_VERSION)} ／ 保存先 ${esc(serverVersion||(WEB?'まだ確認していません':boot.version||''))}</p><div class="buttons"><button class="btn primary" data-close>閉じる</button></div>`);}
+  modal(`<h2>設定</h2>${s?`<p class="settings-name">${esc(s.employee.name)} さん</p>${pendingCount?`<p>まだ送れていない記録が ${pendingCount}件 あります。電波が戻ったら自動で送ります。</p>`:'<p>打刻はすべて送れています。</p>'}<h3>ホーム画面に置く</h3>${standalone?'<p>いまはホーム画面のアイコンから開いています。</p>':'<p>ブラウザの共有ボタン（□に↑の印）やメニューから「ホーム画面に追加」を選ぶと、次からアイコンで開けます。</p>'}<h3>スマホを替えたとき</h3><p>新しいスマホで、同じお名前とパスワードでログインしてください。前のスマホでは打刻できなくなります。</p>${isAdmin()?`<h3>管理者</h3><button class="btn primary" data-admin-open>管理者の画面</button><h3>試験モード</h3><p>動作を確かめるとき用です。オンの間は、時刻の制限（0:00〜4:59・これからの時刻・締め・6:00より前）なしで記録でき、記録は「試験」として出勤簿・集計から外します。場所の理由の欄と、勤務時間の長さの確認はそのままです。</p><button class="btn" data-action="test-mode">${data.testMode?'試験モードをオフにする（いまオン）':'試験モードをオンにする'}</button>`:''}${!verified?'<button class="btn" data-action="relogin">もう一度ログインする</button>':''}<button class="btn" data-action="logout">このスマホからログアウト</button>`:'<p>お名前とパスワードでログインしてください。</p>'}<p class="fine-print">アプリの版 ${esc(CLIENT_VERSION)} ／ 保存先 ${esc(serverVersion||(WEB?'まだ確認していません':boot.version||''))}</p><div class="buttons"><button class="btn primary" data-close>閉じる</button></div>`);}
 document.addEventListener('click',async ev=>{const b=ev.target.closest('button,tr[data-admin-emp],td[data-admin-day]');if(!b)return;
   if(b.dataset.authMode){authMode=b.dataset.authMode;render();}
   if(b.dataset.punch)preparePunch(b.dataset.punch).catch(err=>{busy=false;render();notify(err.message,true);});
