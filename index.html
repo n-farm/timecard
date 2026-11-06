@@ -141,7 +141,7 @@ dialog label select{display:block;width:100%;margin-top:4px;font-size:17px;paddi
     <p class="fine-print" id="days-note"></p>
   </div>
   
-</main><dialog id="modal"><div id="modal-body"></div></dialog><script>window.P02_WEB={"apiUrl":"https://script.google.com/macros/s/AKfycby-w8l6me8DyQfZX5PXZDLk5PXUTVT-BY3xomKUANceDVHtCn_QrUrFfLp6pu7iZdF1tg/exec","version":"20261106.w30"};</script><script>(function(root){
+</main><dialog id="modal"><div id="modal-body"></div></dialog><script>window.P02_WEB={"apiUrl":"https://script.google.com/macros/s/AKfycby-w8l6me8DyQfZX5PXZDLk5PXUTVT-BY3xomKUANceDVHtCn_QrUrFfLp6pu7iZdF1tg/exec","version":"20261106.w31"};</script><script>(function(root){
 'use strict';
 const api={};
 api.id=()=>{if(root.crypto.randomUUID)return root.crypto.randomUUID();const bytes=root.crypto.getRandomValues(new Uint8Array(16));bytes[6]=(bytes[6]&15)|64;bytes[8]=(bytes[8]&63)|128;const hex=[...bytes].map(x=>x.toString(16).padStart(2,'0')).join('');return hex.slice(0,8)+'-'+hex.slice(8,12)+'-'+hex.slice(12,16)+'-'+hex.slice(16,20)+'-'+hex.slice(20);};
@@ -291,7 +291,7 @@ window.TCStore={
 const WEB=window.P02_WEB||null;
 const $=id=>document.getElementById(id),M=window.TC,boot=WEB?{appId:'web',version:WEB.version,invite:(new URLSearchParams(location.search).get('join')||'').slice(0,200),defaultLunchMinutes:60}:(window.P02_BOOTSTRAP||{}),KEY='p02-cloud-timecard-v1-'+(boot.appId||'preview'),dialog=$('modal');
 let data={schema:1,deviceId:M.id(),session:null,queue:[],history:[]},available=false,busy=false,sending=false,verified=true,authMode=boot.invite?'register':'login',pending=null;
-let serverVersion='';let breakNote='小休憩：午前・午後 各15分（8時間勤務の場合）',defaultLunch=Number.isInteger(boot.defaultLunchMinutes)?boot.defaultLunchMinutes:60,view='main',daysMonth=0;
+let serverVersion='',quietSend=false;let breakNote='小休憩：午前・午後 各15分（8時間勤務の場合）',defaultLunch=Number.isInteger(boot.defaultLunchMinutes)?boot.defaultLunchMinutes:60,view='main',daysMonth=0;
 /** その人の始業（0時からの分）。保存先の従業員シート「始業」、空なら全員共通。未取得なら8:00 */
 const startOf=()=>Number.isInteger(data.session?.employee?.startMinutes)?data.session.employee.startMinutes:480;
 /** 時刻の候補：本人は6:00から、管理者は5:00から。0:00〜4:59は退勤を押せない（画面だけ） */
@@ -378,11 +378,11 @@ function render(){
   const queue=data.queue.filter(q=>q.employeeId===s.employee.id),failed=queue.filter(q=>q.error).length;
   $('cloud-status').className='cloud-status '+(queue.length?'pending':'');
   /* 上の帯は困ったときだけ出す */
-  const problem=!verified?'このスマホからは打刻できません。⚙からもう一度ログインしてください。':failed?`${failed}件の打刻を保存先が受け付けませんでした。管理者に伝えてください。`:queue.length?`まだ送れていない打刻が ${queue.length}件 あります。電波のよい所で自動で送ります。`:navigator.onLine===false?'電波がありません。打刻はスマホに残し、あとで送ります。':!available?'保存先につながりません。打刻はスマホに残し、あとで送ります。':'';
+  const problem=!verified?'このスマホからは打刻できません。⚙からもう一度ログインしてください。':failed?`${failed}件の打刻を保存先が受け付けませんでした。管理者に伝えてください。`:queue.length&&!sending&&!quietSend?`まだ送れていない打刻が ${queue.length}件 あります。電波のよい所で自動で送ります。`:navigator.onLine===false?'電波がありません。打刻はスマホに残し、あとで送ります。':!available?'保存先につながりません。打刻はスマホに残し、あとで送ります。':'';
   $('cloud-status').textContent=problem;$('cloud-status').hidden=!problem;
   nightState();
   /* 打刻の履歴は表示しない。未送信があるときだけ「今すぐ送る」を出す */
-  $('sync').hidden=!data.queue.some(q=>!q.error);$('sync').disabled=sending;
+  $('sync').hidden=sending||quietSend||!data.queue.some(q=>!q.error);$('sync').disabled=sending;
   if(view==='days')renderDays();if(view==='admin')renderAdmin();
   tick();
 }
@@ -554,7 +554,6 @@ async function persistRecords(records,opts={}){
   dialog.close();busy=false;render();notify('記録しました。');flush();
 }
 /** 退勤を記録したとき：「お疲れさまでした」を出して送信し、終わったら最初の画面に戻る */
-let quietSend=false;
 async function farewell(ids){quietSend=true;try{await farewellRun(ids);}finally{quietSend=false;}}
 async function farewellRun(ids){
   const want=new Set(ids),left=()=>data.queue.filter(q=>want.has(q.record.id)),failed=()=>left().filter(q=>q.error);
