@@ -98,6 +98,10 @@ dialog label select{display:block;width:100%;margin-top:4px;font-size:17px;paddi
 .closed-panel{background:#fff;border-radius:18px;padding:28px 22px;margin:24px 0;text-align:center;line-height:1.8}
 .closed-panel h1{font-size:22px;margin:0 0 12px;color:var(--green)}
 .closed-panel p{font-size:16px;margin:8px 0}
+.small-link{font-size:13px;padding:4px 0;margin:2px 0 6px;display:block}
+.year-cats{display:flex;flex-wrap:wrap;gap:8px 18px;margin:6px 0 4px}
+.year-cats .check{display:flex;align-items:center;gap:6px;font-size:16px}
+.year-cats input{width:20px;height:20px}
 </style></head><body>
 <main class="app">
   <header class="header"><button id="home-link" class="brand" aria-label="最初の画面へ"><span class="brand-icon">◷</span><span><span id="brand-title">農園出勤簿</span><small id="brand-sub">FARM ATTENDANCE BOOK</small></span></button><button id="settings" class="icon-button" aria-label="保存・アカウントの設定">⚙</button></header>
@@ -109,8 +113,8 @@ dialog label select{display:block;width:100%;margin-top:4px;font-size:17px;paddi
     <h1>ログイン</h1><p>お名前とパスワードを入れてください。一度ログインすれば、次からは開くだけで打刻できます。</p>
     <div class="auth-tabs"><button data-auth-mode="login" class="selected">ログイン</button><button data-auth-mode="register">初めて使う</button></div>
     <form id="auth-form"><label for="login-name">お名前</label><input id="login-name" name="name" autocomplete="username" maxlength="40" required>
-      <label for="login-password">パスワード（8文字以上）</label><input id="login-password" name="password" type="password" autocomplete="current-password" minlength="8" maxlength="128" required>
-      <div id="confirm-field" hidden><label for="login-confirm">パスワードをもう一度</label><input id="login-confirm" type="password" autocomplete="new-password" minlength="8" maxlength="128"></div>
+      <label for="login-password">パスワード（数字6桁）</label><input id="login-password" name="password" type="password" inputmode="numeric" autocomplete="current-password" minlength="6" maxlength="128" required><button type="button" id="pw-keyboard" class="text-button small-link">英字を含むパスワードの人はこちら</button>
+      <div id="confirm-field" hidden><label for="login-confirm">パスワードをもう一度</label><input id="login-confirm" type="password" inputmode="numeric" autocomplete="new-password" minlength="6" maxlength="128"></div>
       <p id="invite-note" class="fine-print" hidden>初めて使うときは、管理者から届いた登録用のURLから開いてください。</p>
       <div id="auth-error" class="error" role="alert" hidden></div><button id="auth-submit" type="submit" class="btn primary full">ログイン</button>
     </form><p class="fine-print">スマホを替えても、同じお名前とパスワードで続けて使えます。ログインには電波が必要です。</p><p class="fine-print" id="launch-info"></p>
@@ -141,7 +145,7 @@ dialog label select{display:block;width:100%;margin-top:4px;font-size:17px;paddi
     <p class="fine-print" id="days-note"></p>
   </div>
   
-</main><dialog id="modal"><div id="modal-body"></div></dialog><script>window.P02_WEB={"apiUrl":"https://script.google.com/macros/s/AKfycby-w8l6me8DyQfZX5PXZDLk5PXUTVT-BY3xomKUANceDVHtCn_QrUrFfLp6pu7iZdF1tg/exec","version":"20261106.w33"};</script><script>(function(root){
+</main><dialog id="modal"><div id="modal-body"></div></dialog><script>window.P02_WEB={"apiUrl":"https://script.google.com/macros/s/AKfycby-w8l6me8DyQfZX5PXZDLk5PXUTVT-BY3xomKUANceDVHtCn_QrUrFfLp6pu7iZdF1tg/exec","version":"20261106.w34"};</script><script>(function(root){
 'use strict';
 const api={};
 api.id=()=>{if(root.crypto.randomUUID)return root.crypto.randomUUID();const bytes=root.crypto.getRandomValues(new Uint8Array(16));bytes[6]=(bytes[6]&15)|64;bytes[8]=(bytes[8]&63)|128;const hex=[...bytes].map(x=>x.toString(16).padStart(2,'0')).join('');return hex.slice(0,8)+'-'+hex.slice(8,12)+'-'+hex.slice(12,16)+'-'+hex.slice(16,20)+'-'+hex.slice(20);};
@@ -240,7 +244,7 @@ api.interval=(records,date,now=Date.now())=>{
 };
 api.password=async(password,salt,iterations)=>{
   if(!root.crypto?.subtle)throw Error('安全な暗号処理を使えません。HTTPSの登録用URLを開いてください。');
-  if(typeof password!=='string'||password.length<8||password.length>128)throw Error('パスワードは8〜128文字で入力してください。');
+  if(typeof password!=='string'||password.length<6||password.length>128)throw Error('パスワードを確認してください（数字6桁）。');
   if(!/^[a-f0-9]{32}$/.test(salt)||iterations!==600000)throw Error('認証設定を確認できませんでした。');
   const enc=new TextEncoder(),key=await root.crypto.subtle.importKey('raw',enc.encode(password),{name:'PBKDF2'},false,['deriveBits']);
   const bytes=await root.crypto.subtle.deriveBits({name:'PBKDF2',salt:enc.encode(salt),iterations,hash:'SHA-256'},key,256);
@@ -368,7 +372,7 @@ function render(){
   const closed=!!s&&data.closed===true;$('closed-panel').hidden=!closed;$('settings').hidden=closed;
   $('auth-panel').hidden=!!s;$('main-panel').hidden=!s||closed||view!=='main';$('days-panel').hidden=!s||closed||view!=='days';$('admin-panel').hidden=!s||closed||view!=='admin';
   document.querySelectorAll('[data-auth-mode]').forEach(b=>b.classList.toggle('selected',b.dataset.authMode===authMode));
-  $('confirm-field').hidden=authMode!=='register';$('login-confirm').required=authMode==='register';$('login-password').autocomplete=authMode==='register'?'new-password':'current-password';
+  $('confirm-field').hidden=authMode!=='register';$('pw-keyboard').hidden=authMode==='register'||$('login-password').inputMode==='text';if(authMode==='register')$('login-password').inputMode='numeric';$('login-confirm').required=authMode==='register';$('login-password').autocomplete=authMode==='register'?'new-password':'current-password';
   document.querySelector('#auth-panel h1').textContent=authMode==='register'?'初めて使う':'ログイン';$('auth-submit').textContent=busy?'確認しています…':authMode==='register'?'このスマホで使い始める':'ログイン';$('auth-submit').disabled=busy||!available;
   $('invite-note').hidden=authMode!=='register'||!!boot.invite;
   if(!s&&authNotice){$('auth-error').hidden=false;$('auth-error').textContent=authNotice;}
@@ -397,6 +401,7 @@ async function authenticate(ev){
   ev.preventDefault();if(busy||!available)return;$('auth-error').hidden=true;
   const name=$('login-name').value.trim(),password=$('login-password').value;
   if(authMode==='register'&&password!==$('login-confirm').value){authError(Error('パスワードの確認が一致しません。'));return;}
+  if(authMode==='register'&&!/^\d{6}$/.test(password)){authError(Error('パスワードは数字6桁にしてください。'));return;}
   if(authMode==='register'&&!boot.invite){authError(Error('管理者から届いた登録用URLを開いてください。'));return;}
   busy=true;render();
   try{
@@ -652,7 +657,7 @@ function renderDays(){const first=monthOf(daysMonth),mo=M.month(ownHistory(),fir
       if(t.adminFixed)tags.push('<span class="tag">管理者修正</span>');else if(t.changed)tags.push('<span class="tag">本人変更</span>');if(lone)tags.push('<span class="tag warn">出勤なし</span>');else if(t.status==='要確認'||t.status==='時間を確認')tags.push('<span class="tag warn">'+(t.status==='要確認'?'確認が必要':'時間を入れる')+'</span>');if(t.status==='勤務中')tags.push(t.date===today?'<span class="tag">勤務中</span>':'<span class="tag warn">退勤なし</span>');if(t.pending)tags.push('<span class="tag warn">未送信</span>');
       return `<button class="day-row" data-day="${t.date}"><span class="day-date">${md(t.date)}</span><span class="day-times">${t.inRec?M.time(t.inRec.at):'—'} – ${t.outRec?M.time(t.outRec.at):lone?M.time(lone.at):'—'}${tags.length?'<br>'+tags.join(''):''}</span><strong>${ok?hm(M.floor30(t.confirmedMinutes)):'—'}</strong><span class="chev">›</span></button>`;}).join(''):'<div class="empty">この月の記録はまだありません。</div>';
   $('days-total').innerHTML=hm(mo.shownMinutes);$('days-total-label').textContent=Number(first.slice(5,7))+'月の合計';
-  /* 年間の合計（常勤・常勤バイトだけ。保存先で1年分を数える） */const yr=data.session?.year;$('year-total-box').hidden=!yr;if(yr){$('year-total-label').textContent=yr.year+'年の合計';$('year-total').innerHTML=hm(yr.minutes);}
+  /* 年間の合計（常勤・常勤バイトだけ。保存先で1年分を数える） */const yr=data.session?.year;$('year-total-box').hidden=!yr;if(yr){$('year-total-label').textContent=yr.year+'年の合計（1月1日から）';$('year-total').innerHTML=hm(yr.minutes);}
   $('days-note').hidden=true;void `30分未満は切り捨てて表示しています。${mo.days}日`+(mo.check+noOut?`。確認が必要な日 ${mo.check+noOut}日`:'')+(isLocked(Date.parse(first+'T12:00:00+09:00'))?'。この月は締めました。':'');
 }
 /* ===== 管理者モード（従業員シートの権限が「管理者」の人だけ） ===== */
@@ -787,7 +792,9 @@ async function adminSaveDay(cancelAll){const f=$('admin-form');if(!f)return;cons
 function adminSettings(){const d=admin.data;if(!d)return;const ds=Number.isInteger(d.defaultStartMinutes)?d.defaultStartMinutes:480,dl=d.defaultLunchMinutes??defaultLunch;
   const lunchOpts=[...new Set([30,45,60,75,90,dl])].sort((a,b)=>a-b),emps=d.employees.filter(e=>e.status!=='無効');
   const own=e=>`<label class="admin-emp-start">${esc(e.name)}<select name="s_${esc(e.id)}" data-emp-start="${esc(e.id)}"><option value="" ${Number.isInteger(e.ownStart)?'':'selected'}>全員共通（${M.hm(ds)}）</option>${(()=>{const l=[];for(let m=240;m<=780;m+=30)l.push(m);if(Number.isInteger(e.ownStart)&&!l.includes(e.ownStart))l.push(e.ownStart);return l.sort((x,y)=>x-y).map(m=>`<option value="${M.hm(m)}" ${m===e.ownStart?'selected':''}>${M.hm(m)}</option>`).join('');})()}</select></label>`;
-  modal(`<h2>始業・昼休憩・小休憩</h2><form id="admin-settings-form"><label>始業（全員共通）<select name="d_start">${startOptions(ds)}</select></label><label>昼休憩の基本<select name="d_lunch">${lunchOpts.map(m=>`<option value="${m}" ${m===dl?'selected':''}>${m}分</option>`).join('')}</select></label><label>小休憩の文言（退勤の画面に出します。空にすると出しません）<textarea name="d_note" rows="2" maxlength="100">${esc(d.breakNote??breakNote)}</textarea></label><h3 class="admin-h">人ごとの始業</h3><p class="fine-print">その人だけ違う始業にするときに選びます。</p>${emps.map(own).join('')}<p class="fine-print">これから押す打刻に使います。保存済みの記録は変わりません。</p>${todayFields(d,emps)}</form><div id="dialog-error" class="error" hidden role="alert"></div><div class="buttons"><button class="btn" data-close>戻る</button><button class="btn primary" data-action="admin-settings-save">この内容で保存</button></div>`);}
+  modal(`<h2>始業・昼休憩・小休憩</h2><form id="admin-settings-form"><label>始業（全員共通）<select name="d_start">${startOptions(ds)}</select></label><label>昼休憩の基本<select name="d_lunch">${lunchOpts.map(m=>`<option value="${m}" ${m===dl?'selected':''}>${m}分</option>`).join('')}</select></label><label>小休憩の文言（退勤の画面に出します。空にすると出しません）<textarea name="d_note" rows="2" maxlength="100">${esc(d.breakNote??breakNote)}</textarea></label><h3 class="admin-h">人ごとの始業</h3><p class="fine-print">その人だけ違う始業にするときに選びます。</p>${emps.map(own).join('')}<p class="fine-print">これから押す打刻に使います。保存済みの記録は変わりません。</p>${todayFields(d,emps)}${yearCatFields(d)}</form><div id="dialog-error" class="error" hidden role="alert"></div><div class="buttons"><button class="btn" data-close>戻る</button><button class="btn primary" data-action="admin-settings-save">この内容で保存</button></div>`);}
+/** 年間の合計（1月1日から）を本人の日別に見せる区分 */
+function yearCatFields(d){const on=new Set(d.yearCats||[]);return `<h3 class="admin-h">年間の合計を見せる区分</h3><p class="fine-print">選んだ区分の人だけ、日別の下に「今年の合計（1月1日から）」が出ます。何も選ばなければ、だれにも出ません。区分は従業員シートの「区分」です。</p><div class="year-cats">${['常勤','常勤バイト','バイター'].map(c=>`<label class="check"><input type="checkbox" data-year-cat="${c}" ${on.has(c)?'checked':''}>${c}</label>`).join('')}</div>`;}
 /** 今日だけの始業（全員・人ごと）。翌日には自動で元に戻る */
 function todayFields(d,emps){const ts=d.todayStart||{all:null,emps:{}},today=M.day(Date.now()),opts=sel=>{let h='<option value="">いつも通り</option>';for(let m=SELF_EARLIEST;m<=840;m+=30)h+=`<option value="${M.hm(m)}" ${m===sel?'selected':''}>${M.hm(m)}</option>`;if(Number.isInteger(sel)&&(sel<SELF_EARLIEST||sel>840||sel%30))h+=`<option value="${M.hm(sel)}" selected>${M.hm(sel)}</option>`;return h;};
   return `<h3 class="admin-h">今日だけの始業（${md(today)}）</h3><p class="fine-print">急に始業が変わった日に使います。明日には自動で元に戻ります。退勤のときの「始めた時刻」の最初の値になります。</p><label class="today-start">全員<select name="t_all">${opts(ts.all)}</select></label>${emps.map(e=>`<label class="admin-emp-start">${esc(e.name)}<select data-today-start="${esc(e.id)}">${opts(Number.isInteger(ts.emps?.[e.id])?ts.emps[e.id]:null)}</select></label>`).join('')}`;}
@@ -799,14 +806,23 @@ async function adminEmpStatus(b){if(b.dataset.empBulk!==undefined&&!b.dataset.co
   const ids=b.dataset.empIds.split(',').filter(Boolean),label=b.textContent;b.disabled=true;b.textContent='保存しています…';
   let r;try{r=requireOk(await request('adminEmpStatus',{token:data.session.token,deviceId:data.deviceId,ym:monthOf(0).slice(0,7),ids,status:b.dataset.empStatus}));}catch(err){b.disabled=false;b.textContent=label;throw err;}
   admin.data=r;renderAdmin();adminEmps();notify(b.dataset.empStatus==='無効'?'外しました。':'戻しました。',false,3000);}
+/** パスワードを変える（本人。管理者も同じ） */
+function passwordForm(){modal(`<h2>パスワードを変える</h2><form id="password-form"><label for="pw-now">今のパスワード</label><input id="pw-now" type="password" inputmode="numeric" autocomplete="current-password" minlength="6" maxlength="128" required><label for="pw-new">新しいパスワード（数字6桁）</label><input id="pw-new" type="password" inputmode="numeric" autocomplete="new-password" minlength="6" maxlength="6" required><label for="pw-again">新しいパスワードをもう一度</label><input id="pw-again" type="password" inputmode="numeric" autocomplete="new-password" minlength="6" maxlength="6" required></form><p class="fine-print">次からは新しいパスワードでログインします。このスマホはログインしたままです。</p><div id="dialog-error" class="error" hidden role="alert"></div>${closeButtons('変える','password-save')}`);}
+async function passwordSave(){const now=$('pw-now').value,next=$('pw-new').value;
+  if(next!==$('pw-again').value)throw Error('新しいパスワードの確認が一致しません。');if(!/^\d{6}$/.test(next))throw Error('新しいパスワードは数字6桁にしてください。');if(now===next)throw Error('今と違うパスワードにしてください。');
+  const btn=document.querySelector('dialog [data-action=password-save]');if(btn){btn.disabled=true;btn.textContent='確認しています…';}
+  try{const c=requireOk(await request('challenge',{name:data.session.employee.name})),verifier=await M.password(now,c.salt,c.iterations),newVerifier=await M.password(next,c.salt,c.iterations);
+    requireOk(await request('changePassword',{token:data.session.token,deviceId:data.deviceId,verifier,newVerifier}));}
+  finally{if(btn){btn.disabled=false;btn.textContent='変える';}}
+  dialog.close();notify('パスワードを変えました。',false,4000);}
 async function adminSettingsSave(){const f=$('admin-settings-form');if(!f)return;const toMin=v=>{const m=/^(\d{1,2}):(\d{2})$/.exec(v||'');return m?Number(m[1])*60+Number(m[2]):null;};
   const starts={};f.querySelectorAll('[data-emp-start]').forEach(s=>{const e=adminEmp(s.dataset.empStart),v=s.value===''?null:toMin(s.value);if(e&&(Number.isInteger(e.ownStart)?e.ownStart:null)!==v)starts[e.id]=v;});
-  const body={token:data.session.token,deviceId:data.deviceId,ym:monthOf(0).slice(0,7),defaultStart:toMin(f.elements.d_start.value),defaultLunch:Number(f.elements.d_lunch.value),breakNote:f.elements.d_note.value.trim(),starts,todayStart:{all:toMin(f.elements.t_all.value),starts:Object.fromEntries([...f.querySelectorAll('[data-today-start]')].map(x=>[x.dataset.todayStart,toMin(x.value)]).filter(x=>x[1]!==null))}};
+  const body={token:data.session.token,deviceId:data.deviceId,ym:monthOf(0).slice(0,7),defaultStart:toMin(f.elements.d_start.value),defaultLunch:Number(f.elements.d_lunch.value),breakNote:f.elements.d_note.value.trim(),starts,yearCats:[...f.querySelectorAll('[data-year-cat]')].filter(x=>x.checked).map(x=>x.dataset.yearCat),todayStart:{all:toMin(f.elements.t_all.value),starts:Object.fromEntries([...f.querySelectorAll('[data-today-start]')].map(x=>[x.dataset.todayStart,toMin(x.value)]).filter(x=>x[1]!==null))}};
   const btn=document.querySelector('dialog [data-action=admin-settings-save]');if(btn){btn.disabled=true;btn.textContent='保存しています…';}
   let r;try{r=requireOk(await request('adminSettings',body));}finally{if(btn){btn.disabled=false;btn.textContent='この内容で保存';}}
   admin.data=r;dialog.close();notify('設定を保存しました。',false,3000);renderAdmin();refresh(false);}
 function settings(){const s=data.session,pendingCount=data.queue.filter(q=>!q.error).length;
-  modal(`<h2>設定</h2>${s?`<p class="settings-name">${esc(s.employee.name)} さん</p>${pendingCount?`<p>まだ送れていない記録が ${pendingCount}件 あります。電波が戻ったら自動で送ります。</p>`:'<p>打刻はすべて送れています。</p>'}<h3>ホーム画面に置く</h3>${standalone?'<p>いまはホーム画面のアイコンから開いています。</p>':'<p>ブラウザの共有ボタン（□に↑の印）やメニューから「ホーム画面に追加」を選ぶと、次からアイコンで開けます。</p>'}<h3>スマホを替えたとき</h3><p>新しいスマホで、同じお名前とパスワードでログインしてください。前のスマホでは打刻できなくなります。</p>${isAdmin()?`<h3>管理者</h3><button class="btn primary" data-admin-open>管理者の画面</button><h3>試験モード</h3><p>動作を確かめるとき用です。オンの間は、時刻の制限（0:00〜4:59・これからの時刻・締め・6:00より前）なしで記録でき、記録は「試験」として出勤簿・集計から外します。場所の理由の欄と、勤務時間の長さの確認はそのままです。</p><button class="btn" data-action="test-mode">${data.testMode?'試験モードをオフにする（いまオン）':'試験モードをオンにする'}</button>`:''}${!verified?'<button class="btn" data-action="relogin">もう一度ログインする</button>':''}<button class="btn" data-action="logout">このスマホからログアウト</button>`:'<p>お名前とパスワードでログインしてください。</p>'}<p class="fine-print">アプリの版 ${esc(CLIENT_VERSION)} ／ 保存先 ${esc(serverVersion||(WEB?'まだ確認していません':boot.version||''))}</p><div class="buttons"><button class="btn primary" data-close>閉じる</button></div>`);}
+  modal(`<h2>設定</h2>${s?`<p class="settings-name">${esc(s.employee.name)} さん</p>${pendingCount?`<p>まだ送れていない記録が ${pendingCount}件 あります。電波が戻ったら自動で送ります。</p>`:'<p>打刻はすべて送れています。</p>'}<h3>ホーム画面に置く</h3>${standalone?'<p>いまはホーム画面のアイコンから開いています。</p>':'<p>ブラウザの共有ボタン（□に↑の印）やメニューから「ホーム画面に追加」を選ぶと、次からアイコンで開けます。</p>'}<h3>スマホを替えたとき</h3><p>新しいスマホで、同じお名前とパスワードでログインしてください。前のスマホでは打刻できなくなります。</p>${isAdmin()?`<h3>管理者</h3><button class="btn primary" data-admin-open>管理者の画面</button><h3>試験モード</h3><p>動作を確かめるとき用です。オンの間は、時刻の制限（0:00〜4:59・これからの時刻・締め・6:00より前）なしで記録でき、記録は「試験」として出勤簿・集計から外します。場所の理由の欄と、勤務時間の長さの確認はそのままです。</p><button class="btn" data-action="test-mode">${data.testMode?'試験モードをオフにする（いまオン）':'試験モードをオンにする'}</button>`:''}${!verified?'<button class="btn" data-action="relogin">もう一度ログインする</button>':''}<button class="btn" data-action="password">パスワードを変える</button><button class="btn" data-action="logout">このスマホからログアウト</button>`:'<p>お名前とパスワードでログインしてください。</p>'}<p class="fine-print">アプリの版 ${esc(CLIENT_VERSION)} ／ 保存先 ${esc(serverVersion||(WEB?'まだ確認していません':boot.version||''))}</p><div class="buttons"><button class="btn primary" data-close>閉じる</button></div>`);}
 document.addEventListener('click',async ev=>{const b=ev.target.closest('button,tr[data-admin-emp],td[data-admin-day]');if(!b)return;
   if(b.dataset.authMode){authMode=b.dataset.authMode;render();}
   if(b.dataset.punch)preparePunch(b.dataset.punch).catch(err=>{busy=false;render();notify(err.message,true);});
@@ -822,6 +838,8 @@ document.addEventListener('click',async ev=>{const b=ev.target.closest('button,t
     if(b.dataset.action==='admin-ack')await adminAck();
     if(b.dataset.action==='admin-save')await adminSaveDay(false);
     if(b.dataset.action==='admin-settings-save')await adminSettingsSave();
+    if(b.dataset.action==='password')passwordForm();
+    if(b.dataset.action==='password-save')await passwordSave();
     if(b.dataset.empStatus)await adminEmpStatus(b);
     if(b.dataset.adminCancel!==undefined){if(b.dataset.confirmed){await adminSaveDay(true);}else{b.dataset.confirmed='1';b.textContent='もう一度押すと「勤務なし」にします';}}
     if(b.dataset.action==='save-punch'&&pending)await savePunch();
@@ -833,6 +851,7 @@ document.addEventListener('click',async ev=>{const b=ev.target.closest('button,t
 $('auth-form').addEventListener('submit',authenticate);$('history-date').value=M.day(Date.now());/* iPhoneの日付選択の「リセット」で空になったら今日に戻す（空のままだと履歴が全部消えたように見える） */const historyDay=()=>{if(!$('history-date').value)$('history-date').value=M.day(Date.now());render();};$('history-date').addEventListener('change',historyDay);$('history-date').addEventListener('input',historyDay);$('history-date').addEventListener('blur',historyDay);
 document.addEventListener('submit',async ev=>{if(!['punch-form','day-form'].includes(ev.target.id))return;ev.preventDefault();if(ev.target.id==='day-form'){try{reviewDay();}catch(err){$('dialog-error').hidden=false;$('dialog-error').textContent=err.message;}return;}try{if(ev.target.id==='punch-form'&&pending){await savePunch();}}catch(err){$('dialog-error').hidden=false;$('dialog-error').textContent=err.message;}});
 document.addEventListener('input',ev=>{const form=ev.target.closest('form');if(form&&['lunch','lunch_custom','a_lunch'].includes(ev.target.name))form.dataset.lunchTouched='1';if(!form||!['punch-form','day-form'].includes(form.id))return;if(['start_time','time','in_time','out_time'].includes(ev.target.name)&&form.id==='day-form'||ev.target.name==='start_time'||ev.target.name==='in_time'&&form.id==='punch-form'){form.dataset.manual='false';updateWorkForm(form);}if(['confirmed_hours','confirmed_minutes'].includes(ev.target.name))form.dataset.manual='true';if(ev.target.name==='lunch_custom'){form.dataset.manual='false';updateWorkForm(form);}});
+$('pw-keyboard').addEventListener('click',()=>{const f=$('login-password');f.inputMode='text';$('pw-keyboard').hidden=true;f.blur();f.focus();});
 document.addEventListener('change',ev=>{const form=ev.target.closest('form');if(form?.id==='punch-form'){if(ev.target.name==='in_time')form.dataset.inTouched='1';if(ev.target.name==='start_time')form.dataset.startTouched='1';}if(form&&['lunch','lunch_custom','a_lunch'].includes(ev.target.name))form.dataset.lunchTouched='1';if(form?.id==='admin-form'){if(['a_hours','a_minutes'].includes(ev.target.name))form.dataset.manual='true';else{form.dataset.manual='false';updateAdminForm(form);}return;}if(form&&['punch-form','day-form'].includes(form.id)&&['lunch','time','date','kind','start_time','in_time','out_time'].includes(ev.target.name)){form.dataset.manual='false';updateWorkForm(form);}});
 dialog.addEventListener('close',()=>{pending=null;busy=false;render();});
 window.addEventListener('online',()=>{refresh();flush();});document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh();});
