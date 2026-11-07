@@ -152,7 +152,7 @@ dialog label select{display:block;width:100%;margin-top:4px;font-size:17px;paddi
     <p class="fine-print" id="days-note"></p>
   </div>
   
-</main><dialog id="modal"><div id="modal-body"></div></dialog><script>window.P02_WEB={"apiUrl":"https://script.google.com/macros/s/AKfycby-w8l6me8DyQfZX5PXZDLk5PXUTVT-BY3xomKUANceDVHtCn_QrUrFfLp6pu7iZdF1tg/exec","version":"20261107.w37"};</script><script>(function(root){
+</main><dialog id="modal"><div id="modal-body"></div></dialog><script>window.P02_WEB={"apiUrl":"https://script.google.com/macros/s/AKfycby-w8l6me8DyQfZX5PXZDLk5PXUTVT-BY3xomKUANceDVHtCn_QrUrFfLp6pu7iZdF1tg/exec","version":"20261107.w38"};</script><script>(function(root){
 'use strict';
 const api={};
 api.id=()=>{if(root.crypto.randomUUID)return root.crypto.randomUUID();const bytes=root.crypto.getRandomValues(new Uint8Array(16));bytes[6]=(bytes[6]&15)|64;bytes[8]=(bytes[8]&63)|128;const hex=[...bytes].map(x=>x.toString(16).padStart(2,'0')).join('');return hex.slice(0,8)+'-'+hex.slice(8,12)+'-'+hex.slice(12,16)+'-'+hex.slice(16,20)+'-'+hex.slice(20);};
@@ -534,14 +534,14 @@ async function preparePunch(kind,opts={}){
   busy=true;render();
   /* 位置は裏で取りに行き、確認画面はすぐ出す。退勤の時刻は押した瞬間 */
   pending={id:M.id(),kind,at,createdAt:at,lat:null,lon:null,accuracy:null,originalId:opts.redo||'',note:opts.redo?'退勤を押し直した':''};
-  const myPending=pending;locating=position().then(fix=>{if(pending!==myPending)return fix;if(fix&&fix.lat!=null){pending.lat=fix.lat;pending.lon=fix.lon;pending.accuracy=fix.accuracy;}pending.located=true;placeNote(fix);return fix;});
+  const myPending=pending;let myFix=null;locating=position().then(fix=>{if(pending!==myPending)return fix;myFix=fix;if(fix&&fix.lat!=null){pending.lat=fix.lat;pending.lon=fix.lon;pending.accuracy=fix.accuracy;}pending.located=true;placeNote(fix);return fix;});
   const def=st>=from&&st<=last?st:-1;
   const ask=inRec?'':`<div class="ask-box"><label>何時に仕事を始めましたか？<select name="in_time" required>${halfHourOptions(from,last,def,'<option value="" '+(def<0?'selected':'')+'>選んでください</option>')}</select></label></div>`;
   const body=`<form id="punch-form" data-kind="退勤" data-at="${at}" data-start="${st}" data-noin="${inRec?'':1}" data-exclude="${esc(opts.redo||'')}"><input type="hidden" name="date" value="${today}">${ask}${workFields(pending,{start:st})}</form>`;
   modal(`<h2>退勤を記録</h2><div class="confirm-name">${esc(data.session.employee.name)} さん</div><div class="punch-confirm">${M.time(at)}</div>${inRec?`<p class="fine-print">出勤 ${M.time(inRec.at)}</p>`:''}${body}<div id="place-note" class="place-note"><p class="fine-print">場所を確認しています…</p></div><div id="dialog-error" class="error" hidden role="alert"></div>${closeButtons('この内容で記録','save-punch')}`);
   updateWorkForm($('punch-form'));
-  /* 始業は押したときに保存先から取り直す（今日だけの始業などをアプリを閉じずに反映）。まだ触っていなければ選び直す */
-  if(!inRec&&navigator.onLine!==false)refresh(false).then(()=>{const f=$('punch-form');if(!f||pending!==myPending)return;const ns=startOf();if(ns===Number(f.dataset.start))return;
+  /* 始業・場所は押したときに保存先から取り直す（ふだんは通信しないため）。始業はまだ触っていなければ選び直す。場所は取り直した場所で判定し直す */
+  if(navigator.onLine!==false)refresh(false).then(()=>{const f=$('punch-form');if(!f||pending!==myPending)return;if(pending.located)placeNote(myFix);if(inRec)return;const ns=startOf();if(ns===Number(f.dataset.start))return;
     if(f.dataset.startTouched)return;f.dataset.start=ns;const sel=f.elements.in_time;
     if(sel&&!f.dataset.inTouched){const d2=ns>=from&&ns<=last?ns:-1;sel.innerHTML=halfHourOptions(from,last,d2,'<option value="" '+(d2<0?'selected':'')+'>選んでください</option>');}
     const sp=f.querySelector('.work-start');if(sp)sp.outerHTML=startPicker(ns);f.dataset.manual='false';updateWorkForm(f);}).catch(()=>{});
@@ -849,7 +849,7 @@ document.addEventListener('click',async ev=>{const b=ev.target.closest('button,t
   if(b.id==='home-link'||b.id==='admin-back-top'){if(dialog.open)dialog.close();if(view!=='main'){if(history.state?.tcDays||history.state?.tcAdmin)history.back();else{view='main';render();}}window.scrollTo(0,0);}
   if(b.dataset.adminOpen!==undefined)openAdmin();if(b.dataset.adminMonth!==undefined){admin.month=Number(b.dataset.adminMonth);if(admin.emp!=='__grid')admin.emp=null;renderAdmin();}if(b.dataset.adminSettings!==undefined)adminSettings();if(b.dataset.adminEmps!==undefined)adminEmps();if(b.dataset.gridOrder){try{localStorage.setItem('tc-grid-order',b.dataset.gridOrder);}catch(err){}renderAdmin();}if(b.dataset.adminGrid!==undefined){admin.emp='__grid';renderAdmin();window.scrollTo(0,0);}if(b.dataset.adminReload!==undefined)loadAdmin();if(b.dataset.adminEmp){admin.emp=b.dataset.adminEmp;renderAdmin();window.scrollTo(0,0);}if(b.dataset.adminList!==undefined){admin.emp=null;renderAdmin();window.scrollTo(0,0);}
   if(b.dataset.adminDay){const [id,d]=b.dataset.adminDay.split('|');adminEditDay(id,d);}
-  if(b.id==='settings')settings();if(b.dataset.day){if(dialog.open)dialog.close();editDay(b.dataset.day);}if(b.id==='days-open'){view='days';daysMonth=0;try{history.pushState({tcDays:1},'');}catch(e){}render();window.scrollTo(0,0);}if(b.id==='days-back'){if(history.state?.tcDays){history.back();}else{view='main';render();window.scrollTo(0,0);}}if(b.dataset.month!==undefined){daysMonth=Number(b.dataset.month);renderDays();}
+  if(b.id==='settings'){settings();/* 権限などはふだん取りに行かないので、⚙を開いた時に取り直して出し直す */if(data.session)refresh(false).then(()=>{if(dialog.open&&dialog.querySelector('.settings-name'))settings();});}if(b.dataset.day){if(dialog.open)dialog.close();editDay(b.dataset.day);}if(b.id==='days-open'){view='days';refresh(false).then(()=>{if(view==='days')render();});daysMonth=0;try{history.pushState({tcDays:1},'');}catch(e){}render();window.scrollTo(0,0);}if(b.id==='days-back'){if(history.state?.tcDays){history.back();}else{view='main';render();window.scrollTo(0,0);}}if(b.dataset.month!==undefined){daysMonth=Number(b.dataset.month);renderDays();}
   if(b.dataset.startToggle!==undefined){const f=b.closest('form');b.hidden=true;const st=f.querySelector('.start-text');if(st)st.hidden=true;f.querySelector('#start-wrap').hidden=false;f.dataset.startTouched='1';f.dataset.manual='false';updateWorkForm(f);f.elements.start_time.focus();}if(b.id==='sync')flush();if(b.dataset.close!==undefined)dialog.close();
   try{
     if(b.dataset.action==='day-review')reviewDay();if(b.dataset.action==='day-back')backDay();
@@ -879,32 +879,20 @@ document.addEventListener('change',async ev=>{
     catch(err){sel.disabled=false;const el=$('dialog-error');if(el){el.hidden=false;el.textContent=err.message;}}
     return;}const form=ev.target.closest('form');if(form?.id==='punch-form'){if(ev.target.name==='in_time')form.dataset.inTouched='1';if(ev.target.name==='start_time')form.dataset.startTouched='1';}if(form&&['lunch','lunch_custom','a_lunch'].includes(ev.target.name))form.dataset.lunchTouched='1';if(form?.id==='admin-form'){if(['a_hours','a_minutes'].includes(ev.target.name))form.dataset.manual='true';else{form.dataset.manual='false';updateAdminForm(form);}return;}if(form&&['punch-form','day-form'].includes(form.id)&&['lunch','time','date','kind','start_time','in_time','out_time'].includes(ev.target.name)){form.dataset.manual='false';updateWorkForm(form);}});
 dialog.addEventListener('close',()=>{pending=null;busy=false;render();});
-window.addEventListener('online',()=>{refresh();flush();});document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh();});
-setInterval(tick,15000);setInterval(()=>{if(!document.hidden)refresh();},60000);
-/* 新しい版が出ていたら、入力中・未送信がないときに自動で切り替える */
+/* 通信は、退勤を押した時（版・始業の確認と送信）と、まだ送れていない記録がある間だけ。送れたら次の退勤まで通信しない（w38） */
+window.addEventListener('online',()=>flush());document.addEventListener('visibilitychange',()=>{if(!document.hidden)flush();});
+setInterval(tick,15000);setInterval(()=>{if(!document.hidden&&data.queue.some(q=>!q.error))flush();},60000);
+/* 新しい版の確認は、開いた時と退勤を押した時だけ（w38） */
 let updating=false;
-async function checkUpdate(){
-  if(!WEB||updating||navigator.onLine===false)return;
-  try{const r=await fetch('version.json?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.json()).version;
-    if(!v||v===CLIENT_VERSION)return;
-    if(dialog.open||busy||sending||data.queue.some(q=>!q.error)){setTimeout(checkUpdate,30000);return;}
-    /* 同じ版への切り替えは1回だけ（ページのキャッシュが古いままでも、読み込みを繰り返さない） */
-    let tried='';try{tried=sessionStorage.getItem('tc-update-tried')||'';}catch(e){}
-    if(tried===v)return;
-    try{sessionStorage.setItem('tc-update-tried',v);}catch(e){}
-    updating=true;notify('新しい版に切り替えています…');
-    try{const reg=await navigator.serviceWorker?.getRegistration();await reg?.update();}catch(e){}
-    location.replace(location.pathname+'?v='+encodeURIComponent(v));
-  }catch(e){}
-}
-async function updateBeforePunch(at){
+async function updateBeforePunch(at){return switchIfNew(at);}
+async function switchIfNew(at){
   if(!WEB||updating||navigator.onLine===false)return false;
   let v='';try{const ctl=new AbortController(),t=setTimeout(()=>ctl.abort(),2500);const r=await fetch('version.json?t='+Date.now(),{cache:'no-store',signal:ctl.signal});clearTimeout(t);if(r.ok)v=(await r.json()).version||'';}catch(e){return false;}
   if(!v||v===CLIENT_VERSION)return false;
   let tried='';try{tried=sessionStorage.getItem('tc-update-tried')||'';}catch(e){}
   if(tried===v)return false;
   /* 押した時刻を残せないときは切り替えない（退勤をなくさないため） */
-  try{sessionStorage.setItem('tc-update-tried',v);sessionStorage.setItem('tc-resume-punch',JSON.stringify({at,v}));}catch(e){return false;}
+  try{sessionStorage.setItem('tc-update-tried',v);if(at)sessionStorage.setItem('tc-resume-punch',JSON.stringify({at,v}));}catch(e){return false;}
   updating=true;notify('新しい版に切り替えています…');
   try{const reg=await navigator.serviceWorker?.getRegistration();await reg?.update();}catch(e){}
   location.replace(location.pathname+'?v='+encodeURIComponent(v));return true;
@@ -916,9 +904,7 @@ function resumePunch(){let r=null;try{r=JSON.parse(sessionStorage.getItem('tc-re
 if(WEB){
   try{const q=new URLSearchParams(location.search);if(q.has('v')){q.delete('v');history.replaceState(null,'',location.pathname+(q.toString()?'?'+q:''));}}catch(e){}
   if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
-  document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkUpdate();});
-  setInterval(()=>{if(!document.hidden)checkUpdate();},300000);
 }
-render();ready.then(async()=>{/* 「使えません」のスマホで新しい登録URLを開いたら、登録し直せるようにする */if(data.closed&&boot.invite){await save(current=>({...current,session:null,history:[],closed:false}));authMode='register';}}).then(restoreFromUrl).then(()=>{render();resumePunch();}).then(()=>request('hello')).then(requireOk).then(()=>{available=true;render();refresh();checkUpdate();}).catch(err=>{available=false;$('cloud-status').textContent=err.message;});
+render();ready.then(async()=>{/* 「使えません」のスマホで新しい登録URLを開いたら、登録し直せるようにする */if(data.closed&&boot.invite){await save(current=>({...current,session:null,history:[],closed:false}));authMode='register';}}).then(restoreFromUrl).then(()=>{render();resumePunch();}).then(()=>{/* ログイン済みなら開いた時は問い合わせない（未送信があれば送るだけ） */if(data.session){available=true;render();return (dialog.open||busy?Promise.resolve(false):switchIfNew(0)).then(moving=>{if(moving)return;/* 「使えません」のスマホだけは、開いた時に戻されていないか確かめる */if(data.closed)refresh();else flush();});}return request('hello').then(requireOk).then(()=>{available=true;render();if(!dialog.open)switchIfNew(0);});}).catch(err=>{available=false;$('cloud-status').textContent=err.message;});
 })();
 </script></body></html>
