@@ -1,0 +1,1189 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#215d48"><meta name="robots" content="noindex,nofollow,noarchive"><title>農園出勤簿</title><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="出勤簿"><meta name="apple-mobile-web-app-status-bar-style" content="default"><style>:root{color-scheme:light;--green:#215d48;--deep:#183d31;--ink:#253a32;--muted:#7c8982;--line:#e4e9e4;--bg:#f5f6f2;--orange:#b97b39}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif;font-size:15px;line-height:1.6}button,input,select{font:inherit}button{cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #8fbca3;outline-offset:3px}button:disabled{cursor:default;opacity:.32}button{border:0}input,select{min-width:0;max-width:100%;border:1px solid var(--line);border-radius:10px;background:#fff;padding:11px 12px;color:var(--ink);font-size:16px}.app{width:min(100%,540px);margin:auto;padding:0 25px 28px}.header{display:flex;align-items:center;justify-content:space-between;padding:28px 0 20px}.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--deep);font-size:17px;font-weight:750;letter-spacing:.04em}.brand-icon{font-size:29px;background:var(--green);color:#fff;border-radius:12px;width:43px;height:43px;text-align:center;line-height:39px;font-weight:400}.brand small{display:block;font-size:9px;letter-spacing:.22em;color:#8c9890;margin-top:1px}.icon-button{font-size:23px;background:none;color:#75877c;border:1px solid #e1e7df;width:42px;height:42px;border-radius:50%}.trial{text-align:center;color:#8a938b;font-size:11px;margin:0 -8px 25px}.trial span{font-size:10px;border-radius:4px;background:#e9ede4;color:#68795d;padding:3px 6px;margin-right:5px}.clock-panel{text-align:center}.clock-date{font-size:14px;letter-spacing:.08em;color:#718077}.clock{font-size:70px;line-height:1.2;letter-spacing:-.035em;font-weight:520;font-variant-numeric:tabular-nums;margin:6px 0 23px;color:#183d31}.clock>span{font-size:31px;letter-spacing:0;color:#9aa79e;margin-left:4px}.profile{max-width:290px;margin:0 auto 16px;text-align:left}.profile label{font-size:11px;color:#839085;display:block;margin-bottom:5px}.profile-input{display:flex;background:#fff;border:1px solid var(--line);border-radius:11px;align-items:center;padding:0 13px;gap:9px}.profile-input span{font-size:23px;color:#8d9d91}.profile-input input{width:100%;border:0;background:none;padding:10px 0;border-radius:0;font-weight:600}.status{display:inline-flex;align-items:center;gap:7px;border:1px solid #dfe6df;border-radius:30px;padding:4px 14px;font-size:12px;color:#76867b;margin-bottom:23px}.status i{display:block;width:6px;height:6px;background:#aab4a9;border-radius:50%}.status.working{color:var(--green);background:#eaf0e8;border-color:#d7e4d3}.status.working i{background:#4f9265}.status.resting{color:#9c713b;background:#f7efe0;border-color:#eee0c8}.status.resting i{background:#bd8a47}.punch-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.punch{display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:17px;min-height:142px;position:relative;padding:16px}.punch strong{font-size:23px;letter-spacing:.11em}.punch small{font-size:11px;margin-top:4px;letter-spacing:.03em;opacity:.7}.punch-icon{font-size:28px;line-height:1.15;margin-bottom:9px;font-weight:350}.start{background:var(--green);color:#fff;box-shadow:0 6px 15px #215d4818}.finish{background:#fff;color:var(--green);border:1px solid #cbd9ce}.secondary{min-height:86px;display:flex;flex-direction:row;gap:10px;background:#ebeee7;color:#62765c;border:1px solid #e0e6db}.secondary strong{font-size:16px;letter-spacing:.03em}.secondary .punch-icon{font-size:20px;margin:0}.punch:not(:disabled):active{transform:translateY(1px)}.location-note{font-size:11px;color:#869388;margin:17px 0 0}.location-note span{font-size:16px;vertical-align:-1px;margin-right:3px}#notice{font-size:13px;color:var(--green);min-height:18px;margin-top:6px}#notice.bad{color:#a9533c}.section-heading{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:13px}.section-heading h2{font-size:15px;font-weight:650;letter-spacing:.04em;margin:0}.section-heading>span{font-size:11px;color:#8d988f}.today-section{margin-top:20px}.stats{display:grid;grid-template-columns:1fr 1fr;background:white;border:1px solid var(--line);border-radius:15px;padding:19px 0}.stats article{padding:0 21px}.stats article+article{border-left:1px solid var(--line)}.stats article>span{font-size:11px;color:#8a968d}.stats strong{display:block;font-size:27px;line-height:1.5;font-weight:550;font-variant-numeric:tabular-nums;white-space:nowrap}.stats strong span{font-size:11px;color:#859087;font-weight:400;margin:0 3px}.fine-print{font-size:10px;color:#99a198;margin:7px 1px}.history-section{margin-top:27px}.date-label input{font-size:12px;padding:5px 8px;border-color:#dfe6dd;background:transparent;max-width:145px}.empty{background:#eef0e9;border:1px dashed #dce2d7;text-align:center;border-radius:14px;padding:26px 10px;font-size:12px;color:#929d90}.history-list{background:#fff;border:1px solid var(--line);border-radius:15px;padding:0 17px}.history-row{display:flex;gap:13px;align-items:center;padding:14px 0}.history-row+.history-row{border-top:1px solid #eef0ea}.history-time{font-size:19px;letter-spacing:-.03em;font-variant-numeric:tabular-nums}.history-desc{flex:1;text-align:left}.history-desc strong{font-size:13px;font-weight:600}.history-desc p{font-size:10px;color:#8b978e;margin:2px 0;word-break:break-word}.badge{display:inline-block;font-size:9px;margin-left:7px;color:#778e77;background:#edf3e9;padding:1px 5px;border-radius:4px}.badge.review{background:#f7f0e3;color:#a3783c}.edit-button{font-size:11px;padding:7px 5px;background:none;color:#8a978d}.history-footer{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-top:12px;flex-wrap:wrap}.text-button{font-size:11px;color:var(--green);background:none;padding:4px 0}.text-button>span{margin-left:7px}.history-footer>span{font-size:10px;color:#929c92}.footer{text-align:center;border-top:1px solid #e4e8de;padding-top:19px;margin-top:30px;color:#a2aaa0;font-size:10px;line-height:1.9}.error{background:#f7e7df;color:#a65035;border-radius:10px;padding:12px;font-size:13px}dialog{border:0;border-radius:20px;max-width:min(92vw,470px);width:470px;padding:25px;color:var(--ink);box-shadow:0 20px 80px #13392630;max-height:86dvh;overflow:auto}dialog::backdrop{background:#182b2355;backdrop-filter:blur(3px)}dialog h2{font-size:20px;margin:0 0 8px}dialog p{font-size:13px;color:#7c8c80}dialog label{display:block;text-align:left;font-size:12px;color:#748577;margin-top:13px}dialog label input,dialog label select{display:block;width:100%;margin-top:4px}dialog .buttons{display:flex;gap:8px;justify-content:flex-end;margin-top:22px}.btn{padding:10px 17px;border-radius:10px;color:var(--green);background:#eaf0e6;font-size:13px}.btn.primary{background:var(--green);color:#fff}.btn.danger{background:#f7e9e2;color:#9e4d32}.place{display:flex;gap:8px;align-items:center;border-bottom:1px solid #e8ede4;padding:11px 0}.place>div{flex:1;font-size:13px}.place small{display:block;font-size:10px;color:#8e9a8d}.inline-fields{display:grid;grid-template-columns:1fr 1fr;gap:8px}.location-result{background:#eef3e9;border-radius:12px;padding:15px;font-size:14px}.location-result.review{background:#faf0df}.punch-confirm{font-size:37px;color:var(--deep);font-variant-numeric:tabular-nums;font-weight:500;margin:14px 0}.confirm-name{font-size:13px;color:#8b998d}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}@media(max-width:370px){.app{padding:0 17px 20px}.clock{font-size:62px}.stats article{padding:0 12px}.stats strong{font-size:24px}.punch{min-height:125px}.secondary{min-height:77px}.trial{font-size:10px}}@media(min-width:700px){body{padding:20px 0}.app{background:var(--bg);border:1px solid #e0e6dc;border-radius:28px;box-shadow:0 15px 60px #324d3810;padding:0 32px 30px}.header{padding-top:27px}}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+
+.stats.single{grid-template-columns:1fr}.stats.single article{display:flex;align-items:center;justify-content:space-between}.stats.single strong{font-size:30px}
+
+.lunch-fields{border:0;padding:0;margin:18px 0}.lunch-fields legend{font-size:14px;font-weight:650}.lunch-choices{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px}.lunch-choices label{display:flex;flex-wrap:wrap;align-items:center;gap:5px;border:1px solid var(--line);border-radius:10px;padding:10px 7px;margin:8px 0;font-size:12px;color:var(--ink)}.lunch-choices input{width:auto;margin:0;padding:0;accent-color:var(--green)}.lunch-choices label:has(input:checked){background:#eaf0e6;border-color:#86a894}.work-confirm{border-top:1px solid var(--line);padding-top:15px}.work-confirm h3{font-size:16px;margin:0}.work-inputs{display:grid;grid-template-columns:1fr 1fr;gap:12px}.work-inputs input{font-size:25px}.stats.single strong{white-space:normal;text-align:right}#attendance-detail{font-size:11px}
+
+dialog input.correction-time{font-size:28px;font-variant-numeric:tabular-nums;padding:14px}.correction-options{margin-top:20px;font-size:12px;color:#748577}.correction-options summary{cursor:pointer;padding:8px 0}.history-row .edit-button{white-space:nowrap}
+
+[hidden]{display:none!important}.cloud-status{font-size:12px;text-align:center;color:#4c7860;background:#e8eee4;border:1px solid #dae4d4;border-radius:8px;padding:10px 12px;margin-bottom:23px}.cloud-status.pending{background:#fbf1dc;color:#98702f;border-color:#eadbb8}.profile-name{margin:0 auto 18px;font-size:17px;font-weight:650}.profile-name small{display:block;font-size:10px;font-weight:400;color:#99a194;margin-top:2px}.auth-panel{background:#fff;border:1px solid var(--line);border-radius:15px;padding:22px;margin-top:24px}.auth-panel h1{font-size:19px;margin:0 0 10px}.auth-panel p{font-size:12px;color:#839181;line-height:1.9}.auth-tabs{display:flex;gap:6px;margin:21px 0 15px;border-bottom:1px solid var(--line)}.auth-tabs button{background:none;font-size:12px;padding:8px 10px;border-bottom:2px solid transparent;color:#8b998c}.auth-tabs button.selected{border-color:var(--green);color:var(--green);font-weight:650}.auth-panel label{display:block;color:#748477;font-size:12px;margin:14px 0 5px}.auth-panel input{width:100%}.auth-panel .full{width:100%;margin-top:22px}.auth-panel .error{margin-top:17px}.history-row.superseded{opacity:.55}.history-row.superseded .history-time{text-decoration:line-through}.history-desc p{max-width:250px}.today-section .stats article>span{font-size:10px}.today-section .stats strong{font-size:27px}#auth-panel .fine-print{font-size:10px}.stats.single article{gap:12px}@media(max-width:360px){.auth-panel{padding:17px}.stats.single article{padding:0 15px}.stats.single strong{font-size:23px}}
+a.btn{display:block;text-align:center;text-decoration:none;margin-top:8px}
+.punch.next{background:var(--green);color:#fff;border:0;box-shadow:0 6px 15px #215d4818}.punch.other{background:#fff;color:#6f9180;border:1px solid #d6e0d8;box-shadow:none}.stats.single article+article{border-left:0;border-top:1px solid var(--line);margin-top:12px;padding-top:12px}
+.work-start{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;font-size:13px;color:var(--ink);margin:2px 0 6px}.link-button{background:none;color:var(--green);text-decoration:underline;font-size:12px;padding:2px 0}#start-wrap{margin:0;font-size:12px}#start-wrap input{display:inline-block;width:auto;margin:0 0 0 6px;padding:6px 8px}.break-note{font-size:12px!important;color:#5f7568!important;background:#f1f5ef;border-radius:8px;padding:7px 10px;margin:8px 0 0}.notice-box{background:#fbf3e4;color:#8a6230;border-radius:10px;padding:10px 12px;font-size:13px;margin:6px 0 10px}
+.book-actions{display:flex;justify-content:space-between;gap:10px;margin-top:4px}
+.days-head{padding:2px 0 4px}.days-title{font-size:18px;margin:6px 0 12px;color:var(--deep)}.month-tabs{display:flex;gap:8px;margin-bottom:12px}.month-tabs button{flex:1;padding:10px;border-radius:10px;background:#eaf0e6;color:var(--green);font-size:14px}.month-tabs button.selected{background:var(--green);color:#fff}
+.days-list{background:#fff;border:1px solid var(--line);border-radius:15px;padding:0 14px}.day-row{display:flex;align-items:center;gap:10px;width:100%;background:none;text-align:left;padding:13px 0;color:var(--ink)}.day-row+.day-row{border-top:1px solid #eef0ea}.day-date{width:74px;flex:none;font-size:14px;font-weight:600}.day-times{flex:1;min-width:0;font-size:13px;color:#6f7d74;font-variant-numeric:tabular-nums}.day-row strong{font-size:19px;font-weight:550;white-space:nowrap;font-variant-numeric:tabular-nums}.day-row strong span{font-size:10px;color:#859087;font-weight:400;margin:0 2px}
+.tag{display:inline-block;font-size:10px;margin-left:5px;padding:1px 6px;border-radius:99px;background:#edf3e9;color:#557a5d;vertical-align:1px}.tag.warn{background:#f7efe0;color:#9c713b}
+.days-total{display:flex;justify-content:space-between;align-items:center;background:#fff;border:1px solid var(--line);border-radius:15px;padding:14px 18px;margin-top:12px}.days-total span{font-size:13px;color:#6f7d74}.days-total strong{font-size:26px;font-weight:550}.days-total strong span{font-size:11px;margin:0 3px}
+/* 文字を大きく（年配の方・小さい画面向け。最低14px程度） */
+body{font-size:16px}.fine-print,#attendance-detail,#auth-panel .fine-print{font-size:14px;line-height:1.6;color:#6f7d74}.cloud-status{font-size:14px}.status{font-size:14px;padding:6px 16px}.location-note{font-size:14px}#notice{font-size:15px}
+.profile-name small{font-size:13px}.auth-panel p,.auth-panel label,.auth-tabs button{font-size:15px}
+.today-section .stats article>span,.stats article>span{font-size:14px;color:#6f7d74}.section-heading h2{font-size:18px}.section-heading>span{font-size:14px}.date-label input{font-size:15px;padding:7px 9px;max-width:170px}
+.history-time{font-size:20px}.history-desc strong{font-size:16px}.history-desc p{font-size:14px;color:#6f7d74}.badge{font-size:12px;padding:2px 7px}.edit-button{font-size:14px;padding:8px 6px;color:var(--green);text-decoration:underline}
+.text-button{font-size:16px;padding:10px 0}.book-actions{flex-wrap:wrap;margin-top:8px}.book-actions .text-button{font-weight:600}
+.footer{font-size:13px}.punch small{font-size:13px}.clock-date{font-size:16px}
+dialog{padding:22px}dialog p{font-size:15px;color:#4f5f55}dialog label{font-size:15px;color:#4f5f55}dialog h2{font-size:22px}dialog h3{font-size:18px;margin:10px 0 4px}.confirm-name{font-size:15px}
+.lunch-fields legend{font-size:17px}.lunch-choices label{font-size:15px;padding:12px 8px}.correction-options{font-size:15px}.btn{font-size:16px;padding:13px 20px}
+.work-start{font-size:15px}.work-start-text{font-size:16px!important;color:var(--ink)!important;margin:4px 0}.work-proposal{font-size:15px!important;color:var(--green)!important;font-weight:600}.link-button{font-size:15px;padding:6px 0}#start-wrap{font-size:15px}.break-note{font-size:14px!important}.notice-box{font-size:15px;line-height:1.7}
+.days-head .text-button{font-size:17px;font-weight:600;padding:12px 0}.days-title{font-size:21px}.month-tabs button{font-size:17px;padding:13px}
+.day-row{padding:15px 0;align-items:flex-start}.day-date{font-size:16px;width:86px}.day-times{font-size:15px}.day-row strong{font-size:21px}.day-row strong span{font-size:12px}.tag{font-size:12px;margin:4px 6px 0 0;padding:2px 8px}.days-total span{font-size:16px}.days-total strong span{font-size:13px}
+.stats strong span{font-size:13px}
+/* 確認画面のボタンは画面の下に固定し、小さいスマホでも隠れないようにする */
+dialog .buttons{position:sticky;bottom:-22px;background:#fff;margin:18px -22px -22px;padding:12px 22px 18px;box-shadow:0 -6px 12px -8px #0002;z-index:2}
+@media(max-width:370px){.day-date{width:74px;font-size:15px}.day-row strong{font-size:19px}.history-time{font-size:18px}}
+.lunch-choices label{flex-direction:column;justify-content:center;text-align:center;gap:4px;white-space:nowrap}.lunch-choices label span small{display:block;font-size:14px}
+#start-wrap select{display:inline-block;width:auto;margin:0 0 0 8px;padding:8px 12px;font-size:17px}.work-inputs select{display:block;width:100%;margin-top:4px;font-size:16px;padding:11px 12px}
+.sync-button{display:block;margin:-14px auto 18px;background:var(--green);color:#fff;border-radius:10px;padding:10px 18px;font-size:16px}.day-punches{margin-top:18px;border-top:1px solid var(--line);padding-top:8px}.day-punches h3{font-size:16px;margin:6px 0}.punch-row{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;padding:8px 0;border-bottom:1px solid #eef0ea;font-size:16px}.punch-row-time{font-variant-numeric:tabular-nums;font-weight:600}.punch-row .edit-button{margin-left:auto}.punch-row-note{width:100%;margin:0;font-size:14px!important;color:#a65035!important}
+.soft-button{background:#e6efe3;color:var(--green);border:1px solid #cfdecb;border-radius:12px;padding:11px 16px;font-size:16px;font-weight:600;min-height:46px}.book-actions{gap:10px}.book-actions .soft-button{flex:1 1 auto}
+.punch-start{display:block;font-size:18px;color:#5f7568;font-weight:500;margin-top:2px}.punch-confirm{line-height:1.2}
+.ask-box{background:#fbf3e4;border-radius:12px;padding:12px 14px;margin:10px 0;font-size:15px;color:#6f4f22}.ask-box label{color:#4f3a1a!important;margin-top:8px}.ask-box select{display:block;width:100%;margin-top:6px;font-size:18px;padding:10px 12px}.ask-result{margin:8px 0 0!important;font-size:15px!important;color:#215d48!important;font-weight:600}
+dialog label select{display:block;width:100%;margin-top:4px;font-size:17px;padding:10px 12px}
+.days-hint{font-size:15px;color:#4f5f55;margin:0 0 8px}.day-row{border:1px solid transparent}.chev{font-size:24px;color:#9aab9f;margin-left:4px;line-height:1}.day-row:active{background:#f1f5ef}
+.auth-panel h1{font-size:24px}.auth-panel input{font-size:18px;padding:13px 14px}.auth-tabs button{font-size:17px;padding:10px 14px}.btn.full{font-size:18px;padding:15px}.settings-name{font-size:19px!important;font-weight:700;color:var(--deep)!important}
+.punch-start{display:inline;font-size:20px;margin-left:4px;vertical-align:middle}
+.book-actions{margin-top:12px}.book-actions .soft-button{width:100%}.clock{margin-bottom:18px}
+.place-note{font-size:15px;color:#4f5f55;margin:12px 0}
+.header{border-bottom:1px solid #dfe6dd;margin-bottom:18px;padding-bottom:16px}button.brand{background:none;padding:0;text-align:left;cursor:pointer}
+/* 区切り線は画面の端まで */
+.header{margin-left:-25px;margin-right:-25px;padding-left:25px;padding-right:25px}
+@media(max-width:370px){.header{margin-left:-17px;margin-right:-17px;padding-left:17px;padding-right:17px}}
+@media(min-width:700px){.header{margin-left:-32px;margin-right:-32px;padding-left:32px;padding-right:32px}}
+/* ボタンに軽い影（押せる物と分かりやすく） */
+.punch.next{box-shadow:0 4px 10px #215d4833}.punch.other{box-shadow:0 3px 8px #253a321f}.soft-button{box-shadow:0 2px 5px #253a321a}.btn{box-shadow:0 2px 5px #253a321a}.punch:not(:disabled):active,.soft-button:active,.btn:active{box-shadow:none;transform:translateY(1px)}
+.punch.next{box-shadow:0 6px 14px #0b2a1e55,0 2px 4px #0b2a1e33}
+.big-note{font-size:17px!important;color:#253a32!important;line-height:1.8}
+.admin-h{font-size:17px;margin:18px 0 8px;color:var(--deep)}.admin-name{font-size:16px;color:var(--ink)}.admin-back{width:100%;margin-bottom:10px}.day-empty .day-times{color:#a8b2aa}.admin-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px 10px}.admin-grid label{margin-top:8px}.danger-soft{width:100%;margin-top:16px;background:#fbefe9;color:#9e4d32;border-color:#f0d4c8}
+.day-confirm h3{font-size:18px;margin:4px 0 10px}.confirm-date{font-size:16px!important;color:#4f5f55!important;margin:0}.confirm-change{font-size:22px!important;color:var(--deep)!important;margin:6px 0 14px}.confirm-change strong{font-size:28px}.place-note:empty{display:none}
+.year-total{margin-top:8px}
+.admin-status{font-size:13px;color:var(--muted);margin:0 0 6px}dialog textarea{display:block;width:100%;margin-top:4px;font:inherit;font-size:16px;border:1px solid var(--line);border-radius:10px;padding:10px 12px;color:var(--ink);resize:vertical}dialog h2:focus{outline:none}
+.soft-button.wide{width:100%;margin-top:6px}
+.emp-table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;font-size:15px;font-variant-numeric:tabular-nums}.emp-table th{font-size:12px;font-weight:600;color:var(--muted);text-align:right;padding:8px 8px;background:#f1f5ef}.emp-table th:first-child,.emp-table td:first-child{text-align:left;padding-left:12px}.emp-table td{padding:10px 8px;text-align:right;border-top:1px solid #eef0ea;white-space:nowrap}.emp-table td:first-child{white-space:normal}.emp-table td strong{font-size:15px;color:var(--ink)}.emp-table td small{display:block;font-size:11px;color:var(--muted)}.emp-table td span:not(.tag){font-size:11px;color:var(--muted);margin:0 1px}.emp-table tbody tr{cursor:pointer}.emp-table tbody tr:active{background:#f3f7f1}.emp-table tfoot td{font-weight:650;background:#f7f9f5;font-size:14px}
+.grid-wrap{overflow:auto;max-height:70dvh;border:1px solid var(--line);border-radius:12px;background:#fff;-webkit-overflow-scrolling:touch}.day-grid{border-collapse:separate;border-spacing:0;font-size:14px;font-variant-numeric:tabular-nums}.day-grid th,.day-grid td{padding:7px 9px;border-bottom:1px solid #eef0ea;border-right:1px solid #f1f3ee;text-align:center;white-space:nowrap;min-width:58px}.day-grid thead th{position:sticky;top:0;background:#f1f5ef;z-index:2;font-size:12px;max-width:84px;white-space:normal;line-height:1.3}.day-grid tbody th,.day-grid tfoot th{position:sticky;left:0;background:#fff;z-index:1;font-size:13px;font-weight:600;text-align:left}.day-grid thead th:first-child{left:0;z-index:3}.day-grid tr.sun th{color:#b5533c}.day-grid tr.sat th{color:#3d68a8}.day-grid td{cursor:pointer}.day-grid td.warn{background:#fde9b6}.day-grid tfoot td,.day-grid tfoot th{background:#f7f9f5;font-weight:650;position:sticky;bottom:0}.day-grid tfoot tr:first-child td,.day-grid tfoot tr:first-child th{bottom:37px}.day-grid tfoot th{z-index:2}
+.clock-date{color:#4a5c52;font-weight:500}
+/* w23：退勤だけ・農園出勤簿 */
+.punch-grid.single{grid-template-columns:1fr}
+.punch-grid.single .punch{min-height:170px}
+.punch-grid.single .punch strong{font-size:32px;letter-spacing:.18em}
+.punch-grid.single .punch .punch-icon{font-size:26px}
+.punch-grid.single .punch small{font-size:15px;opacity:.85}
+.punch:disabled{opacity:.45}
+.night-note{background:#fbf3e4;color:#6f4f22;border-radius:12px;padding:12px 14px;margin:12px 0 0;font-size:15px;line-height:1.7}
+.help-note{font-size:15px;color:#4f5f55;margin:6px 0 10px;line-height:1.6}
+.test-banner{background:#7a3b8f;color:#fff;border-radius:10px;padding:8px 12px;margin:0 0 10px;font-size:14px;line-height:1.5}
+.reason-box{background:#fbf3e4;border-radius:12px;padding:12px 14px;margin:10px 0;font-size:15px;color:#6f4f22;line-height:1.6}
+.reason-box strong{display:block;font-size:16px;margin-bottom:4px}
+.reason-box textarea{display:block;width:100%;box-sizing:border-box;margin-top:6px;font-size:17px;padding:10px 12px;border:1px solid #e0c9a3;border-radius:10px;font-family:inherit}
+.place-list{margin:8px 0 12px;padding:10px 12px;background:#f3f6f1;border-radius:10px;font-size:15px;line-height:1.6}
+.place-list h3{font-size:14px;margin:0 0 4px;color:#4f5f55}
+.place-line{padding:4px 0;border-bottom:1px solid #e4e9e4}
+.place-line:last-child{border-bottom:0}
+.place-line .map-link{margin-left:8px;font-size:14px;color:var(--green);white-space:nowrap}
+.place-line .place-reason{display:block;font-size:14px;color:#8a6230}
+.tag.place{background:#eef0f7;color:#4f5a8a}
+.place-reason-row{display:block;font-size:13px;color:#8a6230;margin-top:3px}
+.day-row.day-empty .day-times{color:#9aa39c}
+.today-start{margin-top:6px}
+.admin-guide{background:#fbf3e4;color:#5d4520;border-radius:12px;padding:10px 14px;margin:6px 0 12px;font-size:15px;line-height:1.6}
+.admin-guide h3{font-size:15px;margin:0 0 4px}
+.admin-guide ul{margin:0;padding-left:1.2em}
+.admin-guide li{margin:2px 0}
+.admin-guide p{margin:4px 0 0}
+.emp-status-list{margin:10px 0}
+.emp-status-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid #e4e9e4}
+.emp-status-row span{font-size:16px}
+.emp-status-row small{display:block;font-size:13px;color:#6b776f}
+.emp-status-row.off span{color:#9aa39c}
+.emp-status-row .btn{min-width:auto;padding:8px 12px;font-size:14px;white-space:nowrap}
+.btn.wide{width:100%;margin:6px 0}
+.closed-panel{background:#fff;border-radius:18px;padding:28px 22px;margin:24px 0;text-align:center;line-height:1.8}
+.closed-panel h1{font-size:22px;margin:0 0 12px;color:var(--green)}
+.closed-panel p{font-size:16px;margin:8px 0}
+.small-link{font-size:13px;padding:4px 0;margin:2px 0 6px;display:block}
+.year-cats{display:flex;flex-wrap:wrap;gap:8px 18px;margin:6px 0 4px}
+.year-cats .check{display:flex;align-items:center;gap:6px;font-size:16px}
+.year-cats input{width:20px;height:20px}
+.grid-order{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:6px 0}
+.grid-order span{font-size:13px;color:#5b6b62;margin-right:2px}
+.grid-order .chip{border:1px solid #c9d3cb;background:#fff;border-radius:999px;padding:5px 12px;font-size:14px}
+.grid-order .chip.on{background:var(--green);border-color:var(--green);color:#fff}
+.cat-select{display:block;margin-top:4px;font-size:14px;padding:4px 6px;border-radius:8px;border:1px solid #c9d3cb;background:#fff}
+.cat-missing{background:#fbf3e4;color:#6f4f22;border-radius:10px;padding:8px 12px;margin:10px 0;font-size:14px}
+.cat-missing .text-button{font-size:14px;margin-left:4px}
+
+/* 収穫の記録（w40）。打刻の画面に効かないよう、#harvest-entry・#harvest-panel・#hv-dialog の中だけ */
+#harvest-entry{margin-top:10px}
+#harvest-open{display:flex;align-items:center;gap:10px;width:100%;background:#fff;color:var(--green);border:2px solid #b9cfc0;border-radius:14px;padding:12px 16px;font-size:18px;font-weight:700;min-height:54px;text-align:left}
+#harvest-open .hv-label{flex:1}
+#harvest-open small{display:block;font-size:13px;font-weight:500;color:#748577}
+#harvest-open .hv-count{font-size:12px;background:#fff1ce;color:#604410;border-radius:999px;padding:2px 9px}
+#harvest-panel .hv-title{font-size:20px;margin:6px 0 10px;color:var(--deep)}
+#harvest-panel .hv-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;margin:12px 0}
+#harvest-panel .hv-h{font-size:16px;margin:0 0 4px;color:var(--deep);display:flex;justify-content:space-between;gap:8px}
+#harvest-panel .hv-total{font-size:16px}
+#harvest-panel .hv-field,#hv-dialog .hv-field{display:block;margin:0 0 14px;border:0;padding:0;font-size:14px;color:#55665a}
+#harvest-panel .hv-field>span,#hv-dialog .hv-field>span{display:block;margin-bottom:5px;font-weight:600}
+#harvest-panel .hv-field input,#harvest-panel .hv-field select,#hv-dialog .hv-field input,#hv-dialog .hv-field select{display:block;width:100%;font-size:18px;padding:12px;margin:0}
+#harvest-panel .hv-boxes{display:flex!important;align-items:center;gap:8px}
+#harvest-panel .hv-boxes input{width:auto!important;flex:1;text-align:center;font-size:24px!important;font-weight:700}
+#harvest-panel .hv-boxes b{font-size:18px;color:var(--ink)}
+#harvest-panel .hv-step{width:56px;height:56px;border-radius:12px;border:1px solid var(--line);background:#eef3ec;color:var(--green);font-size:26px;font-weight:700}
+#harvest-panel .hv-check,#hv-dialog .hv-check{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:12px;padding:12px;margin:0 0 14px;font-size:16px;color:var(--ink);background:#fbfcf9}
+#harvest-panel .hv-check input,#hv-dialog .hv-check input{width:24px;height:24px;margin:0;flex:none}
+#harvest-panel .hv-primary,#hv-dialog .hv-primary{display:block;width:100%;border:0;border-radius:12px;background:var(--green);color:#fff;font-size:18px;font-weight:700;padding:15px;min-height:54px}
+#harvest-panel .hv-small,#hv-dialog .hv-small{border:1px solid var(--line);background:#eef3ec;color:var(--green);border-radius:10px;padding:9px 12px;font-size:14px;font-weight:600}
+#hv-dialog .hv-danger{border:0;background:#f7e9e2;color:#9e4d32;border-radius:12px;padding:13px;font-size:15px;font-weight:600;width:100%}
+#harvest-panel .hv-hint,#hv-dialog .hv-hint{font-size:13px;color:#748577;margin:-6px 0 12px}
+#harvest-panel .hv-error,#hv-dialog .hv-error{background:#f7e7df;color:#a65035;border-radius:10px;padding:12px;font-size:15px;margin:0 0 12px}
+#harvest-panel .hv-alert{background:#fff1ce;color:#604410;border-radius:12px;padding:11px 13px;font-size:15px;margin:8px 0}
+#harvest-panel .hv-alert.hv-bad{background:#fbe6e2;color:#8a2a1c}
+#harvest-panel .hv-alert button{margin-top:6px}
+#harvest-panel .hv-toast{background:#e3efe6;color:var(--deep);border-radius:12px;padding:11px 13px;font-size:15px;font-weight:600;margin:8px 0}
+#harvest-panel .hv-empty,#hv-dialog .hv-empty{color:#748577;font-size:14px;margin:8px 0}
+#harvest-panel .hv-table{border-top:1px solid var(--line)}
+#harvest-panel .hv-orow{display:grid;grid-template-columns:1fr 64px 92px;align-items:center;gap:6px;width:100%;background:none;border:0;border-bottom:1px solid var(--line);padding:11px 2px;text-align:left;font-size:16px;color:var(--ink)}
+#harvest-panel .hv-orow small{display:block;font-size:12px;color:#748577}
+#harvest-panel .hv-orow .n{text-align:right;font-weight:700}
+#harvest-panel .hv-orow .s{text-align:right;font-size:14px;color:#55665a}
+#harvest-panel .hv-orow.done{background:#f3f5f1;color:#748577}
+#harvest-panel .hv-orow.done .s{color:var(--green);font-weight:700}
+#harvest-panel .hv-rec,#hv-dialog .hv-rec{display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:10px;border-top:1px solid var(--line);padding:10px 0;font-size:16px}
+#harvest-panel .hv-rec small,#hv-dialog .hv-rec small{display:block;font-size:12px;color:#748577}
+#harvest-panel .hv-rec .n,#hv-dialog .hv-rec .n{font-weight:700;text-align:right}
+#hv-dialog .hv-dtitle{font-size:20px;margin:0 0 12px;color:var(--deep)}
+#hv-dialog .hv-dtitle small{font-size:14px;color:#748577;margin-left:8px;font-weight:500}
+#hv-dialog .hv-big{font-size:18px;font-weight:700;margin:0 0 10px}
+#hv-dialog .hv-dl{display:grid;grid-template-columns:96px 1fr;gap:10px;margin:0 0 16px;font-size:16px}
+#hv-dialog .hv-dl dt{color:#748577}
+#hv-dialog .hv-dl dd{margin:0}
+#hv-dialog .hv-dl small{display:block;font-size:13px;color:#748577}
+#hv-dialog .hv-buttons{display:grid;gap:10px;margin-top:16px}
+
+body::before{content:"試験用の画面（従業員には出していません）";display:block;background:#8a2a1c;color:#fff;text-align:center;font-size:13px;padding:4px}</style></head><body>
+<main class="app">
+  <header class="header"><button id="home-link" class="brand" aria-label="最初の画面へ"><span class="brand-icon">◷</span><span><span id="brand-title">農園出勤簿</span><small id="brand-sub">FARM ATTENDANCE BOOK</small></span></button><button id="settings" class="icon-button" aria-label="保存・アカウントの設定">⚙</button></header>
+  <div class="test-banner" id="test-banner" hidden>試験モード中：時刻の制限なし。記録は「試験」として出勤簿・集計から外します。</div>
+  <div class="cloud-status" id="cloud-status" role="status" aria-live="polite" hidden></div><button id="sync" class="sync-button" hidden>今すぐ送る ↻</button>
+  <div id="fatal" class="error" role="alert" hidden></div>
+  <section id="closed-panel" class="closed-panel" hidden><h1>今シーズンはおつかれさまでした。</h1><p>このアプリはお使いいただけません。</p></section>
+  <section id="auth-panel" class="auth-panel" hidden>
+    <h1>ログイン</h1><p>お名前とパスワードを入れてください。一度ログインすれば、次からは開くだけで打刻できます。</p>
+    <div class="auth-tabs"><button data-auth-mode="login" class="selected">ログイン</button><button data-auth-mode="register">初めて使う</button></div>
+    <form id="auth-form"><label for="login-name">お名前</label><input id="login-name" name="name" autocomplete="username" maxlength="40" required>
+      <label for="login-password">パスワード（数字6桁）</label><input id="login-password" name="password" type="password" inputmode="numeric" autocomplete="current-password" minlength="6" maxlength="128" required><button type="button" id="pw-keyboard" class="text-button small-link">英字を含むパスワードの人はこちら</button>
+      <div id="confirm-field" hidden><label for="login-confirm">パスワードをもう一度</label><input id="login-confirm" type="password" inputmode="numeric" autocomplete="new-password" minlength="6" maxlength="128"></div>
+      <p id="invite-note" class="fine-print" hidden>初めて使うときは、管理者から届いた登録用のURLから開いてください。</p>
+      <div id="auth-error" class="error" role="alert" hidden></div><button id="auth-submit" type="submit" class="btn primary full">ログイン</button>
+    </form><p class="fine-print">スマホを替えても、同じお名前とパスワードで続けて使えます。ログインには電波が必要です。</p><p class="fine-print" id="launch-info"></p>
+  </section>
+  <div id="main-panel" hidden>
+    <section class="clock-panel" aria-label="打刻"><div class="clock-date" id="clock-date"></div><div class="clock" id="clock">--:--</div>
+      <div class="profile-name"><span id="worker-name"></span><small id="worker-id"></small></div>
+      
+      <div class="punch-grid single"><button class="punch finish next" data-punch="退勤"><span class="punch-icon">↘</span><strong>退勤</strong><small>お仕事を終えたら押してください</small></button></div>
+      <p id="night-note" class="night-note" hidden>現在始業前です。前日の退勤の押し忘れは「日別の時間」から入れてください。分からなければ管理者に連絡してください。</p>
+      <p class="location-note">⌖ 退勤を押したときだけ、押した場所を送信します</p><div id="notice" role="status" aria-live="polite"></div>
+      <div id="harvest-entry" hidden><button id="harvest-open"><span class="hv-label">収穫の記録<small>どの園地で何箱・終わったか</small></span><span class="hv-count" hidden></span><span aria-hidden="true">›</span></button></div>
+    </section>
+    <section class="today-section"><div class="section-heading"><h2>出勤簿</h2><span id="today-label" hidden></span></div><div class="stats single"><article><span>今日の時間</span><strong id="work-total">—</strong></article><article><span id="month-label">今月の合計</span><strong id="month-total">—</strong></article></div><div class="book-actions"><button id="days-open" class="soft-button">日別の時間を見る（修正・入力もこちら） ›</button></div></section>
+    <input id="history-date" type="hidden">
+  </div>
+  <div id="admin-panel" hidden>
+    <div class="days-head"><button id="admin-back-top" class="text-button">＜ 最初の画面へ戻る</button></div>
+    <h2 id="admin-title" class="days-title">管理</h2>
+    <div class="month-tabs"><button data-admin-month="-1">前月</button><button data-admin-month="0">今月</button></div>
+    <div id="admin-body"></div>
+  </div>
+  <div id="harvest-panel" hidden>
+    <div class="days-head"><button id="harvest-back" class="text-button">＜ 最初の画面へ戻る</button></div>
+    <div id="harvest-root"></div>
+  </div>
+  <div id="days-panel" hidden>
+    <div class="days-head"><button id="days-back" class="text-button">＜ 最初の画面へ戻る</button></div>
+    <h2 id="days-title" class="days-title">日別の時間</h2>
+    <div class="month-tabs"><button data-month="-1">前月</button><button data-month="0">今月</button></div>
+    <p id="days-hint" class="days-hint">直したい日・入れ忘れた日があれば、その日を押してください。</p><p id="days-help" class="help-note">直し方が分からなければ、農園の管理者に言ってください。</p><div id="days-list" class="days-list"></div>
+    <div class="days-total"><span id="days-total-label">今月の合計</span><strong id="days-total">—</strong></div><div class="days-total year-total" id="year-total-box" hidden><span id="year-total-label">年間の合計</span><strong id="year-total">—</strong></div>
+    <p class="fine-print" id="days-note"></p>
+  </div>
+  
+</main><dialog id="modal"><div id="modal-body"></div></dialog><script>window.P02_WEB={"apiUrl":"https://script.google.com/macros/s/AKfycbyWHfh2BhCTCFzcXWaASMX0BKiA0x6mpyEQpf3BGQHnGnrh00Y_wHGYqX1SslAX6SNcOA/exec","version":"20261108.w40"};</script><script>(function(root){
+'use strict';
+const api={};
+api.id=()=>{if(root.crypto.randomUUID)return root.crypto.randomUUID();const bytes=root.crypto.getRandomValues(new Uint8Array(16));bytes[6]=(bytes[6]&15)|64;bytes[8]=(bytes[8]&63)|128;const hex=[...bytes].map(x=>x.toString(16).padStart(2,'0')).join('');return hex.slice(0,8)+'-'+hex.slice(8,12)+'-'+hex.slice(12,16)+'-'+hex.slice(16,20)+'-'+hex.slice(20);};
+api.day=at=>new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Tokyo',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(at));
+api.time=at=>new Intl.DateTimeFormat('ja-JP',{timeZone:'Asia/Tokyo',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).format(new Date(at));
+api.visible=records=>{
+  const replaced=new Set(records.filter(p=>!p.error).map(p=>p.originalId).filter(Boolean));
+  /* 「取消」の行（管理者取消など）は、元の打刻を隠したうえで自分も表示しない */
+  return records.filter(p=>!replaced.has(p.id)&&!/取消/.test(p.judge||'')).sort((a,b)=>a.at-b.at||a.createdAt-b.createdAt||a.id.localeCompare(b.id));
+};
+api.effective=records=>api.visible(records).filter(p=>!p.error);
+api.minute=at=>Math.floor(at/60000);
+api.duration=minutes=>Math.floor(minutes/60)+'時間'+(minutes%60?minutes%60+'分':'');
+/** 始業時刻（0時からの分）。8:00→480。 */
+api.hm=minutes=>Math.floor(minutes/60)+':'+String(minutes%60).padStart(2,'0');
+api.parseHm=text=>{const m=/^(\d{1,2}):(\d{2})$/.exec(String(text||'').trim());if(!m)return null;const v=Number(m[1])*60+Number(m[2]);return Number(m[2])<60&&v<1440?v:null;};
+/** 数え始め：始業と「打刻を30分単位で切り上げた時刻」の遅い方（7:50打刻→8:00、8:10打刻→8:30。8:00始業のとき） */
+api.countFrom=(inAt,startMinutes)=>{const own=api.minute(inAt);if(!Number.isInteger(startMinutes))return own;const base=Math.floor(Date.parse(api.day(inAt)+'T00:00:00+09:00')/60000),st=base+startMinutes;return own<=st?st:base+Math.ceil((own-base)/30)*30;};
+/** 退勤（at）に対応する出勤。なければ null */
+api.checkoutIn=(records,at,excludeId='')=>{
+  const prior=api.effective(records).filter(p=>p.id!==excludeId&&p.at<=at),last=prior.at(-1);
+  if(!last||last.kind!=='出勤'||api.day(last.at)!==api.day(at))return null;
+  if(prior.at(-2)?.kind==='出勤'&&api.day(prior.at(-2).at)===api.day(at))return null;
+  return last;
+};
+api.checkoutCandidate=(records,at,excludeId='',startMinutes=null)=>{
+  const last=api.checkoutIn(records,at,excludeId);if(!last)return null;
+  return Math.max(0,api.minute(at)-api.countFrom(last.at,startMinutes));
+};
+api.attendance=(records,date,startMinutes=null)=>{
+  let start=null,calculated=0,confirmed=0,lunch=0,count=0,uncertain=false,missing=false,open=false,pending=false,inRec=null,outRec=null,startUsed=startMinutes,changed=false;
+  for(const p of api.effective(records)){
+    if(p.kind==='出勤'){
+      /* 同じ日に出勤が続いたらその日は要確認。前の日の退勤忘れは前の日だけ要確認にし、今日の勤務には響かせない */
+      if(start&&(api.day(start.at)===api.day(p.at)?api.day(p.at)===date:api.day(start.at)===date))uncertain=true;
+      start=p;continue;
+    }
+    if(p.kind!=='退勤')continue;
+    if(!start){if(api.day(p.at)===date)uncertain=true;continue;}
+    if(api.day(p.at)!==api.day(start.at)){if(api.day(p.at)===date||api.day(start.at)===date)uncertain=true;start=null;continue;}
+    if(api.day(p.at)===date){
+      count++;const st=Number.isInteger(p.startMinutes)?p.startMinutes:Number.isInteger(start.startMinutes)?start.startMinutes:startMinutes,span=Math.max(0,api.minute(p.at)-api.countFrom(start.at,st)),rest=p.lunchMinutes,value=p.confirmedMinutes;
+      if(!Number.isInteger(rest)||rest<0||rest>api.minute(p.at)-api.minute(start.at)||!Number.isInteger(value)||value<0||value>1440)missing=true;
+      else{const calc=Math.max(0,span-rest);calculated+=calc;confirmed+=value;lunch+=rest;if(value!==calc&&value!==api.floor30(calc)&&value!==Math.max(60,api.floor30(calc)))changed=true;}
+      inRec=start;outRec=p;startUsed=st;
+      pending=pending||p.sent===false||start.sent===false;
+    }
+    start=null;
+  }
+  if(start&&api.day(start.at)===date){open=true;inRec=start;outRec=null;if(Number.isInteger(start.startMinutes))startUsed=start.startMinutes;}
+  const status=uncertain?'要確認':open?'勤務中':missing?'時間を確認':count?'確認済み':'記録なし';
+  return{status,calculatedMinutes:status==='確認済み'?calculated:null,confirmedMinutes:status==='確認済み'?confirmed:null,lunchMinutes:lunch,count,pending,inRec,outRec,startMinutes:startUsed,changed:status==='確認済み'&&changed,adminFixed:[inRec,outRec].some(p=>/管理者/.test(p?.judge||''))};
+};
+/** 表示用：30分未満は切り捨て（8時間29分→8時間、8時間45分→8時間30分）。記録は実際の分数のまま。 */
+api.floor30=minutes=>Math.floor(minutes/30)*30;
+/** その月の合計。日ごとに30分未満を切り捨ててから足す（紙の出勤簿と同じ）。 */
+api.month=(records,date,startMinutes=null)=>{
+  const ym=date.slice(0,7),days=[...new Set(api.effective(records).map(p=>api.day(p.at)).filter(d=>d.slice(0,7)===ym))].sort();
+  let shown=0,actual=0,done=0,open=0,check=0;const list=[];
+  for(const d of days){const t=api.attendance(records,d,startMinutes);list.push({date:d,...t});if(t.confirmedMinutes!==null){shown+=api.floor30(t.confirmedMinutes);actual+=t.confirmedMinutes;done++;}else if(t.status==='勤務中')open++;else if(t.status!=='記録なし')check++;}
+  return{shownMinutes:shown,actualMinutes:actual,days:done,open,check,list};
+};
+/** 締め：その月の末日18:00（日本時間）。これを過ぎたら、その月の時間は本人が直せない */
+api.closeAt=at=>{const [y,m]=api.day(at).split('-').map(Number);return Date.parse(new Date(Date.UTC(y,m,1)).toISOString().slice(0,10)+'T18:00:00+09:00')-86400000;};
+api.locked=(at,now=Date.now())=>now>=api.closeAt(at);
+/** 押した場所の判定（保存先の judge_ と同じ考え方）。in＝登録した場所の中、out＝外、weak＝位置が正確に分からない、none＝位置なし、unset＝場所が未登録 */
+api.placeCheck=(fix,places)=>{
+  /* 場所を1つも登録していなければ、位置が取れなくても理由は聞かない */
+  if(!Array.isArray(places)||!places.length)return{kind:'unset'};
+  if(!fix||fix.lat==null||fix.lon==null)return{kind:'none'};
+  const rad=Math.PI/180,R=6371000,acc=fix.accuracy||0;
+  const dist=(a,b)=>{const dl=(b.lat-a.lat)*rad,dn=(b.lon-a.lon)*rad,x=Math.sin(dl/2)**2+Math.cos(a.lat*rad)*Math.cos(b.lat*rad)*Math.sin(dn/2)**2;return 2*R*Math.asin(Math.min(1,Math.sqrt(x)));};
+  const polyGap=(p,shape)=>{const k=Math.cos(p.lat*rad),pts=shape.map(q=>[(q[1]-p.lon)*rad*R*k,(q[0]-p.lat)*rad*R]);let inside=false,best=Infinity;
+    for(let i=0,j=pts.length-1;i<pts.length;j=i++){const a=pts[i],b=pts[j];if(((a[1]>0)!==(b[1]>0))&&(0<(b[0]-a[0])*(0-a[1])/(b[1]-a[1])+a[0]))inside=!inside;const dx=b[0]-a[0],dy=b[1]-a[1],len=dx*dx+dy*dy,t=len?Math.max(0,Math.min(1,-(a[0]*dx+a[1]*dy)/len)):0,ex=a[0]+t*dx,ey=a[1]+t*dy;best=Math.min(best,Math.sqrt(ex*ex+ey*ey));}
+    return inside?0:best;};
+  const list=places.map(pl=>{const margin=pl.shape?polyGap(fix,pl.shape):dist(fix,pl)-pl.radius;return{place:pl,over:margin-Math.min(acc,pl.shape?10:50)};});
+  const hit=list.filter(x=>x.over<=0).sort((a,b)=>(a.place.shape?1:0)-(b.place.shape?1:0))[0];
+  if(hit)return{kind:'in',place:hit.place};
+  return{kind:acc>=200?'weak':'out',accuracy:Math.round(acc)};
+};
+api.merge=(remote,local)=>{const map=new Map(remote.map(p=>[p.id,p]));for(const p of local){if(!map.has(p.id))map.set(p.id,p);}return [...map.values()];};
+api.apply=(queue,results)=>{
+  const response=new Map(results.map(r=>[r.id,r]));
+  return queue.flatMap(p=>{const r=response.get(p.record.id);if(!r)return[p];if(['saved','duplicate'].includes(r.status))return[];return[{...p,error:r.reason||'保存先で受け付けられませんでした。'}];});
+};
+api.interval=(records,date,now=Date.now())=>{
+  const start=Date.parse(date+'T00:00:00+09:00'),end=start+86400000;
+  let open=null,total=0,uncertain=false;
+  for(const p of api.effective(records)){
+    if(p.at>now)continue;
+    if(p.kind==='出勤'){if(open!==null)uncertain=true;else open=p.at;}
+    if(p.kind==='退勤'){if(open===null)uncertain=true;else{total+=Math.max(0,Math.min(p.at,end)-Math.max(open,start));open=null;}}
+  }
+  if(open!==null)total+=Math.max(0,Math.min(now,end)-Math.max(open,start));
+  return{minutes:Math.floor(total/60000),open:open!==null,uncertain};
+};
+api.password=async(password,salt,iterations)=>{
+  if(!root.crypto?.subtle)throw Error('安全な暗号処理を使えません。HTTPSの登録用URLを開いてください。');
+  if(typeof password!=='string'||password.length<6||password.length>128)throw Error('パスワードを確認してください（数字6桁）。');
+  if(!/^[a-f0-9]{32}$/.test(salt)||iterations!==600000)throw Error('認証設定を確認できませんでした。');
+  const enc=new TextEncoder(),key=await root.crypto.subtle.importKey('raw',enc.encode(password),{name:'PBKDF2'},false,['deriveBits']);
+  const bytes=await root.crypto.subtle.deriveBits({name:'PBKDF2',salt:enc.encode(salt),iterations,hash:'SHA-256'},key,256);
+  return [...new Uint8Array(bytes)].map(n=>n.toString(16).padStart(2,'0')).join('');
+};
+api.csv=records=>{
+  const cell=x=>'"'+String(x??'').replace(/^[=+@\-\t\r]/,"'<!-- SCRIPTS -->").replaceAll('"','""')+'"';
+  return '\ufeff'+[['打刻ID','従業員ID','氏名','日付','時刻','種別','訂正元ID','訂正理由','送信状況'],...records.map(p=>[p.id,p.employeeId,p.name,api.day(p.at),api.time(p.at),p.kind,p.originalId||'',p.note||'',p.sent?'送信済み':'端末に保存'])].map(r=>r.map(cell).join(',')).join('\r\n');
+};
+if(typeof module!=='undefined')module.exports=api;else root.TC=api;
+})(typeof window==='undefined'?globalThis:window);
+</script>
+<script>/* A single read/write transaction appends pending punches without tab races.
+   iPhoneではアプリの切り替えなどで保存の接続が閉じられることがあるため、
+   閉じていたら開き直して、その操作を1回だけやり直す（書き込みは未確定のままなので二重にならない）。 */
+window.TCStore={
+  open(name,initial){
+    let db=null;
+    const connect=()=>new Promise((resolve,reject)=>{
+      const req=indexedDB.open(name,1);
+      req.onupgradeneeded=()=>req.result.createObjectStore('state');
+      req.onerror=()=>reject(Error('端末に保存できません。通常のブラウザで開き直してください。'));
+      req.onsuccess=()=>{const d=req.result;d.onclose=()=>{if(db===d)db=null;};d.onversionchange=()=>{d.close();if(db===d)db=null;};db=d;resolve(d);};
+    });
+    const run=(d,write,fn)=>new Promise((ok,ng)=>{
+      let tx;try{tx=d.transaction('state',write?'readwrite':'readonly');}catch(err){ng({reconnect:true,cause:err});return;}
+      const store=tx.objectStore('state'),get=store.get('main');let value,error;
+      get.onsuccess=()=>{try{const current=get.result||structuredClone(initial);if(current.schema!==1||!Array.isArray(current.queue)||!Array.isArray(current.history)||!current.deviceId)throw Error('端末の保存データを読み込めません。');value=fn?fn(current):current;if(write)store.put(value,'main');}catch(err){error=err;tx.abort();}};
+      tx.oncomplete=()=>ok(value);
+      tx.onabort=()=>ng(error||{reconnect:true,cause:tx.error});tx.onerror=()=>{};
+    });
+    const transaction=async(write,fn)=>{
+      if(!db)await connect();
+      try{return await run(db,write,fn);}
+      catch(err){
+        if(!err||!err.reconnect)throw err;
+        db=null;await connect();
+        try{return await run(db,write,fn);}
+        catch(again){if(again&&again.reconnect)throw Error(write?'端末に保存できませんでした。打刻はまだ確定していません。画面を開き直してください。':'端末の保存を読み込めませんでした。画面を開き直してください。');throw again;}
+      }
+    };
+    return connect().then(()=>transaction(true,current=>current)).then(data=>({data,read:()=>transaction(false),update:fn=>transaction(true,fn)}),err=>{throw err&&err.reconnect?Error('端末に保存できません。画面を開き直してください。'):err;});
+  }
+};
+</script>
+<script>(function(){
+'use strict';
+const WEB=window.P02_WEB||null;
+const $=id=>document.getElementById(id),M=window.TC,boot=WEB?{appId:'web',version:WEB.version,invite:(new URLSearchParams(location.search).get('join')||'').slice(0,200),defaultLunchMinutes:60}:(window.P02_BOOTSTRAP||{}),KEY='p02-cloud-timecard-v1-'+(boot.appId||'preview'),dialog=$('modal');
+let data={schema:1,deviceId:M.id(),session:null,queue:[],history:[]},available=false,busy=false,sending=false,verified=true,authMode=boot.invite?'register':'login',pending=null;
+let serverVersion='',quietSend=false;let breakNote='小休憩：午前・午後 各15分（8時間勤務の場合）',defaultLunch=Number.isInteger(boot.defaultLunchMinutes)?boot.defaultLunchMinutes:60,view='main',daysMonth=0;
+/** その人の始業（0時からの分）。保存先の従業員シート「始業」、空なら全員共通。未取得なら8:00 */
+const startOf=()=>Number.isInteger(data.session?.employee?.startMinutes)?data.session.employee.startMinutes:480;
+/** 時刻の候補：本人は6:00から、管理者は5:00から。0:00〜4:59は退勤を押せない（画面だけ） */
+const SELF_EARLIEST=360,ADMIN_EARLIEST=300,NIGHT_END=300;
+/** 試験モード：管理者だけ。時刻の制限（0:00〜4:59・これからの時刻・締め・候補の範囲）を外し、記録に「試験」と付ける */
+const isTest=()=>data.session?.employee?.role==='管理者'&&data.testMode===true;
+const nowMinutes=(at=Date.now())=>Math.floor((at-Date.parse(M.day(at)+'T00:00:00+09:00'))/60000);
+const isNight=()=>!isTest()&&nowMinutes()<NIGHT_END;
+const HELP_NOTE='<p class="help-note">直し方が分からなければ、農園の管理者に言ってください。</p>';
+/** 勤務時間は最低1時間（始業早々に雨で帰る日も1時間） */
+const MIN_WORK=60;
+/** 始めてから4時間30分未満（4時間29分まで）なら、昼休憩の初期は「なし」（半日で12:00〜12:29に帰る日など） */
+const SHORT_DAY=270;
+const WEEK='日月火水木金土',md=d=>Number(d.slice(5,7))+'/'+Number(d.slice(8,10))+'（'+WEEK[new Date(d+'T12:00:00+09:00').getUTCDay()]+'）';
+const CLIENT_VERSION=WEB?WEB.version:'20261104.5';
+const APP_URL='https://script.google.com/macros/s/AKfycby-w8l6me8DyQfZX5PXZDLk5PXUTVT-BY3xomKUANceDVHtCn_QrUrFfLp6pu7iZdF1tg/exec';
+function iconUrl(){const s=data.session;if(!s||!verified||!/^[a-f0-9]{64}$/.test(s.iconKey||'')||!s.employee?.id)return '';return APP_URL+'/i/'+encodeURIComponent(s.employee.id)+'/'+encodeURIComponent(data.deviceId)+'/'+s.iconKey;}
+/* ホーム画面のアイコンは独立した画面で開き、枠内の保存が起動ごとに消えることがある。
+   ログイン情報を上位ページのURL（tk=トークン, dv=端末ID, em=従業員ID）にも持たせ、消えていたら復元する。 */
+const standalone=(()=>{try{return window.matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;}catch(e){return false;}})();
+let launchParams={},urlParams=null,authNotice='',launchInfo='確認中';
+function topLocation(){return new Promise(resolve=>{try{if(!window.google?.script?.url)return resolve(null);google.script.url.getLocation(loc=>resolve(loc||null));}catch(e){resolve(null);}});}
+function setTopParams(params){const key=JSON.stringify(params);if(key===urlParams)return;urlParams=key;try{window.google?.script?.history?.replace(null,params,'');}catch(e){}}
+function syncUrl(){if(WEB){try{if(data.session&&location.search)history.replaceState(null,'',location.pathname);}catch(e){}return;}const s=data.session;if(s&&s.token&&s.employee?.id)setTopParams({tk:s.token,dv:data.deviceId,em:s.employee.id});else if(launchParams.join)setTopParams({join:launchParams.join});else setTopParams({});}
+async function restoreFromUrl(){if(WEB){launchInfo='';return;}
+  const loc=await topLocation(),urlP=loc?.parameter||{},sv=boot.launch||{};
+  /* サーバー（doGet）が受け取ったURLの値を優先し、なければ google.script.url の値を使う */
+  const p={...urlP};if(sv.tk&&sv.dv&&sv.em){p.tk=sv.tk;p.dv=sv.dv;p.em=sv.em;}if(boot.invite&&!p.join)p.join=boot.invite;launchParams=p;
+  launchInfo='サーバー：'+(sv.keys?sv.keys.replaceAll(',','・'):'なし')+'／画面：'+(loc?(Object.keys(urlP).filter(k=>['tk','dv','em','join'].includes(k)).join('・')||'なし'):'読めない')+'／アイコン起動：'+(standalone?'はい':'いいえ')+'／保存：'+(data.session?'ログインあり':'空');urlParams=JSON.stringify(Object.fromEntries(Object.entries(p).filter(([k])=>['tk','dv','em','join'].includes(k))));
+  const why=x=>{launchInfo+='／復元：'+x;};
+  if(data.session){why('不要（ログイン済み）');syncUrl();return;}
+  const tk=String(p.tk||''),dv=String(p.dv||''),em=String(p.em||'');
+  if(!tk&&!dv&&!em){why('なし');return;}
+  if(!/^[a-f0-9]{64}$/i.test(tk)||!/^[a-zA-Z0-9_-]{16,80}$/.test(dv)||!/^[A-Za-z0-9_-]{1,20}$/.test(em)){why('値が不正（'+[tk.length,dv.length,em.length].join('/')+'）');return;}
+  if(data.queue.length&&data.deviceId!==dv){why('未送信'+data.queue.length+'件あり');return;}
+  try{await save(current=>({...current,deviceId:dv,session:{token:tk,iconKey:tk,employee:{id:em,name:''},fromUrl:true}}));}
+  catch(err){data={...data,deviceId:dv,session:{token:tk,iconKey:tk,employee:{id:em,name:''},fromUrl:true}};why('保存失敗・画面内のみ（'+err.message+'）');verified=true;return;}
+  why('実施');verified=true;
+}
+try{navigator.storage?.persist?.();}catch(e){}
+const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let storage=null;
+const ready=TCStore.open(KEY,data).then(value=>{storage=value;data=value.data;}).catch(err=>{$('fatal').hidden=false;$('fatal').textContent=err.message;busy=true;throw err;});
+async function save(fn){await ready;data=await storage.update(fn);return data;}
+let noticeTimer=null,locating=null;
+function notify(message,error=false,clearAfter=0){clearTimeout(noticeTimer);$('notice').textContent=message;$('notice').classList.toggle('bad',error);if(clearAfter)noticeTimer=setTimeout(()=>{if($('notice').textContent===message)$('notice').textContent='';},clearAfter);}
+function request(action,body={}){
+  const payload={...body,action};
+  if(window.P02_PREVIEW_BRIDGE)return window.P02_PREVIEW_BRIDGE(payload);
+  if(WEB){
+    /* text/plain で送ると、Apps Script でも事前確認（CORS）なしで受け取れる */
+    const ctrl=new AbortController(),timer=setTimeout(()=>ctrl.abort(),30000);
+    return fetch(WEB.apiUrl,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload),signal:ctrl.signal,redirect:'follow'})
+      .then(r=>{if(!r.ok)throw Error('通信できませんでした。再送してください。');return r.json();})
+      .catch(err=>{throw Error(err.name==='AbortError'?'応答を確認できませんでした。あとで自動で送ります。':'通信できませんでした。電波を確認して、もう一度お試しください。');})
+      .finally(()=>clearTimeout(timer));
+  }
+  if(!window.google?.script?.run)return Promise.reject(Error('Googleとの接続設定がまだありません。'));
+  return new Promise((resolve,reject)=>{let settled=false;const timeout=setTimeout(()=>{settled=true;reject(Error('応答を確認できませんでした。あとで自動で送ります。'));},30000);
+    google.script.run.withSuccessHandler(result=>{if(settled)return;settled=true;clearTimeout(timeout);resolve(result);}).withFailureHandler(()=>{if(settled)return;settled=true;clearTimeout(timeout);reject(Error('通信できませんでした。再送してください。'));}).timecardRequest(payload);
+  });
+}
+function requireOk(result){if(!result?.ok){const err=Error(result?.message||'保存先から正しい応答がありません。');err.code=result?.error;throw err;}if(Number.isInteger(result.defaultLunchMinutes))defaultLunch=result.defaultLunchMinutes;if(typeof result.breakNote==='string')breakNote=result.breakNote;if(typeof result.version==='string')serverVersion=result.version;return result;}
+/** 従業員に見せる場所の結果は、やさしい言葉にする（シートの判定はそのまま） */
+function placeText(p){const j=String(p.judge||'');if(!j||p.originalId)return '';if(/範囲内/.test(j))return '場所OK'+(p.placeName?'（'+p.placeName+'）':'');if(/位置なし/.test(j))return /後から入力/.test(j)?'後から入力':'場所を確認できませんでした';if(/精度が低い/.test(j))return '場所が正確に分かりませんでした';if(/範囲外/.test(j))return '登録した場所の外で押しました';if(/場所未設定/.test(j))return '';return '';}
+function historyNote(p){const parts=[];if(p.error)return p.error;if(p.kind==='退勤'){if(Number.isInteger(p.lunchMinutes))parts.push('昼休憩 '+p.lunchMinutes+'分');if(Number.isInteger(p.confirmedMinutes))parts.push('勤務 '+M.duration(p.confirmedMinutes));}const place=placeText(p);if(place)parts.push(place);return parts.join(' ／ ');}
+function ownHistory(){const id=data.session?.employee.id;return M.merge(data.history.filter(p=>p.employeeId===id),data.queue.filter(p=>p.employeeId===id).map(p=>({...p.record,employeeId:id,name:data.session.employee.name,sent:false,error:p.error})));}
+function render(){
+  const s=data.session;
+  /* 管理者の画面を開いている間だけ、表題を「農園管理画面」にする */
+  const adminView=!!s&&view==='admin';$('brand-title').textContent=adminView?'農園管理画面':'農園出勤簿';$('brand-sub').textContent=adminView?'FARM MANAGEMENT':'FARM ATTENDANCE BOOK';document.title=adminView?'農園管理画面':'農園出勤簿';
+  $('test-banner').hidden=!s||!isTest();
+  /* 今シーズンは終わり（管理者が外した人）：ログイン画面も出さず「使えません」だけ。管理者が戻せば、そのまま使える */
+  const closed=!!s&&data.closed===true;$('closed-panel').hidden=!closed;$('settings').hidden=closed;
+  $('auth-panel').hidden=!!s;$('main-panel').hidden=!s||closed||view!=='main';$('days-panel').hidden=!s||closed||view!=='days';$('admin-panel').hidden=!s||closed||view!=='admin';
+  /* 収穫の記録（w40）：「作業報告」ありの人だけ、退勤の下にボタン */$('harvest-panel').hidden=!s||closed||view!=='work';$('harvest-entry').hidden=!s||closed||s.employee?.workReport!==true;
+  document.querySelectorAll('[data-auth-mode]').forEach(b=>b.classList.toggle('selected',b.dataset.authMode===authMode));
+  $('confirm-field').hidden=authMode!=='register';$('pw-keyboard').hidden=authMode==='register'||$('login-password').inputMode==='text';if(authMode==='register')$('login-password').inputMode='numeric';$('login-confirm').required=authMode==='register';$('login-password').autocomplete=authMode==='register'?'new-password':'current-password';
+  document.querySelector('#auth-panel h1').textContent=authMode==='register'?'初めて使う':'ログイン';$('auth-submit').textContent=busy?'確認しています…':authMode==='register'?'このスマホで使い始める':'ログイン';$('auth-submit').disabled=busy||!available;
+  $('invite-note').hidden=authMode!=='register'||!!boot.invite;
+  if(!s&&authNotice){$('auth-error').hidden=false;$('auth-error').textContent=authNotice;}
+  $('launch-info').textContent=launchInfo?'起動情報（版 '+CLIENT_VERSION+'）：'+launchInfo:'';
+  if(!s){$('cloud-status').textContent=available?'':'保存先につながるのを待っています。電波を確認してください。';$('cloud-status').hidden=available;return;}
+  $('worker-name').textContent=s.employee.name?s.employee.name+' さん':'ログインを確認中…';$('worker-id').textContent=s.employee.id;
+  const queue=data.queue.filter(q=>q.employeeId===s.employee.id),failed=queue.filter(q=>q.error).length;
+  $('cloud-status').className='cloud-status '+(queue.length?'pending':'');
+  /* 上の帯は困ったときだけ出す */
+  const problem=!verified?'このスマホからは打刻できません。⚙からもう一度ログインしてください。':failed?`${failed}件の打刻を保存先が受け付けませんでした。管理者に伝えてください。`:queue.length&&!sending&&!quietSend?`まだ送れていない記録が ${queue.length}件 あります。電波が戻ったら自動で送ります。`:navigator.onLine===false?'電波がありません。電波が戻ったら自動で送ります。':!available?'保存先につながりません。つながったら自動で送ります。':'';
+  $('cloud-status').textContent=problem;$('cloud-status').hidden=!problem;
+  nightState();
+  /* 打刻の履歴は表示しない。未送信があるときだけ「今すぐ送る」を出す */
+  $('sync').hidden=sending||quietSend||!data.queue.some(q=>!q.error);$('sync').disabled=sending;
+  if(view==='days')renderDays();if(view==='admin')renderAdmin();
+  tick();
+}
+/** 0:00〜4:59は退勤を押せない（画面だけ。保存先では止めない）。前日の押し忘れは「日別の時間」から入れてもらう */
+function nightState(){const night=isNight();for(const b of document.querySelectorAll('[data-punch]'))b.disabled=busy||!verified||night;$('night-note').hidden=!night||!data.session;}
+function tick(){const now=Date.now();$('clock-date').textContent=new Intl.DateTimeFormat('ja-JP',{timeZone:'Asia/Tokyo',year:'numeric',month:'long',day:'numeric',weekday:'long'}).format(now);$('clock').textContent=M.time(now);const date=M.day(now);$('today-label').textContent=date.replaceAll('-',' / ');if(data.session){nightState();const rows=ownHistory(),t=M.attendance(rows,date,startOf()),mo=M.month(rows,date,startOf()),hm=m=>Math.floor(m/60)+'<span>時間</span>'+(m%60?m%60+'<span>分</span>':'');
+  const lone=t.status==='要確認'?onlyOut(rows,date):null,from=t.inRec?M.countFrom(t.inRec.at,t.startMinutes??startOf()):null;
+  $('work-total').innerHTML=t.confirmedMinutes!==null?hm(M.floor30(t.confirmedMinutes)):t.status==='勤務中'&&from!==null?esc(M.hm(from-Math.floor(Date.parse(date+'T00:00:00+09:00')/60000)))+'<span>～</span>勤務中':t.status==='記録なし'?'—':'確認が必要';
+  $('month-label').textContent=Number(date.slice(5,7))+'月の合計';$('month-total').innerHTML=hm(mo.shownMinutes);}}
+function authError(err){$('auth-error').hidden=false;$('auth-error').textContent=err.message;}
+async function authenticate(ev){
+  ev.preventDefault();if(busy||!available)return;$('auth-error').hidden=true;
+  const name=$('login-name').value.trim(),password=$('login-password').value;
+  if(authMode==='register'&&password!==$('login-confirm').value){authError(Error('パスワードの確認が一致しません。'));return;}
+  if(authMode==='register'&&!/^\d{6}$/.test(password)){authError(Error('パスワードは数字6桁にしてください。'));return;}
+  if(authMode==='register'&&!boot.invite){authError(Error('管理者から届いた登録用URLを開いてください。'));return;}
+  busy=true;render();
+  try{
+    const challenge=requireOk(await request('challenge',{name})),verifier=await M.password(password,challenge.salt,challenge.iterations);
+    const result=requireOk(await request(authMode,{name,verifier,salt:challenge.salt,invite:boot.invite,deviceId:data.deviceId,ua:navigator.userAgent,expectedEmployeeId:data.queue[0]?.employeeId||''}));
+    await save(current=>({...current,session:{token:result.token,iconKey:result.iconKey||'',employee:result.employee,places:result.places||[]},history:M.merge(result.history||[],current.history.filter(p=>p.employeeId===result.employee.id))}));verified=true;
+    $('login-password').value='';$('login-confirm').value='';authNotice='';syncUrl();
+    if(result.replacedOther)notify('このスマホに引き継ぎました。前のスマホでは打刻できなくなります。',false,6000);
+    else notify('ログインしました。',false,3000);
+    window.TCWork?.wake();
+  }catch(err){authError(err);}finally{busy=false;render();flush();}
+}
+async function refresh(sendPending=true){
+  if(!data.session||navigator.onLine===false)return;const token=data.session.token;
+  try{const r=requireOk(await request('me',{token:data.session.token,deviceId:data.deviceId}));if(data.session?.token!==token)return;await save(current=>current.session?.token===token?({...current,session:{...current.session,employee:r.employee,places:Array.isArray(r.places)?r.places:(current.session.places||[]),year:r.year||null,iconKey:r.iconKey||current.session.iconKey||'',fromUrl:false},history:r.history||[],closed:false}):current);verified=true;available=true;syncUrl();}
+  catch(err){if(err.code==='inactive'){if(dialog.open)dialog.close();view='main';await save(current=>({...current,closed:true}));}
+    else if(['replaced','invalid-token'].includes(err.code)){
+    if(data.session?.fromUrl&&!data.queue.length){await save(current=>({...current,session:null,history:[]}));authNotice='このアイコンは使えなくなっています（機種変更などのため）。Chromeでログインし、⚙からアイコンを作り直してください。（'+err.message+'）';syncUrl();}
+    else{verified=false;notify(err.message,true);}
+  }}
+  render();if(sendPending)await flush();
+}
+async function flush(){
+  if(sending||navigator.onLine===false)return;const next=data.queue.find(q=>!q.error);if(!next)return;
+  sending=true;render();let progress=false;const batch=data.queue.filter(q=>q.token===next.token&&q.employeeId===next.employeeId&&!q.error).slice(0,50);
+  try{
+    const r=requireOk(await request('punch',{token:next.token,deviceId:data.deviceId,punches:batch.map(q=>q.record)}));
+    const ids=new Set((r.results||[]).filter(x=>['saved','duplicate'].includes(x.status)).map(x=>x.id));
+    progress=ids.size>0;
+    await save(current=>({...current,queue:M.apply(current.queue,r.results||[]),history:M.merge(current.history,batch.filter(q=>ids.has(q.record.id)).map(q=>({...q.record,employeeId:q.employeeId,name:q.name,sent:true})))}));
+    if(ids.size){await refresh(false);if(!data.queue.some(q=>!q.error)&&!quietSend)notify('記録しました（送信済み）。',false,4000);}
+  }catch(err){if(['invalid-token','inactive','replaced'].includes(err.code)){const ids=new Set(batch.map(q=>q.record.id));await save(current=>({...current,queue:current.queue.map(q=>ids.has(q.record.id)?{...q,error:err.message}:q)}));if(data.session?.token===next.token)verified=false;progress=true;}notify(err.message,true);}finally{sending=false;render();}
+  if(data.queue.some(q=>!q.error)&&progress)setTimeout(flush,500);
+}
+function position(){return new Promise(resolve=>{
+  if(window.P02_PREVIEW_BRIDGE)return resolve(null);
+  if(!navigator.geolocation)return resolve(null);let done=false;const settle=v=>{if(done)return;done=true;clearTimeout(timer);resolve(v);};
+  const timer=setTimeout(()=>settle(null),10000);navigator.geolocation.getCurrentPosition(p=>settle({lat:p.coords.latitude,lon:p.coords.longitude,accuracy:p.coords.accuracy}),e=>settle({lat:null,denied:e?.code===1}),{enableHighAccuracy:true,timeout:9000,maximumAge:0});
+});}
+function modal(html){const b=$('modal-body');b.innerHTML=html;const h=b.querySelector('h2');if(h){h.tabIndex=-1;h.setAttribute('autofocus','');}if(!dialog.open)dialog.showModal();if(h&&document.activeElement!==h)h.focus({preventScroll:true});}
+/** その日の始業：退勤に記録した始業 → 出勤に記録した始業 → その人の始業 */
+const dayStart=(inRec,outRec)=>Number.isInteger(outRec?.startMinutes)?outRec.startMinutes:Number.isInteger(inRec?.startMinutes)?inRec.startMinutes:startOf();
+const isLocked=at=>!isTest()&&M.locked(at,Date.now());
+/** その日に退勤だけあって出勤がないか（出勤の押し忘れ） */
+const onlyOut=(rows,date)=>{const d=M.effective(rows).filter(p=>M.day(p.at)===date);return !d.some(p=>p.kind==='出勤')&&d.filter(p=>p.kind==='退勤').length===1?d.find(p=>p.kind==='退勤'):null;};
+const LOCK_MSG='この月は締めました（月末18:00）。直す必要があるときは、管理者に伝えてください。';
+const timeValue=minutes=>M.hm(minutes).padStart(5,'0');
+/** 「今日は始業が違う」：押すと始業の欄が出る */
+/** 30分ごとの時刻の選択肢（値は 08:00 の形） */
+/** 30分ごとの候補。選んでいる時刻が30分の区切りでなければ（実際に押した時刻など）それも入れる */
+function timeOptions(from,to,selected){const list=[];for(let m=from;m<=to;m+=30)list.push(m);if(Number.isInteger(selected)&&!list.includes(selected))list.push(selected);return list.sort((a,b)=>a-b).map(m=>`<option value="${timeValue(m)}" ${m===selected?'selected':''}>${M.hm(m)}</option>`).join('');}
+function halfHourOptions(from,to,selected,extra=''){let h=extra;for(let m=from;m<=to;m+=30)h+=`<option value="${timeValue(m)}" ${m===selected?'selected':''}>${M.hm(m)}</option>`;return h;}
+/** 始業の選択肢は30分ごと（4:00〜13:00）。以前の記録などで半端な時刻ならそれも残す */
+function startOptions(st){const list=[];for(let m=SELF_EARLIEST;m<=780;m+=30)list.push(m);if(!list.includes(st))list.push(st);return list.sort((a,b)=>a-b).map(m=>`<option value="${M.hm(m)}" ${m===st?'selected':''}>${M.hm(m)}</option>`).join('');}
+function startPicker(st,opts={}){const own=st!==startOf();return `<div class="work-start">${opts.noText?'':`<span class="start-text" ${own?'hidden':''}>始業 ${M.hm(startOf())}</span>`}<button type="button" class="soft-button" data-start-toggle ${own?'hidden':''}>今日は始業が違う</button><label id="start-wrap" ${own?'':'hidden'}>この日の始業<select name="start_time">${startOptions(st)}</select></label></div>`;}
+/** 退勤の確認・直す画面の中身。昼休憩は最初から基本時間を選んでおく */
+function workFields(p,opts={}){const rest=Number.isInteger(p.lunchMinutes)?p.lunchMinutes:defaultLunch,custom=rest!==0&&rest!==defaultLunch,confirmed=p.confirmedMinutes,st=Number.isInteger(opts.start)?opts.start:startOf();
+  return `<fieldset id="lunch-fields" class="lunch-fields"><legend>昼休憩</legend><div class="lunch-choices"><label><input type="radio" name="lunch" value="${defaultLunch}" ${rest===defaultLunch?'checked':''} required><span>あり<small>${defaultLunch}分</small></span></label><label><input type="radio" name="lunch" value="0" ${rest===0?'checked':''} required>なし</label><label><input type="radio" name="lunch" value="custom" ${custom?'checked':''} required>その他</label></div><label id="lunch-custom-wrap" ${custom?'':'hidden'}>昼休憩の分数<input name="lunch_custom" type="number" inputmode="numeric" min="0" max="1440" step="1" value="${custom?rest:30}"></label>${breakNote?`<p class="break-note">${esc(breakNote)}</p>`:''}</fieldset><section id="work-confirm" class="work-confirm"><h3>勤務時間</h3><p id="work-start-text" class="work-start-text"></p>${opts.editStart?startPicker(st):''}<div class="work-inputs"><label>時間<input name="confirmed_hours" type="number" inputmode="numeric" min="0" max="24" step="1" value="${Number.isInteger(confirmed)?Math.floor(confirmed/60):''}" required></label><label>分<select name="confirmed_minutes" required>${[...new Set([0,30,...(Number.isInteger(confirmed)?[confirmed%60]:[])])].sort((a,b)=>a-b).map(m=>`<option value="${m}" ${Number.isInteger(confirmed)&&confirmed%60===m?'selected':''}>${String(m).padStart(2,'0')}</option>`).join('')}</select></label></div><p id="work-proposal" class="work-proposal"></p><p class="fine-print">違う場合は直してから保存してください。</p></section>`;
+}
+function formWorkContext(form){const kind=form.elements.kind?.value||form.dataset.kind,ov=form.elements.out_time?.value,at=ov?Date.parse(form.elements.date.value+'T'+ov+':00+09:00'):form.elements.time?Date.parse(form.elements.date.value+'T'+form.elements.time.value+':00+09:00'):Number(form.dataset.at);return{kind,at};}
+/** 計算に使う始業：「今日は始業が違う」で入れた時刻、なければその日の始業 */
+function formStart(form){const wrap=form.querySelector('#start-wrap'),v=form.elements.start_time;if(wrap&&!wrap.hidden&&v){const m=M.parseHm(v.value);if(m!==null)return m;}const d0=Number(form.dataset.start),d=Number.isInteger(d0)&&form.dataset.start!==''?d0:startOf();
+  /* 退勤の画面は始業の欄を出さない。選んだ「始めた時刻」から数える（最初の値は始業。管理者が始業の設定を忘れた日も、選び直せばその時刻から数える） */
+  if((form.id==='punch-form'||form.elements.in_time)&&!wrap){const m=form.elements.in_time?.value?M.parseHm(form.elements.in_time.value):null;if(m!==null)return m;}
+  return d;}
+/** 出勤（押し忘れの入力欄があればそれ）から退勤までの時間。始業より前は数えない */
+function workSpan(form){const c=formWorkContext(form);let inAt=null;
+  if(form.elements.in_time){const v=form.elements.in_time.value;inAt=v?Date.parse(form.elements.date.value+'T'+v+':00+09:00'):null;}
+  else inAt=M.checkoutIn(ownHistory(),c.at,form.dataset.exclude||'')?.at??null;
+  const st=formStart(form);if(inAt===null||!Number.isFinite(inAt)||!Number.isFinite(c.at)||inAt>c.at)return{...c,st,inAt:null,span:null,raw:null};
+  return{...c,st,inAt,span:Math.max(0,M.minute(c.at)-M.countFrom(inAt,st)),raw:M.minute(c.at)-M.minute(inAt)};}
+function updateWorkForm(form){autoLunch(form);const w=workSpan(form),isOut=w.kind==='退勤',fields=form.querySelector('#lunch-fields'),section=form.querySelector('#work-confirm');fields.hidden=!isOut;fields.disabled=!isOut;section.hidden=!isOut;
+  const hours=form.elements.confirmed_hours,minutes=form.elements.confirmed_minutes;hours.disabled=minutes.disabled=!isOut;if(!isOut)return;
+  const choice=form.querySelector('[name="lunch"]:checked'),custom=choice?.value==='custom',other=form.elements.lunch_custom;form.querySelector('#lunch-custom-wrap').hidden=!custom;other.disabled=!custom;other.required=custom;
+  const startText=form.querySelector('#work-start-text');startText.textContent='';startText.hidden=true;
+  const rest=choice?(custom?Number(other.value):Number(choice.value)):null,message=form.querySelector('#work-proposal');
+  if(rest===null){message.textContent='昼休憩を選ぶと時間を計算します。';return;}
+  if(!Number.isInteger(rest)||rest<0||rest>1440){message.textContent='昼休憩の分数を確認してください。';return;}
+  if(w.span===null){message.textContent=form.elements.in_time?(form.elements.in_time.value&&form.elements.out_time?'始めた時刻は、終えた時刻より前にしてください。':'仕事を始めた時刻を選んでください。'):'出勤の記録が見つかりません。勤務時間を選んでください。';if(form.elements.in_time&&form.dataset.manual!=='true'){hours.value='';}return;}
+  if(rest>w.raw){message.textContent='昼休憩が勤務時間より長くなっています。';return;}
+  const calculated=Math.max(0,w.span-rest),shown=Math.max(MIN_WORK,M.floor30(calculated));
+  message.textContent=form.id==='punch-form'||form.elements.in_time?'':'計算：'+M.duration(calculated)+(shown!==calculated?' → '+M.duration(shown)+'（30分未満切り捨て）':'')+(form.dataset.manual==='true'&&Number(hours.value)*60+Number(minutes.value)!==shown?'。下の時間は前に入れたままです。':'');
+  if(form.dataset.manual!=='true'){hours.value=Math.floor(shown/60);minutes.value=shown%60;}
+}
+function autoLunch(form){if(form.dataset.lunchTouched||form.dataset.mode==='fix'||!form.elements.in_time)return;const w=workSpan(form);if(w.raw===null)return;
+  const want=w.raw<SHORT_DAY?'0':String(defaultLunch),r=form.querySelector(`[name="lunch"][value="${want}"]`);if(r&&!r.checked){r.checked=true;if(form.dataset.manual!=='true')form.dataset.manual='false';}}
+function readWorkForm(form){updateWorkForm(form);if(!form.reportValidity())return null;const w=workSpan(form);if(w.kind!=='退勤')return{};
+  const choice=form.querySelector('[name="lunch"]:checked'),rest=choice.value==='custom'?Number(form.elements.lunch_custom.value):Number(choice.value),hours=Number(form.elements.confirmed_hours.value),minutes=Number(form.elements.confirmed_minutes.value),confirmed=hours*60+minutes;
+  if(!Number.isInteger(rest)||rest<0||rest>1440||(w.raw!==null&&rest>w.raw))throw Error('昼休憩の分数を確認してください。');
+  if(!Number.isInteger(hours)||!Number.isInteger(minutes)||minutes<0||minutes>59||confirmed<0||confirmed>1440)throw Error('勤務時間を入れてください。');
+  if(confirmed<MIN_WORK)throw Error('勤務時間は最低1時間です。働いていない日は「この日は出勤していない」で取り消してください。');
+  if(w.raw!==null&&confirmed>Math.max(MIN_WORK,w.raw))throw Error(`時間が長すぎます。${M.time(w.inAt)}〜${M.time(w.at)}は最大${M.duration(Math.max(MIN_WORK,w.raw))}です。`);
+  /* これからの時刻は入れられない（始業・始めた時刻・終えた時刻）。試験モードは除く */
+  if(!isTest()){const date=form.elements.date?.value||M.day(w.at),now=Date.now();
+    if(Number.isFinite(w.at)&&w.at>now+60000)throw Error('これからの時刻は入れられません。');
+    if(w.inAt!==null&&w.inAt>now)throw Error('これからの時刻は入れられません。');
+    if(form.querySelector('#start-wrap')&&date===M.day(now)&&Number.isInteger(w.st)&&w.st>nowMinutes(now))throw Error('始業がまだ来ていません（'+M.hm(w.st)+'）。この日の始業を選び直してください。');}
+  const calc=w.span===null?null:Math.max(0,w.span-rest);
+  return{lunchMinutes:rest,confirmedMinutes:confirmed,startMinutes:w.st,...(calc!==null&&confirmed!==calc&&confirmed!==M.floor30(calc)&&confirmed!==Math.max(MIN_WORK,M.floor30(calc))?{selfChanged:true}:{})};
+}
+const closeButtons=(label,action)=>`<div class="buttons"><button class="btn" data-close>戻る</button><button class="btn primary" data-action="${action}">${label}</button></div>`;
+const LOCATION_HELP='<div class="notice-box"><strong>位置情報がオフになっています。</strong>打刻は記録できますが、場所を確認できません。<br>iPhone：設定 → プライバシーとセキュリティ → 位置情報サービス → 使っているブラウザ（SafariやChrome）→「使用中のみ」<br>Android：ブラウザのアドレス欄の左の印 → 権限（サイトの設定）→ 位置情報 →「許可」</div>';
+/** 押した場所の判定と、外・位置なしのときの理由欄 */
+function placeOf(p){if(!p||p.lat==null)return{kind:'none'};return M.placeCheck({lat:p.lat,lon:p.lon,accuracy:p.accuracy},data.session?.places||[]);}
+const needReason=c=>['none','out','weak'].includes(c.kind);
+function placeNote(fix){const el=$('place-note');if(!el||!pending)return;const c=placeOf(pending),kept=$('place-reason')?.value||'';
+  if(!needReason(c)){el.innerHTML=c.kind==='in'?'<p class="place-ok">場所OK'+(c.place?.name?'（'+esc(c.place.name)+'）':'')+'</p>':'';return;}
+  const why=c.kind==='none'?'場所を確認できませんでした（位置情報が取れません）。':c.kind==='weak'?'場所が正確に分かりませんでした（誤差約'+c.accuracy+'m）。':'登録した場所の外です。';
+  el.innerHTML=(fix?.denied?LOCATION_HELP:'')+`<div class="reason-box"><strong>${why}</strong>理由を書くと記録します（書かないと記録しません）。<label for="place-reason">理由（例：配達の帰りに押した、畑の奥にいた）</label><textarea id="place-reason" rows="2" maxlength="200">${esc(kept)}</textarea></div>`;}
+async function preparePunch(kind,opts={}){
+  if(busy||!verified||!data.session)return;if(kind!=='退勤')return;const at=opts.at||Date.now();
+  if(isNight()){notify('現在始業前です。前日の退勤の押し忘れは「日別の時間」から入れてください。',true,8000);return;}
+  /* 退勤を押したとき、新しい版が出ていれば切り替えてから退勤の画面を出す（押した時刻はそのまま引き継ぐ） */
+  if(!opts.at&&!opts.redo){busy=true;render();let moving=false;try{moving=await updateBeforePunch(at);}finally{if(!moving){busy=false;render();}}if(moving)return;}
+  /* 押し間違いを防ぐ：今日2回目の退勤は「し直すか」を聞く */
+  if(!opts.redo){const eff0=M.effective(ownHistory()),today0=M.day(at),dayRows=eff0.filter(p=>M.day(p.at)===today0),outs0=dayRows.filter(p=>p.kind==='退勤'),last0=dayRows.at(-1);
+    const close='<div class="buttons"><button class="btn primary" data-close>閉じる</button></div>';
+    if(outs0.length&&last0?.kind==='退勤'){modal('<h2>今日はもう退勤しています。</h2>'+close);return;}
+  }
+  const rows=ownHistory(),today=M.day(at),nowMin=nowMinutes(at),inRec=M.checkoutIn(rows,at,opts.redo||''),st=dayStart(inRec,null);
+  /* 始めた時刻の候補：6:00から、今の時刻を30分単位で切り捨てた所まで（8:05なら8:00まで。試験モードは0:00から） */
+  const from=isTest()?0:SELF_EARLIEST,last=Math.floor(nowMin/30)*30;
+  if(!inRec&&last<from){modal('<h2>退勤を記録</h2><p class="big-note">この時間は、始めた時刻を選べません。<br>日別の時間から入れてください。分からなければ管理者に連絡してください。</p><div class="buttons"><button class="btn" data-close>閉じる</button><button class="btn primary" id="days-open" data-close>日別の時間へ</button></div>');return;}
+  busy=true;render();
+  /* 位置は裏で取りに行き、確認画面はすぐ出す。退勤の時刻は押した瞬間 */
+  pending={id:M.id(),kind,at,createdAt:at,lat:null,lon:null,accuracy:null,originalId:opts.redo||'',note:opts.redo?'退勤を押し直した':''};
+  const myPending=pending;let myFix=null;locating=position().then(fix=>{if(pending!==myPending)return fix;myFix=fix;if(fix&&fix.lat!=null){pending.lat=fix.lat;pending.lon=fix.lon;pending.accuracy=fix.accuracy;}pending.located=true;placeNote(fix);return fix;});
+  const def=st>=from&&st<=last?st:-1;
+  const ask=inRec?'':`<div class="ask-box"><label>何時に仕事を始めましたか？<select name="in_time" required>${halfHourOptions(from,last,def,'<option value="" '+(def<0?'selected':'')+'>選んでください</option>')}</select></label></div>`;
+  const body=`<form id="punch-form" data-kind="退勤" data-at="${at}" data-start="${st}" data-noin="${inRec?'':1}" data-exclude="${esc(opts.redo||'')}"><input type="hidden" name="date" value="${today}">${ask}${workFields(pending,{start:st})}</form>`;
+  modal(`<h2>退勤を記録</h2><div class="confirm-name">${esc(data.session.employee.name)} さん</div><div class="punch-confirm">${M.time(at)}</div>${inRec?`<p class="fine-print">出勤 ${M.time(inRec.at)}</p>`:''}${body}<div id="place-note" class="place-note"><p class="fine-print">場所を確認しています…</p></div><div id="dialog-error" class="error" hidden role="alert"></div>${closeButtons('この内容で記録','save-punch')}`);
+  updateWorkForm($('punch-form'));
+  /* 始業・場所は押したときに保存先から取り直す（ふだんは通信しないため）。始業はまだ触っていなければ選び直す。場所は取り直した場所で判定し直す */
+  if(navigator.onLine!==false)refresh(false).then(()=>{const f=$('punch-form');if(!f||pending!==myPending)return;if(pending.located)placeNote(myFix);if(inRec)return;const ns=startOf();if(ns===Number(f.dataset.start))return;
+    if(f.dataset.startTouched)return;f.dataset.start=ns;const sel=f.elements.in_time;
+    if(sel&&!f.dataset.inTouched){const d2=ns>=from&&ns<=last?ns:-1;sel.innerHTML=halfHourOptions(from,last,d2,'<option value="" '+(d2<0?'selected':'')+'>選んでください</option>');}
+    const sp=f.querySelector('.work-start');if(sp)sp.outerHTML=startPicker(ns);f.dataset.manual='false';updateWorkForm(f);}).catch(()=>{});
+}
+async function savePunch(){
+  const btn=document.querySelector('dialog [data-action=save-punch]'),label=btn?.textContent;
+  if(locating&&!pending.located){if(btn){btn.disabled=true;btn.textContent='場所を確認しています…';}try{await Promise.race([locating,new Promise(r=>setTimeout(r,11000))]);}finally{if(btn){btn.disabled=false;btn.textContent=label;}}}
+  const f=$('punch-form'),work=readWorkForm(f);if(!work)return;
+  /* 場所の外・位置なし：理由を書いたら記録、書かなければ記録しない */
+  const c=placeOf(pending);let placeReason='';
+  if(needReason(c)){if(!$('place-reason'))placeNote(null);placeReason=($('place-reason')?.value||'').trim();if(!placeReason){$('place-reason')?.focus();throw Error('場所の理由を書いてください。書かないと記録しません。');}}
+  const out={...pending,...work,...(placeReason?{placeReason}:{})};delete out.located;
+  if(f.dataset.noin){const d=f.elements.date.value,inV=f.elements.in_time.value;if(!inV)throw Error('仕事を始めた時刻を選んでください。');
+    const inAt=Date.parse(d+'T'+inV+':00+09:00');if(!Number.isFinite(inAt)||inAt>=pending.at)throw Error('始めた時刻は、今より前にしてください。');
+    /* 始めた時刻は「出勤」の行として残す（前の版でもそのまま読める形） */
+    await persistRecords([{id:M.id(),kind:'出勤',at:inAt,createdAt:Date.now(),originalId:'',note:'始めた時刻（退勤のときに入力）',lat:null,lon:null,accuracy:null,startMinutes:work.startMinutes,declared:true},out],{farewell:true});return;}
+  await persistRecords([out],{farewell:true});
+}
+async function persistRecords(records,opts={}){
+  const s=data.session,test=isTest(),qs=records.map(record=>({employeeId:s.employee.id,name:s.employee.name,token:s.token,record:test?{...record,test:true}:record}));
+  await save(current=>{if(current.session?.token!==s.token)throw Error('別の画面で登録が変わりました。再読み込みしてご確認ください。');const ids=new Set(current.queue.map(x=>x.record.id));return {...current,queue:[...current.queue,...qs.filter(q=>!ids.has(q.record.id))]};});
+  $('history-date').value=M.day(records.at(-1).at);pending=null;
+  if(opts.farewell){await farewell(records.map(r=>r.id));return;}
+  dialog.close();busy=false;render();notify('記録しました。');flush();
+}
+/** 退勤を記録したとき：「お疲れさまでした」を出して送信し、終わったら最初の画面に戻る */
+async function farewell(ids){quietSend=true;try{await farewellRun(ids);}finally{quietSend=false;}}
+async function farewellRun(ids){
+  const want=new Set(ids),left=()=>data.queue.filter(q=>want.has(q.record.id)),failed=()=>left().filter(q=>q.error);
+  modal('<h2>お仕事お疲れさまでした。</h2><p class="big-note" id="farewell-note">記録を送信していますのでお待ちください。</p>');
+  busy=false;const until=Date.now()+10000;
+  /* 送信が止まっていても10秒で区切る（送信はそのまま続き、届けば消える） */
+  const sleep=ms=>new Promise(r=>setTimeout(r,Math.max(0,ms)));
+  while(left().some(q=>!q.error)&&navigator.onLine!==false&&Date.now()<until){await Promise.race([sending?sleep(300):flush(),sleep(until-Date.now())]);if(left().some(q=>!q.error)&&Date.now()<until)await sleep(Math.min(500,until-Date.now()));}
+  const bad=failed();
+  if(bad.length){modal(`<h2>記録を送れませんでした</h2><p class="big-note">${esc(bad[0].error)}</p><div class="buttons"><button class="btn primary" data-close>閉じる</button></div>`);view='main';render();return;}
+  if(left().length){const n=$('farewell-note');if(n)n.textContent='電波が弱いため、記録はあとで自動で送ります。このまま閉じて大丈夫です。';await new Promise(r=>setTimeout(r,3000));}
+  else{const n=$('farewell-note');if(n)n.textContent='送信しました。';await new Promise(r=>setTimeout(r,1200));}
+  if(dialog.open)dialog.close();view='main';render();window.scrollTo(0,0);notify('');
+}
+const persistRecord=record=>persistRecords([record]);
+/** その日の勤務時間を直す（打刻の時刻はそのまま）。退勤・出勤を押し忘れた日は、その時刻を入れる。 */
+/** 日別の時間修正：記録がある日には「この日は出勤していない（記録を取り消す）」を付ける */
+function editDay(date,opts={}){editDayForm(date,opts);if(!data.session||!dialog.open||isLocked(Date.parse(date+'T12:00:00+09:00')))return;
+  const dayRows=M.effective(ownHistory()).filter(p=>M.day(p.at)===date);if(!dayRows.length)return;
+  const bs=[...$('modal-body').querySelectorAll('.buttons')].at(-1);if(!bs)return;
+  /* 管理者が直した日は、本人が取り消さず管理者に伝えてもらう */
+  if(dayRows.some(p=>/管理者修正|管理者取消/.test(p.judge||''))){bs.insertAdjacentHTML('beforebegin','<p class="fine-print">この日は管理者が直しました。出勤していなかったときは、管理者に伝えてください。</p>');return;}
+  bs.insertAdjacentHTML('beforebegin',`<button type="button" class="soft-button danger-soft" data-day-cancel="${date}">この日は出勤していない（記録を取り消す）</button><p class="fine-print">間違えて出勤を押したときなどに使います。取り消すと、管理者が内容を確認します。</p>`);}
+async function cancelDay(date){const rows=M.effective(ownHistory()).filter(p=>M.day(p.at)===date);if(!rows.length){dialog.close();return;}
+  if(rows.some(p=>isLocked(p.at)))throw Error(LOCK_MSG);const now=Date.now();
+  await persistRecords(rows.map((p,i)=>({id:M.id(),kind:p.kind,at:p.at,createdAt:now+i,originalId:p.id,note:'この日は出勤していない（本人が取り消した）',lat:null,lon:null,accuracy:null,cancel:true,judge:'本人取消'})));notify('取り消しました。',false,3000);}
+function editDayForm(date,opts={}){if(!data.session)return;const rows=ownHistory(),t=M.attendance(rows,date,startOf()),today=M.day(Date.now());
+  const head=`<h2>${md(date)}の時間修正</h2>${opts.notice?`<div class="notice-box">${esc(opts.notice)}</div>`:''}`;
+  const close='<div class="buttons"><button class="btn" data-close>戻る</button></div>',err='<div id="dialog-error" class="error" hidden role="alert"></div>';
+  if(isLocked(Date.parse(date+'T12:00:00+09:00'))){modal(head+'<p>'+LOCK_MSG+'</p>'+close);return;}
+  const dayRows=M.effective(rows).filter(p=>M.day(p.at)===date),ins=dayRows.filter(p=>p.kind==='出勤'),outs=dayRows.filter(p=>p.kind==='退勤');
+  if(!ins.length&&outs.length===1){const out=outs[0],st=dayStart(null,out);
+    modal(head+`<p>退勤 ${M.time(out.at)}。出勤の記録がありません。出勤した時刻を入れてください。</p><form id="day-form" data-kind="退勤" data-mode="newin" data-at="${out.at}" data-exclude="${esc(out.id)}" data-start="${st}" data-manual="${Number.isInteger(out.confirmedMinutes)}" data-before="${out.confirmedMinutes??''}"><input type="hidden" name="date" value="${date}"><label>何時に仕事を始めましたか？<select name="in_time">${halfHourOptions(isTest()?0:SELF_EARLIEST,Math.min(1410,Math.floor((Math.floor((out.at-Date.parse(date+'T00:00:00+09:00'))/60000)-30)/30)*30),startOf())}</select></label>${workFields(out,{start:st})}</form>${err}<div id="day-confirm" class="day-confirm" hidden></div>${HELP_NOTE}<div class="buttons" id="day-buttons"><button class="btn" data-close>戻る</button><button class="btn primary" data-action="day-review">内容確認</button></div>`);
+    updateWorkForm($('day-form'));return;}
+  if(t.status==='要確認'){modal(head+'<p>この日は出勤・退勤の組み合わせが合いません。管理者に伝えてください。</p>'+close);return;}
+  if(!t.inRec&&!dayRows.length){
+    if(date>=today&&!isTest()){modal(head+'<p>今日の分は、仕事を終えるときに「退勤」を押してください。</p>'+close);return;}
+    /* 記録のない日：始めた時刻・終えた時刻・昼休憩・勤務時間を入れる（後から入力 → 管理者が確認） */
+    const st=startOf(),from=isTest()?0:SELF_EARLIEST;
+    modal(head+`<p>この日の記録がありません。働いた日なら、時刻を入れてください。</p><form id="day-form" data-kind="退勤" data-mode="blank" data-start="${st}" data-manual="false"><input type="hidden" name="date" value="${date}"><div class="ask-box"><label>何時に仕事を始めましたか？<select name="in_time" required>${halfHourOptions(from,1380,st)}</select></label><label>何時に仕事を終えましたか？<select name="out_time" required>${halfHourOptions(from+30,1410,Math.min(1410,st+540))}</select></label></div>${workFields({},{start:st})}</form>${err}<div id="day-confirm" class="day-confirm" hidden></div>${HELP_NOTE}<div class="buttons" id="day-buttons"><button class="btn" data-close>戻る</button><button class="btn primary" data-action="day-review">内容確認</button></div>`);
+    updateWorkForm($('day-form'));return;}
+  if(!t.inRec){modal(head+'<p>この日の出勤・退勤の記録がありません。</p>'+close);return;}
+  if(!t.outRec){
+    if(date===today){modal(head+'<p>出勤 '+M.time(t.inRec.at)+'。勤務中です。退勤のときに時間を確認します。</p>'+close);return;}
+    const st=dayStart(t.inRec,null);
+    modal(head+`<p>出勤 ${M.time(t.inRec.at)}。退勤の記録がありません。退勤した時刻を入れてください。</p><form id="day-form" data-kind="退勤" data-mode="new" data-start="${st}" data-manual="false"><input type="hidden" name="date" value="${date}"><label>何時に仕事を終えましたか？<select name="time">${halfHourOptions(Math.min(1410,Math.ceil((Math.floor((t.inRec.at-Date.parse(date+'T00:00:00+09:00'))/60000)+30)/30)*30),1410,Math.max(st+540,Math.ceil((Math.floor((t.inRec.at-Date.parse(date+'T00:00:00+09:00'))/60000)+30)/30)*30))}</select></label>${workFields({},{start:st,editStart:true})}</form>${err}<div id="day-confirm" class="day-confirm" hidden></div>${HELP_NOTE}<div class="buttons" id="day-buttons"><button class="btn" data-close>戻る</button><button class="btn primary" data-action="day-review">内容確認</button></div>`);
+    updateWorkForm($('day-form'));return;
+  }
+  /* 記録のある日：記録のない日と同じ形（始めた時刻・終えた時刻・昼休憩・勤務時間）。選んだ始めた時刻から数える */
+  const out=t.outRec,inRec=t.inRec,st=dayStart(inRec,out),manual=!opts.recalc&&Number.isInteger(out.confirmedMinutes),from=isTest()?0:SELF_EARLIEST,dayMin=at=>Math.floor((at-Date.parse(date+'T00:00:00+09:00'))/60000),inM=dayMin(inRec.at),outM=dayMin(out.at);
+  modal(head+`<form id="day-form" data-kind="退勤" data-mode="fix" data-at="${out.at}" data-exclude="${esc(out.id)}" data-in-id="${esc(inRec.id)}" data-start="${st}" data-manual="${manual}" data-before="${out.confirmedMinutes??''}" data-before-lunch="${out.lunchMinutes??''}" data-before-in="${timeValue(inM)}" data-before-out="${timeValue(outM)}"><input type="hidden" name="date" value="${date}"><div class="ask-box"><label>何時に仕事を始めましたか？<select name="in_time" required>${timeOptions(Math.min(from,inM),1380,inM)}</select></label><label>何時に仕事を終えましたか？<select name="out_time" required>${timeOptions(Math.min(from+30,outM),1410,outM)}</select></label></div>${workFields(out,{start:st})}</form>${err}<div id="day-confirm" class="day-confirm" hidden></div>${HELP_NOTE}<div class="buttons" id="day-buttons"><button class="btn" data-close>戻る</button><button class="btn primary" data-action="day-review">内容確認</button></div>`);
+  updateWorkForm($('day-form'));
+}
+/** 時間修正の確認：前の時間→新しい時間を見せてから保存する。何も変わっていなければ保存しない */
+function reviewDay(){const f=$('day-form');if(!f)return;const work=readWorkForm(f);if(!work)return;
+  const before=f.dataset.before===''||f.dataset.before===undefined?null:Number(f.dataset.before),after=work.confirmedMinutes,date=f.elements.date?.value||M.day(Number(f.dataset.at));
+  const same=f.dataset.mode==='fix'&&before===after&&String(work.lunchMinutes)===f.dataset.beforeLunch&&f.elements.in_time?.value===f.dataset.beforeIn&&f.elements.out_time?.value===f.dataset.beforeOut;
+  const box=$('day-confirm');
+  box.innerHTML=same?'<h3>内容の確認</h3><p class="big-note">変更はありません。</p>':`<h3>内容の確認</h3><p class="confirm-date">${md(date)}の勤務時間</p><p class="confirm-change">${before===null?'なし':M.duration(before)} → <strong>${M.duration(after)}</strong></p><p class="big-note">保存すると、管理者が内容を確認します。</p>`;
+  f.hidden=true;box.hidden=false;
+  $('day-buttons').innerHTML=`<button class="btn" data-action="day-back">戻る</button>${same?'':'<button class="btn primary" data-action="save-day">この内容で保存</button>'}`;}
+function backDay(){const f=$('day-form');if(!f)return;f.hidden=false;$('day-confirm').hidden=true;$('day-buttons').innerHTML='<button class="btn" data-close>戻る</button><button class="btn primary" data-action="day-review">内容確認</button>';}
+async function saveDay(){const f=$('day-form');if(!f)return;const work=readWorkForm(f);if(!work)return;const date=f.elements.date?.value;
+  if(f.dataset.mode==='blank'){const inAt=Date.parse(date+'T'+f.elements.in_time.value+':00+09:00'),outAt=Date.parse(date+'T'+f.elements.out_time.value+':00+09:00');
+    if(!Number.isFinite(inAt)||!Number.isFinite(outAt)||inAt>=outAt)throw Error('始めた時刻は、終えた時刻より前にしてください。');
+    if(!isTest()&&outAt>Date.now())throw Error('これからの時刻は入れられません。');if(isLocked(outAt))throw Error(LOCK_MSG);
+    const now=Date.now();await persistRecords([{id:M.id(),kind:'出勤',at:inAt,createdAt:now,originalId:'',note:'本人が後から入力（記録のない日）',lat:null,lon:null,accuracy:null,startMinutes:work.startMinutes},{id:M.id(),kind:'退勤',at:outAt,createdAt:now+1,originalId:'',note:'本人が後から入力（記録のない日）',lat:null,lon:null,accuracy:null,...work}]);return;}
+  if(f.dataset.mode==='new'){const at=Date.parse(date+'T'+f.elements.time.value+':00+09:00');if(!Number.isFinite(at))throw Error('退勤した時刻を入れてください。');if(at>Date.now())throw Error('これからの時刻は入れられません。');if(isLocked(at))throw Error(LOCK_MSG);
+    if(!M.checkoutIn(ownHistory(),at))throw Error('出勤より後の時刻を入れてください。');
+    await persistRecord({id:M.id(),kind:'退勤',at,createdAt:Date.now(),originalId:'',note:'退勤の押し忘れ（本人が後から入力）',lat:null,lon:null,accuracy:null,...work});return;}
+  if(f.dataset.mode==='fix'){const inAt=Date.parse(date+'T'+f.elements.in_time.value+':00+09:00'),outAt=Date.parse(date+'T'+f.elements.out_time.value+':00+09:00'),now=Date.now();
+    if(!Number.isFinite(inAt)||!Number.isFinite(outAt)||inAt>=outAt)throw Error('始めた時刻は、終えた時刻より前にしてください。');
+    if(!isTest()&&outAt>now)throw Error('これからの時刻は入れられません。');if(isLocked(outAt))throw Error(LOCK_MSG);
+    /* 始めた時刻を変えたときだけ出勤の行を直す。退勤の行は勤務時間と一緒に直す */
+    const recs=[];if(f.elements.in_time.value!==f.dataset.beforeIn)recs.push({id:M.id(),kind:'出勤',at:inAt,createdAt:now,originalId:f.dataset.inId,note:'本人が始めた時刻を直した',lat:null,lon:null,accuracy:null,startMinutes:work.startMinutes});
+    recs.push({id:M.id(),kind:'退勤',at:outAt,createdAt:now+1,originalId:f.dataset.exclude,note:'本人が勤務時間を直した',lat:null,lon:null,accuracy:null,...work});
+    await persistRecords(recs);return;}
+  const outAt=Number(f.dataset.at);if(isLocked(outAt))throw Error(LOCK_MSG);
+  const fixOut={id:M.id(),kind:'退勤',at:outAt,createdAt:Date.now(),originalId:f.dataset.exclude,note:'本人が勤務時間を直した',lat:null,lon:null,accuracy:null,...work};
+  if(f.dataset.mode==='newin'){const inAt=Date.parse(date+'T'+f.elements.in_time.value+':00+09:00');if(!Number.isFinite(inAt)||inAt>=outAt)throw Error('退勤より前の、出勤した時刻を入れてください。');
+    await persistRecords([{id:M.id(),kind:'出勤',at:inAt,createdAt:Date.now(),originalId:'',note:'出勤の押し忘れ（本人が後から入力）',lat:null,lon:null,accuracy:null,startMinutes:work.startMinutes},{...fixOut,createdAt:Date.now()+1}]);return;}
+  await persistRecord(fixOut);
+}
+/** 日別の時間（当月・前月） */
+function monthOf(offset){const [y,m]=M.day(Date.now()).split('-').map(Number),d=new Date(Date.UTC(y,m-1+offset,1));return d.getUTCFullYear()+'-'+String(d.getUTCMonth()+1).padStart(2,'0')+'-01';}
+function renderDays(){const first=monthOf(daysMonth),mo=M.month(ownHistory(),first,startOf()),hm=m=>Math.floor(m/60)+'<span>時間</span>'+(m%60?m%60+'<span>分</span>':''),today=M.day(Date.now());
+  $('days-title').textContent=Number(first.slice(5,7))+'月の日別の時間';
+  document.querySelectorAll('[data-month]').forEach(b=>b.classList.toggle('selected',Number(b.dataset.month)===daysMonth));
+  const noOut=mo.list.filter(t=>t.status==='勤務中'&&t.date!==today).length;
+  /* 1日〜今日まで全部の日を出す（明日以降は出さない）。記録のない日は「—」で、押すと入れられる */
+  const locked=isLocked(Date.parse(first+'T12:00:00+09:00'));$('days-hint').hidden=locked;$('days-help').hidden=locked;
+  const [yy,mm]=first.split('-').map(Number),lastDay=new Date(Date.UTC(yy,mm,0)).getUTCDate(),byDate=new Map(mo.list.map(t=>[t.date,t])),all=[];
+  for(let d=1;d<=lastDay;d++){const date=first.slice(0,8)+String(d).padStart(2,'0');if(date>today)break;all.push(byDate.get(date)||{date,empty:true});}
+  $('days-list').innerHTML=all.length?all.map(t=>{if(t.empty)return `<button class="day-row day-empty" data-day="${t.date}"><span class="day-date">${md(t.date)}</span><span class="day-times">—</span><strong>—</strong><span class="chev">›</span></button>`;const ok=t.confirmedMinutes!==null,tags=[];
+      const lone=t.status==='要確認'?onlyOut(ownHistory(),t.date):null;
+      if(t.adminFixed)tags.push('<span class="tag">管理者修正</span>');else if(t.changed)tags.push('<span class="tag">本人変更</span>');if(lone)tags.push('<span class="tag warn">出勤なし</span>');else if(t.status==='要確認'||t.status==='時間を確認')tags.push('<span class="tag warn">'+(t.status==='要確認'?'確認が必要':'時間を入れる')+'</span>');if(t.status==='勤務中')tags.push(t.date===today?'<span class="tag">勤務中</span>':'<span class="tag warn">退勤なし</span>');if(t.pending)tags.push('<span class="tag warn">未送信</span>');
+      return `<button class="day-row" data-day="${t.date}"><span class="day-date">${md(t.date)}</span><span class="day-times">${t.inRec?M.time(t.inRec.at):'—'} – ${t.outRec?M.time(t.outRec.at):lone?M.time(lone.at):'—'}${tags.length?'<br>'+tags.join(''):''}</span><strong>${ok?hm(M.floor30(t.confirmedMinutes)):'—'}</strong><span class="chev">›</span></button>`;}).join(''):'<div class="empty">この月の記録はまだありません。</div>';
+  $('days-total').innerHTML=hm(mo.shownMinutes);$('days-total-label').textContent=Number(first.slice(5,7))+'月の合計';
+  /* 年間の合計（常勤・常勤バイトだけ。保存先で1年分を数える） */const yr=data.session?.year;$('year-total-box').hidden=!yr;if(yr){$('year-total-label').textContent=yr.year+'年の合計（1月1日から）';$('year-total').innerHTML=hm(yr.minutes);}
+  $('days-note').hidden=true;void `30分未満は切り捨てて表示しています。${mo.days}日`+(mo.check+noOut?`。確認が必要な日 ${mo.check+noOut}日`:'')+(isLocked(Date.parse(first+'T12:00:00+09:00'))?'。この月は締めました。':'');
+}
+/* ===== 管理者モード（従業員シートの権限が「管理者」の人だけ） ===== */
+const admin={month:0,data:null,emp:null,loading:false,error:''};
+const isAdmin=()=>data.session?.employee?.role==='管理者';
+/** 収穫の記録（w40）を開く。中身は harvest.js。戻るボタン・スライドで最初の画面へ戻れる */
+function openWork(){if(dialog.open)dialog.close();view='work';try{history.pushState({tcWork:1},'');}catch(e){}render();window.scrollTo(0,0);window.TCWork?.open();}
+function openAdmin(){if(!isAdmin())return;if(dialog.open)dialog.close();view='admin';admin.emp=null;try{history.pushState({tcAdmin:1},'');}catch(e){}render();window.scrollTo(0,0);loadAdmin();}
+async function loadAdmin(){const ym=monthOf(0).slice(0,7);admin.loading=true;admin.error='';renderAdmin();
+  try{const r=requireOk(await request('adminMonth',{token:data.session.token,deviceId:data.deviceId,ym}));admin.data=r;}catch(err){admin.error=err.message;}
+  admin.loading=false;renderAdmin();}
+const adminRecs=id=>(admin.data?.records||[]).filter(p=>p.employeeId===id);
+const adminEmp=id=>(admin.data?.employees||[]).find(e=>e.id===id);
+function adminDays(){const ym=monthOf(admin.month).slice(0,7),[y,m]=ym.split('-').map(Number),last=new Date(Date.UTC(y,m,0)).getUTCDate(),today=M.day(Date.now()),out=[];
+  for(let d=1;d<=last;d++){const date=ym+'-'+String(d).padStart(2,'0');if(date>today)break;out.push(date);}return out;}
+/** その人のその日の状態。確認が必要か（組み合わせ不足、または本人修正・後から入力で管理者がまだ見ていない） */
+/** 計算に使うその人の始業：今日は「今日だけの始業」込み、それ以外の日はいつもの始業 */
+const empStart=(emp,date)=>date===M.day(Date.now())||!Number.isInteger(emp.baseStart)?emp.startMinutes:emp.baseStart;
+/** 場所に問題がある打刻（範囲外・位置なし・精度が低い）。退勤のときに入れた始めた時刻などは位置を持たないので除く */
+const placeIssue=p=>/範囲外|位置なし|精度が低い/.test(p.judge||'');
+function adminDay(emp,date){const recs=adminRecs(emp.id),t=M.attendance(recs,date,empStart(emp,date)),dayRecs=M.effective(recs).filter(p=>M.day(p.at)===date),today=M.day(Date.now());
+  const lone=t.status==='要確認'&&!dayRecs.some(p=>p.kind==='出勤')?dayRecs.find(p=>p.kind==='退勤'):null,touched=dayRecs.some(p=>/管理者/.test(p.judge||''));
+  const onlyIn=dayRecs.length&&dayRecs.every(p=>p.kind==='出勤'),reasons=[];if(t.status==='要確認')reasons.push(lone?'出勤なし':onlyIn&&dayRecs.length===1&&date!==today?'退勤なし':'組み合わせ');if(t.status==='時間を確認')reasons.push('時間なし');if(t.status==='勤務中'&&date!==today)reasons.push('退勤なし');
+  /* 場所は、管理者や本人が直したあとも「押したときの記録」で見る */
+  const pushed=adminRecs(emp.id).filter(p=>M.day(p.at)===date&&!/取消|管理者|本人修正/.test(p.judge||'')).sort((a,b)=>a.at-b.at),placeRecs=pushed.filter(placeIssue);
+  if(!touched){if(dayRecs.some(p=>/後から/.test(p.judge||'')))reasons.push('後から入力');if(placeRecs.length)reasons.push('場所の外');if(t.changed||dayRecs.some(p=>/本人/.test(p.judge||'')))reasons.push('本人変更');}
+  const raw=adminRecs(emp.id).filter(p=>M.day(p.at)===date),acked=new Set(raw.filter(p=>/管理者確認/.test(p.judge||'')).map(p=>p.originalId)),selfCancels=raw.filter(p=>/^本人取消/.test(p.judge||'')&&!acked.has(p.id));
+  if(selfCancels.length)reasons.push('本人取消');
+  const fixed=raw.some(p=>/管理者修正|管理者取消/.test(p.judge||''));
+  return{t,dayRecs,lone,touched,fixed,reasons,selfCancels,raw,has:dayRecs.length>0,placeRecs,pushed,test:dayRecs.some(p=>/試験/.test(p.judge||''))};}
+/** 本人が取り消した日を、管理者が見たことにする（「管理者確認（本人取消）」の行を足す） */
+async function adminAck(){const el=document.querySelector('[data-ack-emp]');if(!el)return;const e=adminEmp(el.dataset.ackEmp),r=adminDay(e,el.dataset.ackDate);
+  const list=r.selfCancels.map(p=>({kind:p.kind,at:p.at,originalId:p.id,ack:true}));if(!list.length){dialog.close();return;}
+  const res=requireOk(await request('adminSave',{token:data.session.token,deviceId:data.deviceId,employeeId:e.id,records:list,ym:monthOf(0).slice(0,7)}));
+  dialog.close();notify('確認しました。',false,3000);if(res.records)admin.data=res;else await loadAdmin();renderAdmin();}
+function renderAdmin(){const p=$('admin-panel');if(!p)return;const ym=monthOf(admin.month),hm=m=>Math.floor(m/60)+'<span>時間</span>'+(m%60?m%60+'<span>分</span>':'');
+  document.querySelectorAll('[data-admin-month]').forEach(b=>b.classList.toggle('selected',Number(b.dataset.adminMonth)===admin.month));
+  $('admin-title').textContent=Number(ym.slice(5,7))+'月の管理'+(admin.emp==='__grid'?'：日ごとの表':admin.emp?'：'+(adminEmp(admin.emp)?.name||''):'');
+  const body=$('admin-body');
+  if(admin.loading&&!admin.data){body.innerHTML='<p class="days-hint">読み込んでいます…</p>';return;}
+  if(admin.error&&!admin.data){body.innerHTML=`<div class="error">${esc(admin.error)}</div><button class="soft-button" data-admin-reload>もう一度読み込む</button>`;return;}
+  if(!admin.data){body.innerHTML='';return;}
+  const status=admin.loading?'<p class="admin-status">最新の内容を読み込んでいます…</p>':admin.error?`<div class="error">${esc(admin.error)}</div><button class="soft-button" data-admin-reload>もう一度読み込む</button>`:'';
+  const emps=admin.data.employees.filter(e=>e.status!=='無効'||adminRecs(e.id).length);
+  if(!admin.emp){
+    const items=[];emps.forEach(e=>adminDays().forEach(d=>{const r=adminDay(e,d);if((r.has||r.selfCancels.length)&&r.reasons.length)items.push({e,d,r});}));
+    const totals=emps.map(e=>{let sum=0,days=0;adminDays().forEach(d=>{const r=adminDay(e,d);if(r.t.confirmedMinutes!==null){sum+=M.floor30(r.t.confirmedMinutes);days++;}});return{e,sum,days,check:items.filter(x=>x.e.id===e.id).length};});
+    const all=totals.reduce((a,x)=>({days:a.days+x.days,sum:a.sum+x.sum}),{days:0,sum:0});
+    body.innerHTML=status+'<h3 class="admin-h">従業員一覧</h3><table class="emp-table"><thead><tr><th>名前</th><th>日数</th><th>時間</th><th>確認</th></tr></thead><tbody>'+totals.map(x=>`<tr data-admin-emp="${esc(x.e.id)}" tabindex="0"><td><strong>${esc(x.e.name)}</strong>${x.e.category?`<small>${esc(x.e.category)}</small>`:''}${x.e.status==='無効'?'<small>無効</small>':''}</td><td>${x.days}日</td><td>${hm(x.sum)}</td><td>${x.check?`<span class="tag warn">${x.check}</span>`:'—'}</td></tr>`).join('')+`</tbody><tfoot><tr><td>合計（${totals.length}人）</td><td>${all.days}日</td><td>${hm(all.sum)}</td><td>${items.length||'—'}</td></tr></tfoot></table><p class="fine-print">名前を押すと、その人の日別を開きます。</p><button class="soft-button wide" data-admin-grid>日ごとの表（出勤簿の形）</button>`
+      +`<h3 class="admin-h">確認が必要な日（${items.length}件）</h3>`+(items.length?'<div class="days-list">'+items.map(x=>`<button class="day-row" data-admin-day="${esc(x.e.id)}|${x.d}"><span class="day-date">${md(x.d)}</span><span class="day-times"><strong class="admin-name">${esc(x.e.name)}</strong><br>${x.r.reasons.map(s=>'<span class="tag warn">'+s+'</span>').join('')}${x.r.test?'<span class="tag">試験</span>':''}${x.r.reasons.includes('場所の外')?x.r.placeRecs.map(p=>'<span class="place-reason-row">'+esc(p.kind)+' '+M.time(p.at)+'：'+(p.placeReason?'理由「'+esc(p.placeReason)+'」':'理由なし')+'</span>').join(''):''}</span><span class="chev">›</span></button>`).join('')+'</div>':'<div class="empty">ありません。</div>')
+      +(()=>{const none=admin.data.employees.filter(e=>e.status!=='無効'&&e.role!=='管理者'&&!e.category);return none.length?`<div class="cat-missing">区分が未設定の人がいます（${none.map(e=>esc(e.name)).join('、')}）。<button class="text-button" data-admin-emps>従業員の表示で選ぶ ›</button></div>`:'';})()
+      +'<h3 class="admin-h">設定</h3><button class="soft-button wide" data-admin-settings>始業（今日だけの始業も）・昼休憩・小休憩の文言</button><button class="soft-button wide" data-admin-emps>従業員の表示（シーズン終わり・戻す）</button>';
+    return;}
+  if(admin.emp==='__grid'){const days=adminDays(),W='日月火水木金土';
+    /* 人（列）の並び：登録順・名前順・区分順。選んだ並びはこのスマホで覚える */
+    let order='reg';try{order=localStorage.getItem('tc-grid-order')||'reg';}catch(err){}
+    const CAT={'常勤':0,'常勤バイト':1,'バイター':2},byName=(a,b)=>String(a.name).localeCompare(String(b.name),'ja');
+    const sorted=emps.slice().sort(order==='name'?byName:order==='cat'?((a,b)=>(CAT[a.category]??3)-(CAT[b.category]??3)||byName(a,b)):(()=>0));
+    const orderBar='<div class="grid-order" role="group" aria-label="人の並び"><span>並び</span>'+[['reg','登録順'],['name','名前順'],['cat','区分順']].map(([k,l])=>`<button class="chip ${order===k?'on':''}" data-grid-order="${k}">${l}</button>`).join('')+'</div>';
+    const cols=sorted.map(e=>({e,cells:days.map(d=>{const r=adminDay(e,d);return{d,r,min:r.t.confirmedMinutes!==null?M.floor30(r.t.confirmedMinutes):null};})}));
+    const cell=(e,c)=>`<td class="${c.r.reasons.length?'warn':''}" data-admin-day="${esc(e.id)}|${c.d}">${c.min!==null?(c.min/60):c.r.has||c.r.selfCancels.length?'？':''}</td>`;
+    body.innerHTML=status+`<button class="soft-button admin-back" data-admin-list>＜ 一覧へ戻る</button>${orderBar}<p class="days-hint">数字は時間（8.5＝8時間30分）。黄色は確認が必要な日。マスを押すとその日を直せます。</p><div class="grid-wrap"><table class="day-grid"><thead><tr><th>日付</th>${cols.map(c=>`<th>${esc(c.e.name)}</th>`).join('')}</tr></thead><tbody>${days.map((d,i)=>{const w=new Date(d+'T12:00:00+09:00').getDay();return `<tr class="${w===0?'sun':w===6?'sat':''}"><th>${Number(d.slice(8))}（${W[w]}）</th>${cols.map(c=>cell(c.e,c.cells[i])).join('')}</tr>`;}).join('')}</tbody><tfoot><tr><th>合計</th>${cols.map(c=>`<td>${c.cells.reduce((a,x)=>a+(x.min||0),0)/60}</td>`).join('')}</tr><tr><th>日数</th>${cols.map(c=>`<td>${c.cells.filter(x=>x.min!==null).length}</td>`).join('')}</tr></tfoot></table></div>`;return;}
+  const e=adminEmp(admin.emp);if(!e){admin.emp=null;renderAdmin();return;}
+  let sum=0;const rows=adminDays().map(d=>{const r=adminDay(e,d),t=r.t,ok=t.confirmedMinutes!==null;if(ok)sum+=M.floor30(t.confirmedMinutes);
+    const inT=t.inRec?M.time(t.inRec.at):r.dayRecs.find(p=>p.kind==='出勤')?M.time(r.dayRecs.find(p=>p.kind==='出勤').at):'',outT=t.outRec?M.time(t.outRec.at):r.lone?M.time(r.lone.at):'';
+    const tags=r.reasons.filter(s=>s!=='場所の外').map(s=>'<span class="tag warn">'+s+'</span>').join('')+(r.placeRecs.length?'<span class="tag place">場所</span>':'')+(r.touched?'<span class="tag">'+(r.fixed?'管理者修正':'管理者確認')+'</span>':'')+(r.test?'<span class="tag">試験</span>':'');
+    return `<button class="day-row${r.has?'':' day-empty'}" data-admin-day="${esc(e.id)}|${d}"><span class="day-date">${md(d)}</span><span class="day-times">${r.has?(inT||'—')+' – '+(outT||'—'):'記録なし'}${tags?'<br>'+tags:''}</span><strong>${ok?hm(M.floor30(t.confirmedMinutes)):'—'}</strong><span class="chev">›</span></button>`;}).join('');
+  body.innerHTML=status+`<button class="soft-button admin-back" data-admin-list>＜ 一覧へ戻る</button><p class="days-hint">直したい日を押してください（記録のない日も足せます）。</p><div class="days-list">${rows}</div><div class="days-total"><span>合計</span><strong>${hm(sum)}</strong></div>`;
+}
+/** 管理者：その日を直す画面。時刻は30分ごと（元の打刻の時刻も選べる） */
+function adminEditDay(empId,date){const e=adminEmp(empId);if(!e)return;const r=adminDay(e,date),ins=r.dayRecs.filter(p=>p.kind==='出勤'),outs=r.dayRecs.filter(p=>p.kind==='退勤'),inRec=ins[0]||null,outRec=outs.at(-1)||null;
+  const base=Date.parse(date+'T00:00:00+09:00'),opt=(rec,def)=>{let h='<option value="">なし</option>';const cur=rec?rec.at:null;let placed=false;
+    for(let m=ADMIN_EARLIEST;m<=1410;m+=30){const at=base+m*60000;if(cur!==null&&!placed&&cur<at){h+=`<option value="${cur}" selected>${M.time(cur)}（打刻）</option>`;placed=true;}h+=`<option value="${at}" ${cur===at||(cur===null&&def===m)?'selected':''}>${M.hm(m)}</option>`;if(cur===at)placed=true;}
+    if(cur!==null&&!placed)h+=`<option value="${cur}" selected>${M.time(cur)}（打刻）</option>`;return h;};
+  const st=Number.isInteger(outRec?.startMinutes)?outRec.startMinutes:Number.isInteger(inRec?.startMinutes)?inRec.startMinutes:empStart(e,date);
+  const lunch=Number.isInteger(outRec?.lunchMinutes)?outRec.lunchMinutes:(admin.data.defaultLunchMinutes??defaultLunch),lunchOpts=[...new Set([0,30,45,60,90,lunch])].sort((a,b)=>a-b);
+  const conf=outRec?.confirmedMinutes;
+  if(r.selfCancels.length&&!r.has){const orig=r.selfCancels.map(c=>r.raw.find(p=>p.id===c.originalId)||c).sort((a,b)=>a.at-b.at);
+    modal(`<h2>${esc(e.name)}　${md(date)}</h2><div class="notice-box" data-ack-emp="${esc(e.id)}" data-ack-date="${date}">本人が「この日は出勤していない」として記録を取り消しました。</div><p>取り消した記録：${orig.map(p=>esc(p.kind)+' '+M.time(p.at)+(Number.isInteger(p.confirmedMinutes)?'（'+M.hm(p.confirmedMinutes)+'）':'')).join('、')}</p><p class="fine-print">「確認しました」で一覧から外れます。記録を入れ直すときは、確認したあとにもう一度この日を開いてください。</p><div id="dialog-error" class="error" hidden role="alert"></div><div class="buttons"><button class="btn" data-close>戻る</button><button class="btn primary" data-action="admin-ack">確認しました</button></div>`);return;}
+  modal(`<h2>${esc(e.name)}　${md(date)}</h2>${adminGuide(r)}${adminPlaces(r.pushed)}<form id="admin-form" data-emp="${esc(e.id)}" data-date="${date}" data-manual="${Number.isInteger(conf)}" data-new-day="${outRec?'':1}">
+    <div class="admin-grid"><label>出勤<select name="a_in">${opt(inRec,r.has?null:st)}</select></label><label>退勤<select name="a_out">${opt(outRec,r.has?null:st+540)}</select></label>
+    <label>昼休憩<select name="a_lunch">${lunchOpts.map(m=>`<option value="${m}" ${m===lunch?'selected':''}>${m}分</option>`).join('')}</select></label></div>
+    <p id="admin-calc" class="work-proposal"></p>
+    <div class="work-inputs"><label>勤務 時間<input name="a_hours" type="number" inputmode="numeric" min="0" max="24" step="1" value="${Number.isInteger(conf)?Math.floor(conf/60):''}"></label><label>分<select name="a_minutes">${[...new Set([0,30,...(Number.isInteger(conf)?[conf%60]:[])])].sort((a,b)=>a-b).map(m=>`<option value="${m}" ${Number.isInteger(conf)&&conf%60===m?'selected':''}>${String(m).padStart(2,'0')}</option>`).join('')}</select></label></div>
+    ${r.reasons.length?`<p class="fine-print">確認が必要：${r.reasons.join('・')}。保存すると「管理者修正」になり、一覧から外れます。</p>`:''}
+    ${r.has?'<button type="button" class="soft-button danger-soft" data-admin-cancel>この日を「勤務なし」にする</button>':''}
+  </form><div id="dialog-error" class="error" hidden role="alert"></div>${closeButtons('この内容で保存','admin-save')}`);
+  updateAdminForm($('admin-form'));}
+/** 個別の画面の日付の下に「何を確認するか」を書く */
+const ADMIN_CHECK={
+  '退勤なし':'退勤の記録がありません。本人に聞いて、退勤の時刻と勤務時間を入れてください。',
+  '出勤なし':'始めた時刻（出勤）の記録がありません。本人に聞いて、出勤の時刻を入れてください。',
+  '組み合わせ':'出勤・退勤の記録が重なったり足りなかったりしています。正しい出勤・退勤を選び直してください。',
+  '時間なし':'勤務時間が入っていません。出勤・退勤・昼休憩を確かめて、勤務時間を入れてください。',
+  '後から入力':'本人が後から時刻を入れた日です。始めた時刻・終えた時刻・昼休憩・勤務時間が合っているか確かめてください。',
+  '本人変更':'本人が時刻や勤務時間を直した日、または計算と違う勤務時間を入れた日です。直した内容が合っているか確かめてください。',
+  '場所の外':'登録した場所の外（または位置が取れない所）で退勤が押されました。下の「押した場所」と理由を見て、問題がないか確かめてください。'};
+function adminGuide(r){const items=r.reasons.filter(x=>ADMIN_CHECK[x]);
+  const notes=[...new Set(r.dayRecs.filter(p=>/本人/.test(p.judge||'')&&p.note).map(p=>p.note))];
+  if(!items.length)return '<div class="admin-guide"><p>確認が必要なことはありません。直すときだけ使います。</p></div>';
+  return '<div class="admin-guide"><h3>確認すること</h3><ul>'+items.map(x=>`<li><strong>${esc(x)}</strong>：${esc(ADMIN_CHECK[x])}</li>`).join('')+'</ul>'+(notes.length?'<p class="fine-print">本人のメモ：'+notes.map(esc).join('、')+'</p>':'')+'<p class="fine-print">合っていれば、そのまま「この内容で保存」で確認済みになります。</p></div>';}
+/** その日の打刻ごとの場所（例「退勤 17:05 倉庫」「登録した場所の外（誤差約15m）」「位置なし」）と、地図で見るリンク */
+function placeLabel(p){const j=p.judge||'',acc=Number.isFinite(p.accuracy)?'（誤差約'+Math.round(p.accuracy)+'m）':'';
+  if(/退勤時に入力/.test(j))return '退勤のときに入力（位置なし）';if(/管理者/.test(j))return '管理者が入力';if(/後から/.test(j))return '後から入力（位置なし）';if(/本人修正/.test(j))return '本人が直した';
+  if(/範囲内/.test(j))return p.placeName||'登録した場所の中';if(/範囲外/.test(j))return '登録した場所の外'+acc;if(/精度が低い/.test(j))return '位置が正確に分からない'+acc;if(/位置なし/.test(j))return '位置なし';if(/場所未設定/.test(j))return '場所が未登録';return '—';}
+function adminPlaces(recs){if(!recs.length)return '';
+  return '<div class="place-list"><h3>押した場所</h3>'+recs.map(p=>`<div class="place-line">${esc(p.kind)} ${M.time(p.at)}　${esc(placeLabel(p))}${Number.isFinite(p.lat)&&Number.isFinite(p.lon)?`<a class="map-link" href="https://www.google.com/maps/search/?api=1&query=${p.lat},${p.lon}" target="_blank" rel="noopener">地図で見る</a>`:''}${p.placeReason?`<span class="place-reason">理由：${esc(p.placeReason)}</span>`:''}</div>`).join('')+'</div>';}
+function adminFormValues(f){const inAt=f.elements.a_in.value?Number(f.elements.a_in.value):null,outAt=f.elements.a_out.value?Number(f.elements.a_out.value):null,st=inAt!==null?Math.floor((inAt-Date.parse(f.dataset.date+'T00:00:00+09:00'))/60000):null,lunch=Number(f.elements.a_lunch.value);
+  const span=inAt!==null&&outAt!==null&&outAt>inAt?Math.max(0,M.minute(outAt)-M.countFrom(inAt,st)):null;return{inAt,outAt,st,lunch,span,calc:span===null?null:Math.max(MIN_WORK,M.floor30(Math.max(0,span-lunch)))};}
+function updateAdminForm(f){if(!f)return;
+  /* 新しく入れる日は、出勤〜退勤が4時間30分未満なら昼休憩0分を初期にする */
+  if(f.dataset.newDay&&!f.dataset.lunchTouched&&f.elements.a_in.value&&f.elements.a_out.value){const raw=M.minute(Number(f.elements.a_out.value))-M.minute(Number(f.elements.a_in.value)),want=raw<SHORT_DAY?'0':String(defaultLunch);if([...f.elements.a_lunch.options].some(o=>o.value===want))f.elements.a_lunch.value=want;}const v=adminFormValues(f),c=$('admin-calc');
+  if(v.inAt!==null&&v.outAt!==null&&v.outAt<=v.inAt){c.textContent='退勤は出勤より後にしてください。';return;}
+  if(v.calc===null){c.textContent=v.outAt===null?'退勤が「なし」の日は、勤務時間を入れません。':'出勤と退勤を選ぶと計算します。';return;}
+  c.textContent='計算：'+M.duration(v.calc)+'（30分未満切り捨て）';
+  const conf=Number(f.elements.a_hours.value)*60+Number(f.elements.a_minutes.value),raw=M.minute(v.outAt)-M.minute(v.inAt);
+  if(f.dataset.manual==='true'&&f.elements.a_hours.value!==''&&conf>Math.max(MIN_WORK,raw))c.textContent+='。勤務時間が、出勤から退勤まで（'+M.duration(raw)+'）より長いので保存できません。';
+  if(f.dataset.manual!=='true'){f.elements.a_hours.value=Math.floor(v.calc/60);f.elements.a_minutes.value=String(v.calc%60);}}
+async function adminSaveDay(cancelAll){const f=$('admin-form');if(!f)return;const e=adminEmp(f.dataset.emp),date=f.dataset.date,r=adminDay(e,date),ins=r.dayRecs.filter(p=>p.kind==='出勤'),outs=r.dayRecs.filter(p=>p.kind==='退勤'),inRec=ins[0]||null,outRec=outs.at(-1)||null,list=[];
+  const cancel=p=>list.push({kind:p.kind,at:p.at,originalId:p.id,cancel:true});
+  if(cancelAll){r.dayRecs.forEach(cancel);}
+  else{const v=adminFormValues(f);
+    if(v.inAt!==null&&v.outAt!==null&&v.outAt<=v.inAt)throw Error('退勤は出勤より後にしてください。');
+    if(v.outAt!==null&&v.inAt===null)throw Error('出勤を選んでください。');
+    ins.slice(1).forEach(cancel);outs.slice(0,-1).forEach(cancel);
+    if(v.inAt===null){if(inRec)cancel(inRec);}
+    else if(!inRec)list.push({kind:'出勤',at:v.inAt,startMinutes:v.st});
+    else if(inRec.at!==v.inAt)list.push({kind:'出勤',at:v.inAt,originalId:inRec.id,startMinutes:v.st});
+    if(v.outAt===null){if(outRec)cancel(outRec);}
+    else{const h=Number(f.elements.a_hours.value),mi=Number(f.elements.a_minutes.value),conf=h*60+mi;if(!Number.isInteger(h)||h<0||h>24||f.elements.a_hours.value==='')throw Error('勤務時間を入れてください。');
+      if(conf<MIN_WORK)throw Error('勤務時間は最低1時間です。働いていない日は「勤務なし」にしてください。');
+      if(v.inAt!==null&&conf>Math.max(MIN_WORK,M.minute(v.outAt)-M.minute(v.inAt)))throw Error('勤務時間が、出勤から退勤まで（'+M.duration(M.minute(v.outAt)-M.minute(v.inAt))+'）より長くなっています。');
+      /* 中身を変えずに保存したら「管理者確認」（直したのではなく、確かめた印） */
+      const same=!list.length&&inRec&&outRec&&inRec.at===v.inAt&&outRec.at===v.outAt&&outRec.lunchMinutes===v.lunch&&outRec.confirmedMinutes===conf;
+      list.push({kind:'退勤',at:v.outAt,...(outRec?{originalId:outRec.id}:{}),lunchMinutes:v.lunch,confirmedMinutes:conf,startMinutes:same&&Number.isInteger(outRec.startMinutes)?outRec.startMinutes:v.st,...(same?{confirm:true}:{})});}
+  }
+  r.selfCancels.forEach(p=>list.push({kind:p.kind,at:p.at,originalId:p.id,ack:true}));
+  if(!list.length){dialog.close();return;}
+  const btn=document.querySelector('dialog [data-action=admin-save]');if(btn){btn.disabled=true;btn.textContent='保存しています…';}
+  let res;try{res=requireOk(await request('adminSave',{token:data.session.token,deviceId:data.deviceId,employeeId:e.id,records:list,ym:monthOf(0).slice(0,7)}));}finally{if(btn){btn.disabled=false;btn.textContent='この内容で保存';}}
+  dialog.close();notify('保存しました。',false,3000);if(res.records)admin.data=res;else await loadAdmin();renderAdmin();if(e.id===data.session.employee.id)refresh(false);}
+/** 管理者：始業（全員共通・人ごと）・昼休憩の基本・小休憩の文言 */
+function adminSettings(){const d=admin.data;if(!d)return;const ds=Number.isInteger(d.defaultStartMinutes)?d.defaultStartMinutes:480,dl=d.defaultLunchMinutes??defaultLunch;
+  const lunchOpts=[...new Set([30,45,60,75,90,dl])].sort((a,b)=>a-b),emps=d.employees.filter(e=>e.status!=='無効');
+  const own=e=>`<label class="admin-emp-start">${esc(e.name)}<select name="s_${esc(e.id)}" data-emp-start="${esc(e.id)}"><option value="" ${Number.isInteger(e.ownStart)?'':'selected'}>全員共通（${M.hm(ds)}）</option>${(()=>{const l=[];for(let m=240;m<=780;m+=30)l.push(m);if(Number.isInteger(e.ownStart)&&!l.includes(e.ownStart))l.push(e.ownStart);return l.sort((x,y)=>x-y).map(m=>`<option value="${M.hm(m)}" ${m===e.ownStart?'selected':''}>${M.hm(m)}</option>`).join('');})()}</select></label>`;
+  modal(`<h2>始業・昼休憩・小休憩</h2><form id="admin-settings-form"><label>始業（全員共通）<select name="d_start">${startOptions(ds)}</select></label><label>昼休憩の基本<select name="d_lunch">${lunchOpts.map(m=>`<option value="${m}" ${m===dl?'selected':''}>${m}分</option>`).join('')}</select></label><label>小休憩の文言（退勤の画面に出します。空にすると出しません）<textarea name="d_note" rows="2" maxlength="100">${esc(d.breakNote??breakNote)}</textarea></label><h3 class="admin-h">人ごとの始業</h3><p class="fine-print">その人だけ違う始業にするときに選びます。</p>${emps.map(own).join('')}<p class="fine-print">これから押す打刻に使います。保存済みの記録は変わりません。</p>${todayFields(d,emps)}${yearCatFields(d)}</form><div id="dialog-error" class="error" hidden role="alert"></div><div class="buttons"><button class="btn" data-close>戻る</button><button class="btn primary" data-action="admin-settings-save">この内容で保存</button></div>`);}
+/** 年間の合計（1月1日から）を本人の日別に見せる区分 */
+function yearCatFields(d){const on=new Set(d.yearCats||[]);return `<h3 class="admin-h">年間の合計を見せる区分</h3><p class="fine-print">選んだ区分の人だけ、日別の下に「今年の合計（1月1日から）」が出ます。何も選ばなければ、だれにも出ません。区分は従業員シートの「区分」です。</p><div class="year-cats">${['常勤','常勤バイト','バイター'].map(c=>`<label class="check"><input type="checkbox" data-year-cat="${c}" ${on.has(c)?'checked':''}>${c}</label>`).join('')}</div>`;}
+/** 今日だけの始業（全員・人ごと）。翌日には自動で元に戻る */
+function todayFields(d,emps){const ts=d.todayStart||{all:null,emps:{}},today=M.day(Date.now()),opts=sel=>{let h='<option value="">いつも通り</option>';for(let m=SELF_EARLIEST;m<=840;m+=30)h+=`<option value="${M.hm(m)}" ${m===sel?'selected':''}>${M.hm(m)}</option>`;if(Number.isInteger(sel)&&(sel<SELF_EARLIEST||sel>840||sel%30))h+=`<option value="${M.hm(sel)}" selected>${M.hm(sel)}</option>`;return h;};
+  return `<h3 class="admin-h">今日だけの始業（${md(today)}）</h3><p class="fine-print">急に始業が変わった日に使います。明日には自動で元に戻ります。退勤のときの「始めた時刻」の最初の値になります。</p><label class="today-start">全員<select name="t_all">${opts(ts.all)}</select></label>${emps.map(e=>`<label class="admin-emp-start">${esc(e.name)}<select data-today-start="${esc(e.id)}">${opts(Number.isInteger(ts.emps?.[e.id])?ts.emps[e.id]:null)}</select></label>`).join('')}`;}
+/** 従業員の表示：今シーズンが終わった人（バイターなど）を外す・戻す。外した人はログインできず、記録のない月の一覧にも出ない。記録は残る */
+function adminEmps(){const d=admin.data;if(!d)return;const me=data.session.employee.id,list=d.employees.slice().sort((a,b)=>(a.status==='無効')-(b.status==='無効')||String(a.category).localeCompare(String(b.category))),baiter=list.filter(e=>e.status!=='無効'&&e.category==='バイター'&&e.role!=='管理者'&&e.id!==me);
+  const row=e=>{const off=e.status==='無効',fixed=e.role==='管理者'||e.id===me;return `<div class="emp-status-row ${off?'off':''}"><span>${esc(e.name)}<small>${off?'外しています':''}</small><select class="cat-select" data-emp-cat="${esc(e.id)}" aria-label="${esc(e.name)}さんの区分">${['','常勤','常勤バイト','バイター'].map(c=>`<option value="${c}" ${(e.category||'')===c?'selected':''}>${c||'区分：未設定'}</option>`).join('')}</select><select class="cat-select" data-emp-work="${esc(e.id)}" aria-label="${esc(e.name)}さんの作業報告"><option value="" ${e.workReport?'':'selected'}>作業報告：なし</option><option value="あり" ${e.workReport?'selected':''}>作業報告：あり</option></select></span>${fixed?'<small>管理者</small>':`<button class="btn ${off?'primary':''}" data-emp-status="${off?'有効':'無効'}" data-emp-ids="${esc(e.id)}">${off?'戻す':'今シーズンは終わり'}</button>`}</div>`;};
+  modal(`<h2>従業員の表示</h2><p class="fine-print">区分（常勤／常勤バイト／バイター）は名前の下で選びます。選ぶとすぐ保存します。本人の画面には出ません。</p><p class="fine-print">作業報告を「あり」にした人は、退勤の下に「収穫の記録」が出ます（本人が⚙か日別の時間を開いた時、または次の退勤の時から）。</p><p class="fine-print">「今シーズンは終わり」にした人はログインできなくなり、記録のない月の一覧・日ごとの表に出なくなります。記録は消えず、働いた月の出勤簿や合計には出ます。来シーズンにまた来る人は、新しい登録URLから同じお名前で登録し直してもらえば、同じ人として記録が続きます（ここで「戻す」を押しても使えます）。</p>${baiter.length?`<button class="btn wide" data-emp-status="無効" data-emp-ids="${esc(baiter.map(e=>e.id).join(','))}" data-emp-bulk>バイター ${baiter.length}人をまとめて「今シーズンは終わり」にする</button>`:''}<div class="emp-status-list">${list.map(row).join('')}</div><div id="dialog-error" class="error" hidden role="alert"></div><div class="buttons"><button class="btn" data-close>閉じる</button></div>`);}
+async function adminEmpStatus(b){if(b.dataset.empBulk!==undefined&&!b.dataset.confirmed){b.dataset.confirmed='1';b.textContent='もう一度押すと、まとめて外します';return;}
+  const ids=b.dataset.empIds.split(',').filter(Boolean),label=b.textContent;b.disabled=true;b.textContent='保存しています…';
+  let r;try{r=requireOk(await request('adminEmpStatus',{token:data.session.token,deviceId:data.deviceId,ym:monthOf(0).slice(0,7),ids,status:b.dataset.empStatus}));}catch(err){b.disabled=false;b.textContent=label;throw err;}
+  admin.data=r;renderAdmin();adminEmps();notify(b.dataset.empStatus==='無効'?'外しました。':'戻しました。',false,3000);}
+/** パスワードを変える（本人。管理者も同じ） */
+/** パスワードを変える：従業員は数字6桁。管理者だけは8文字以上の英数字・記号も使える（数字6桁も可） */
+function passwordForm(){const adm=isAdmin(),now=adm?'text':'numeric',nw=adm?'type="password" autocomplete="new-password" minlength="6" maxlength="128"':'type="password" inputmode="numeric" autocomplete="new-password" minlength="6" maxlength="6"';
+  modal(`<h2>パスワードを変える</h2><form id="password-form"><label for="pw-now">今のパスワード</label><input id="pw-now" type="password" ${adm?'':'inputmode="numeric"'} autocomplete="current-password" minlength="6" maxlength="128" required><label for="pw-new">新しいパスワード（${adm?'数字6桁、または8文字以上の英数字・記号':'数字6桁'}）</label><input id="pw-new" ${nw} required><label for="pw-again">新しいパスワードをもう一度</label><input id="pw-again" ${nw} required></form><p class="fine-print">次からは新しいパスワードでログインします。このスマホはログインしたままです。${adm?'英字や記号を入れた時は、ログイン画面の「英字を含むパスワードの人はこちら」を押してから入れます。':''}</p><div id="dialog-error" class="error" hidden role="alert"></div>${closeButtons('変える','password-save')}`);}
+async function passwordSave(){const now=$('pw-now').value,next=$('pw-new').value;
+  if(next!==$('pw-again').value)throw Error('新しいパスワードの確認が一致しません。');if(isAdmin()?!(/^\d{6}$/.test(next)||(next.length>=8&&next.length<=128&&/^[\x21-\x7e]+$/.test(next))):!/^\d{6}$/.test(next))throw Error(isAdmin()?'新しいパスワードは数字6桁か、8文字以上の英数字・記号にしてください（空白・全角は使えません）。':'新しいパスワードは数字6桁にしてください。');if(now===next)throw Error('今と違うパスワードにしてください。');
+  const btn=document.querySelector('dialog [data-action=password-save]');if(btn){btn.disabled=true;btn.textContent='確認しています…';}
+  try{const c=requireOk(await request('challenge',{name:data.session.employee.name})),verifier=await M.password(now,c.salt,c.iterations),newVerifier=await M.password(next,c.salt,c.iterations);
+    requireOk(await request('changePassword',{token:data.session.token,deviceId:data.deviceId,verifier,newVerifier}));}
+  finally{if(btn){btn.disabled=false;btn.textContent='変える';}}
+  dialog.close();notify('パスワードを変えました。',false,4000);}
+async function adminSettingsSave(){const f=$('admin-settings-form');if(!f)return;const toMin=v=>{const m=/^(\d{1,2}):(\d{2})$/.exec(v||'');return m?Number(m[1])*60+Number(m[2]):null;};
+  const starts={};f.querySelectorAll('[data-emp-start]').forEach(s=>{const e=adminEmp(s.dataset.empStart),v=s.value===''?null:toMin(s.value);if(e&&(Number.isInteger(e.ownStart)?e.ownStart:null)!==v)starts[e.id]=v;});
+  const body={token:data.session.token,deviceId:data.deviceId,ym:monthOf(0).slice(0,7),defaultStart:toMin(f.elements.d_start.value),defaultLunch:Number(f.elements.d_lunch.value),breakNote:f.elements.d_note.value.trim(),starts,yearCats:[...f.querySelectorAll('[data-year-cat]')].filter(x=>x.checked).map(x=>x.dataset.yearCat),todayStart:{all:toMin(f.elements.t_all.value),starts:Object.fromEntries([...f.querySelectorAll('[data-today-start]')].map(x=>[x.dataset.todayStart,toMin(x.value)]).filter(x=>x[1]!==null))}};
+  const btn=document.querySelector('dialog [data-action=admin-settings-save]');if(btn){btn.disabled=true;btn.textContent='保存しています…';}
+  let r;try{r=requireOk(await request('adminSettings',body));}finally{if(btn){btn.disabled=false;btn.textContent='この内容で保存';}}
+  admin.data=r;dialog.close();notify('設定を保存しました。',false,3000);renderAdmin();refresh(false);}
+function settings(){const s=data.session,pendingCount=data.queue.filter(q=>!q.error).length;
+  modal(`<h2>設定</h2>${s?`<p class="settings-name">${esc(s.employee.name)} さん</p>${pendingCount?`<p>まだ送れていない記録が ${pendingCount}件 あります。電波が戻ったら自動で送ります。</p>`:'<p>打刻はすべて送れています。</p>'}<h3>ホーム画面に置く</h3>${standalone?'<p>いまはホーム画面のアイコンから開いています。</p>':'<p>ブラウザの共有ボタン（□に↑の印）やメニューから「ホーム画面に追加」を選ぶと、次からアイコンで開けます。</p>'}<h3>スマホを替えたとき</h3><p>新しいスマホで、同じお名前とパスワードでログインしてください。前のスマホでは打刻できなくなります。</p>${isAdmin()?`<h3>管理者</h3><button class="btn primary" data-admin-open>管理者の画面</button><h3>試験モード</h3><p>動作を確かめるとき用です。オンの間は、時刻の制限（0:00〜4:59・これからの時刻・締め・6:00より前）なしで記録でき、記録は「試験」として出勤簿・集計から外します。場所の理由の欄と、勤務時間の長さの確認はそのままです。</p><button class="btn" data-action="test-mode">${data.testMode?'試験モードをオフにする（いまオン）':'試験モードをオンにする'}</button>`:''}${!verified?'<button class="btn" data-action="relogin">もう一度ログインする</button>':''}<button class="btn" data-action="password">パスワードを変える</button><button class="btn" data-action="logout">このスマホからログアウト</button>`:'<p>お名前とパスワードでログインしてください。</p>'}<p class="fine-print">アプリの版 ${esc(CLIENT_VERSION)} ／ 保存先 ${esc(serverVersion||(WEB?'まだ確認していません':boot.version||''))}</p><div class="buttons"><button class="btn primary" data-close>閉じる</button></div>`);}
+document.addEventListener('click',async ev=>{const b=ev.target.closest('button,tr[data-admin-emp],td[data-admin-day]');if(!b)return;
+  /* 収穫の画面の中のボタンは harvest.js だけが扱う */if(b.closest('#harvest-root')||b.closest('#hv-dialog'))return;
+  if(b.id==='harvest-open')openWork();if(b.id==='harvest-back'){if(history.state?.tcWork)history.back();else{view='main';render();window.scrollTo(0,0);}}
+  if(b.dataset.authMode){authMode=b.dataset.authMode;render();}
+  if(b.dataset.punch)preparePunch(b.dataset.punch).catch(err=>{busy=false;render();notify(err.message,true);});
+  if(b.id==='home-link'||b.id==='admin-back-top'){if(dialog.open)dialog.close();if(view!=='main'){if(history.state?.tcDays||history.state?.tcAdmin||history.state?.tcWork)history.back();else{view='main';render();}}window.scrollTo(0,0);}
+  if(b.dataset.adminOpen!==undefined)openAdmin();if(b.dataset.adminMonth!==undefined){admin.month=Number(b.dataset.adminMonth);if(admin.emp!=='__grid')admin.emp=null;renderAdmin();}if(b.dataset.adminSettings!==undefined)adminSettings();if(b.dataset.adminEmps!==undefined)adminEmps();if(b.dataset.gridOrder){try{localStorage.setItem('tc-grid-order',b.dataset.gridOrder);}catch(err){}renderAdmin();}if(b.dataset.adminGrid!==undefined){admin.emp='__grid';renderAdmin();window.scrollTo(0,0);}if(b.dataset.adminReload!==undefined)loadAdmin();if(b.dataset.adminEmp){admin.emp=b.dataset.adminEmp;renderAdmin();window.scrollTo(0,0);}if(b.dataset.adminList!==undefined){admin.emp=null;renderAdmin();window.scrollTo(0,0);}
+  if(b.dataset.adminDay){const [id,d]=b.dataset.adminDay.split('|');adminEditDay(id,d);}
+  if(b.id==='settings'){settings();/* 権限などはふだん取りに行かないので、⚙を開いた時に取り直して出し直す */if(data.session)refresh(false).then(()=>{if(dialog.open&&dialog.querySelector('.settings-name'))settings();});}if(b.dataset.day){if(dialog.open)dialog.close();editDay(b.dataset.day);}if(b.id==='days-open'){view='days';refresh(false).then(()=>{if(view==='days')render();});daysMonth=0;try{history.pushState({tcDays:1},'');}catch(e){}render();window.scrollTo(0,0);}if(b.id==='days-back'){if(history.state?.tcDays){history.back();}else{view='main';render();window.scrollTo(0,0);}}if(b.dataset.month!==undefined){daysMonth=Number(b.dataset.month);renderDays();}
+  if(b.dataset.startToggle!==undefined){const f=b.closest('form');b.hidden=true;const st=f.querySelector('.start-text');if(st)st.hidden=true;f.querySelector('#start-wrap').hidden=false;f.dataset.startTouched='1';f.dataset.manual='false';updateWorkForm(f);f.elements.start_time.focus();}if(b.id==='sync')flush();if(b.dataset.close!==undefined)dialog.close();
+  try{
+    if(b.dataset.action==='day-review')reviewDay();if(b.dataset.action==='day-back')backDay();
+    if(b.dataset.action==='save-day')await saveDay();
+    if(b.dataset.dayCancel){if(b.dataset.confirmed){await cancelDay(b.dataset.dayCancel);}else{b.dataset.confirmed='1';b.textContent='もう一度押すと、この日の記録を取り消します';}}
+    if(b.dataset.action==='admin-ack')await adminAck();
+    if(b.dataset.action==='admin-save')await adminSaveDay(false);
+    if(b.dataset.action==='admin-settings-save')await adminSettingsSave();
+    if(b.dataset.action==='password')passwordForm();
+    if(b.dataset.action==='password-save')await passwordSave();
+    if(b.dataset.empStatus)await adminEmpStatus(b);
+    if(b.dataset.adminCancel!==undefined){if(b.dataset.confirmed){await adminSaveDay(true);}else{b.dataset.confirmed='1';b.textContent='もう一度押すと「勤務なし」にします';}}
+    if(b.dataset.action==='save-punch'&&pending)await savePunch();
+    if(b.dataset.action==='test-mode'&&isAdmin()){const on=!data.testMode;await save(current=>({...current,testMode:on}));dialog.close();render();notify(on?'試験モードをオンにしました。':'試験モードをオフにしました。',false,4000);}
+    if(['logout','relogin'].includes(b.dataset.action)){if((data.queue.length||(window.TCWork?.pending(data.session?.employee?.id)||0)>0)&&b.dataset.action!=='relogin'){modal('<h2>未送信の記録があります</h2><p>先に送信するか、管理者に確認してください。記録を保護するため、ログアウトはまだ行いません。</p><div class="buttons"><button class="btn" data-close>戻る</button></div>');return;}if(data.session)$('login-name').value=data.session.employee.name;await save(current=>({...current,session:null,history:current.queue.length?current.history:[]}));verified=true;syncUrl();dialog.close();render();}
+  }catch(err){const el=$('dialog-error');if(el){el.hidden=false;el.textContent=err.message;}else notify(err.message,true);}
+});
+/* 日別の時間ページは、スライドやAndroidの戻るボタンでも打刻の画面へ戻れるようにする */window.addEventListener('popstate',()=>{if(view==='work'&&!history.state?.tcWork){view='main';const hd=$('hv-dialog');if(hd?.open)hd.close();render();window.scrollTo(0,0);return;}if(view==='admin'&&!history.state?.tcAdmin){view='main';if(dialog.open)dialog.close();render();window.scrollTo(0,0);return;}if(view==='days'&&!history.state?.tcDays){view='main';if(dialog.open)dialog.close();render();window.scrollTo(0,0);}});
+$('auth-form').addEventListener('submit',authenticate);$('history-date').value=M.day(Date.now());/* iPhoneの日付選択の「リセット」で空になったら今日に戻す（空のままだと履歴が全部消えたように見える） */const historyDay=()=>{if(!$('history-date').value)$('history-date').value=M.day(Date.now());render();};$('history-date').addEventListener('change',historyDay);$('history-date').addEventListener('input',historyDay);$('history-date').addEventListener('blur',historyDay);
+document.addEventListener('submit',async ev=>{if(!['punch-form','day-form'].includes(ev.target.id))return;ev.preventDefault();if(ev.target.id==='day-form'){try{reviewDay();}catch(err){$('dialog-error').hidden=false;$('dialog-error').textContent=err.message;}return;}try{if(ev.target.id==='punch-form'&&pending){await savePunch();}}catch(err){$('dialog-error').hidden=false;$('dialog-error').textContent=err.message;}});
+document.addEventListener('input',ev=>{const form=ev.target.closest('form');if(form&&['lunch','lunch_custom','a_lunch'].includes(ev.target.name))form.dataset.lunchTouched='1';if(!form||!['punch-form','day-form'].includes(form.id))return;if(['start_time','time','in_time','out_time'].includes(ev.target.name)&&form.id==='day-form'||ev.target.name==='start_time'||ev.target.name==='in_time'&&form.id==='punch-form'){form.dataset.manual='false';updateWorkForm(form);}if(['confirmed_hours','confirmed_minutes'].includes(ev.target.name))form.dataset.manual='true';if(ev.target.name==='lunch_custom'){form.dataset.manual='false';updateWorkForm(form);}});
+$('pw-keyboard').addEventListener('click',()=>{const f=$('login-password');f.inputMode='text';$('pw-keyboard').hidden=true;f.blur();f.focus();});
+document.addEventListener('change',async ev=>{
+  /* 従業員の区分を変える */
+  /* 従業員の作業報告 あり／なし（w40） */
+  if(ev.target.dataset?.empWork){const sel=ev.target,id=sel.dataset.empWork;sel.disabled=true;
+    try{admin.data=requireOk(await request('adminEmpWork',{token:data.session.token,deviceId:data.deviceId,ym:monthOf(0).slice(0,7),id,on:sel.value==='あり'}));renderAdmin();adminEmps();if(id===data.session.employee.id)refresh(false);}
+    catch(err){sel.disabled=false;const el=$('dialog-error');if(el){el.hidden=false;el.textContent=err.message;}}
+    return;}
+  if(ev.target.dataset?.empCat){const sel=ev.target,id=sel.dataset.empCat;sel.disabled=true;
+    try{admin.data=requireOk(await request('adminEmpCategory',{token:data.session.token,deviceId:data.deviceId,ym:monthOf(0).slice(0,7),id,category:sel.value}));renderAdmin();adminEmps();notify('区分を保存しました。',false,2500);}
+    catch(err){sel.disabled=false;const el=$('dialog-error');if(el){el.hidden=false;el.textContent=err.message;}}
+    return;}const form=ev.target.closest('form');if(form?.id==='punch-form'){if(ev.target.name==='in_time')form.dataset.inTouched='1';if(ev.target.name==='start_time')form.dataset.startTouched='1';}if(form&&['lunch','lunch_custom','a_lunch'].includes(ev.target.name))form.dataset.lunchTouched='1';if(form?.id==='admin-form'){if(['a_hours','a_minutes'].includes(ev.target.name))form.dataset.manual='true';else{form.dataset.manual='false';updateAdminForm(form);}return;}if(form&&['punch-form','day-form'].includes(form.id)&&['lunch','time','date','kind','start_time','in_time','out_time'].includes(ev.target.name)){form.dataset.manual='false';updateWorkForm(form);}});
+dialog.addEventListener('close',()=>{pending=null;busy=false;render();});
+/* 通信は、退勤を押した時（版・始業の確認と送信）と、まだ送れていない記録がある間だけ。送れたら次の退勤まで通信しない（w38） */
+window.addEventListener('online',()=>flush());document.addEventListener('visibilitychange',()=>{if(!document.hidden)flush();});
+setInterval(tick,15000);setInterval(()=>{if(!document.hidden&&data.queue.some(q=>!q.error))flush();},60000);
+/* 新しい版の確認は、開いた時と退勤を押した時だけ（w38） */
+let updating=false;
+async function updateBeforePunch(at){return switchIfNew(at);}
+async function switchIfNew(at){
+  if(!WEB||updating||navigator.onLine===false)return false;
+  let v='';try{const ctl=new AbortController(),t=setTimeout(()=>ctl.abort(),2500);const r=await fetch('version.json?t='+Date.now(),{cache:'no-store',signal:ctl.signal});clearTimeout(t);if(r.ok)v=(await r.json()).version||'';}catch(e){return false;}
+  if(!v||v===CLIENT_VERSION)return false;
+  let tried='';try{tried=sessionStorage.getItem('tc-update-tried')||'';}catch(e){}
+  if(tried===v)return false;
+  /* 押した時刻を残せないときは切り替えない（退勤をなくさないため） */
+  try{sessionStorage.setItem('tc-update-tried',v);if(at)sessionStorage.setItem('tc-resume-punch',JSON.stringify({at,v}));}catch(e){return false;}
+  updating=true;notify('新しい版に切り替えています…');
+  try{const reg=await navigator.serviceWorker?.getRegistration();await reg?.update();}catch(e){}
+  location.replace(location.pathname+'?v='+encodeURIComponent(v));return true;
+}
+/* 切り替えの後：押した退勤の画面を、押した時刻のまま開く（3分より前のものは開かない） */
+function resumePunch(){let r=null;try{r=JSON.parse(sessionStorage.getItem('tc-resume-punch')||'null');sessionStorage.removeItem('tc-resume-punch');}catch(e){}
+  if(!r||!Number.isFinite(r.at)||!data.session||!verified)return;const age=Date.now()-r.at;if(age<0||age>180000)return;
+  preparePunch('退勤',{at:r.at}).catch(err=>{busy=false;render();notify(err.message,true);});}
+if(WEB){
+  try{const q=new URLSearchParams(location.search);if(q.has('v')){q.delete('v');history.replaceState(null,'',location.pathname+(q.toString()?'?'+q:''));}}catch(e){}
+  if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+}
+/* 収穫の記録（harvest.js）に、ログインの情報と通信だけを渡す（打刻の記録・送信には触らせない） */
+window.TCApp={get session(){return data.session;},get deviceId(){return data.deviceId;},request,requireOk};
+render();ready.then(async()=>{/* 「使えません」のスマホで新しい登録URLを開いたら、登録し直せるようにする */if(data.closed&&boot.invite){await save(current=>({...current,session:null,history:[],closed:false}));authMode='register';}}).then(restoreFromUrl).then(()=>{render();resumePunch();window.TCWork?.wake();}).then(()=>{/* ログイン済みなら開いた時は問い合わせない（未送信があれば送るだけ） */if(data.session){available=true;render();return (dialog.open||busy?Promise.resolve(false):switchIfNew(0)).then(moving=>{if(moving)return;/* 「使えません」のスマホだけは、開いた時に戻されていないか確かめる */if(data.closed)refresh();else flush();});}return request('hello').then(requireOk).then(()=>{available=true;render();if(!dialog.open)switchIfNew(0);});}).catch(err=>{available=false;$('cloud-status').textContent=err.message;});
+})();
+</script>
+<script>/* 収穫の記録（w40）：退勤の下の「収穫の記録」から開く。打刻の流れ・保存には触らない。
+   - 使えるのは、従業員シート「作業報告」が「あり」の人だけ（ボタンもその人だけ）。
+   - どの園地で何箱取ったか、その園地の収穫が終わったか。全員共通：誰かが「終わり」にした園地は、全員の候補から外れる。
+   - 年産：「取った年」の園地（せとか）は収穫した年、ほか（みかん・伊予柑）は1〜6月なら前の年。保存先（Code.gs harvestYear_）と同じ。
+   - 記録は端末（localStorage、人ごと）に置いてから送る。電波がなくても入れられ、電波が戻ったら送る。
+     画面に出すのは「保存先から受け取った全員の記録」＋「まだ送れていない自分の分」。
+   - 直す・取り消すは、本人の分と、管理者はだれの分でも。行は消さず、訂正元IDつきの行を足す（保存先）。 */
+(function(){
+'use strict';
+const $=id=>document.getElementById(id);
+const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const pad=n=>String(n).padStart(2,'0');
+const today=()=>{const d=new Date();return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;};
+const md=d=>d?`${Number(d.slice(5,7))}/${Number(d.slice(8,10))}`:'';
+const newId=()=>(crypto.randomUUID?crypto.randomUUID():'hv-'+Date.now().toString(36)+Math.random().toString(36).slice(2,12)).replace(/[^A-Za-z0-9_-]/g,'');
+/** 年産：保存先の harvestYear_ と同じ */
+const yearOf=(day,o)=>{const y=Number(day.slice(0,4)),m=Number(day.slice(5,7));return o&&o.sameYear?y:(m<=6?y-1:y);};
+let toastText='',toastTimer=0,owner='',st=null,sending=false,loading=false,authProblem='',loadError='',ui={date:'',orchard:'',boxes:'',end:false,note:'',message:''},edit=null,pendingSave=null;
+const A=()=>window.TCApp;const me=()=>A()?.session?.employee||null;const isAdmin=()=>me()?.role==='管理者';
+const key=id=>'p02-harvest-v1-'+id;
+function read(id){try{const v=JSON.parse(localStorage.getItem(key(id))||'null');if(v&&v.schema===1&&Array.isArray(v.queue))return {problems:[],...v};}catch(e){}return {schema:1,server:null,queue:[],problems:[]};}
+function write(){localStorage.setItem(key(owner),JSON.stringify(st));}
+function ensure(){const e=me();if(!e)return false;if(owner!==e.id){owner=e.id;st=read(owner);authProblem='';loadError='';edit=null;pendingSave=null;ui={date:today(),orchard:'',boxes:'',end:false,note:'',message:''};}return true;}
+const orchards=()=>st.server?.orchards||[];
+const orchard=id=>orchards().find(o=>o.id===id);
+/** 画面に出す記録：保存先の全員分に、まだ送れていない自分の分を当てる（直した元は外し、取消は両方外す） */
+function records(){
+  const list=(st.server?.records||[]).map(x=>({...x}));const e=me();
+  for(const q of st.queue){
+    const i=q.originalId?list.findIndex(x=>x.id===q.originalId):-1,orig=i>=0?list[i]:null;
+    if(i>=0)list.splice(i,1);if(q.cancel)continue;
+    const o=orchard(q.orchardId);
+    list.push({id:q.id,employeeId:orig&&orig.employeeId!==e.id?orig.employeeId:e.id,name:orig&&orig.employeeId!==e.id?orig.name:e.name,date:q.date,year:yearOf(q.date,o),orchardId:q.orchardId,orchardName:o?.name||q.orchardId,boxes:q.boxes,end:q.end,note:q.note,createdAt:q.createdAt,originalId:q.originalId||'',judge:'',pending:true});
+  }
+  return list;
+}
+/** 園地のその年産の状況：箱数の合計と終わり（いちばん新しい「終わり」「再開」） */
+function stateOf(list,year,id){let boxes=0,last=null;for(const x of list){if(x.year!==year||x.orchardId!==id)continue;boxes+=x.boxes;if((x.end==='終わり'||x.end==='再開')&&(!last||x.createdAt>=last.createdAt))last=x;}return {boxes,closed:!!last&&last.end==='終わり',by:last?.end==='終わり'?last.name:'',on:last?.end==='終わり'?last.date:''};}
+/** 画面の上に短く出す（最初の画面の知らせは隠れているため） */
+function toast(text){toastText=text;clearTimeout(toastTimer);toastTimer=setTimeout(()=>{toastText='';render();},3500);render();}
+/** まだ送れていない記録を置き、送る */
+function enqueue(rec){
+  st.queue.push(rec);
+  try{write();}catch(e){st.queue.pop();throw Error('この端末に保存できませんでした。今回分はまだ記録されていません。');}
+  render();setTimeout(flush,0);
+}
+const describe=q=>{const o=orchard(q.orchardId);return q.cancel?`${md(q.date)} ${o?.name||q.orchardId} の取消`:q.end==='再開'?`${o?.name||q.orchardId} の終わりの取り消し`:`${md(q.date)} ${o?.name||q.orchardId} ${q.boxes}箱${q.end==='終わり'?'（終わり）':''}`;};
+function authError(err){
+  if(['invalid-token','replaced','inactive'].includes(err.code)){authProblem='このスマホからは送れません。⚙からもう一度ログインしてください（まだ送れていない記録は消えません）。';return true;}
+  if(err.code==='work-off'){authProblem='収穫の記録を使う設定になっていません。管理者に伝えてください（まだ送れていない記録は消えません）。';return true;}
+  return false;
+}
+function adopt(r){st.server={orchards:r.orchards,records:r.records,at:Date.now()};}
+async function flush(){
+  if(sending||!ensure()||!st.queue.length||navigator.onLine===false)return;
+  const s=A().session;sending=true;render();let again=false;
+  try{
+    const batch=st.queue.slice(0,50),r=A().requireOk(await A().request('harvestSave',{token:s.token,deviceId:A().deviceId,records:batch}));
+    if(owner!==s.employee.id)return;
+    const done=new Set();for(const x of r.results||[]){if(x.status==='saved'||x.status==='duplicate')done.add(x.id);else if(x.status==='rejected'){done.add(x.id);const q=batch.find(q=>q.id===x.id);st.problems.push({text:q?describe(q):'収穫の記録',reason:x.reason||'保存先が受け付けませんでした。'});}}
+    st.queue=st.queue.filter(q=>!done.has(q.id));adopt(r);authProblem='';write();again=st.queue.length>0&&done.size>0;
+  }catch(err){authError(err);}
+  finally{sending=false;render();}
+  if(again)setTimeout(flush,300);
+}
+/** 開いた時・画面に戻った時：送ってから、全員の最新を受け取る */
+async function refresh(){
+  if(!ensure()||navigator.onLine===false||loading)return;loading=true;const s=A().session;render();
+  try{if(st.queue.length)await flush();const r=A().requireOk(await A().request('harvestData',{token:s.token,deviceId:A().deviceId}));if(owner!==s.employee.id)return;adopt(r);authProblem='';loadError='';write();}
+  catch(err){if(!authError(err))loadError=err.message;}
+  finally{loading=false;render();}
+}
+function statusHtml(){
+  const n=st.queue.length,online=navigator.onLine!==false;
+  let h='';
+  if(authProblem)h+=`<div class="hv-alert">${esc(authProblem)}</div>`;
+  else if(n)h+=`<div class="hv-alert">${sending?`送信しています…（${n}件）`:`まだ送れていない記録が ${n}件 あります。${online?'':'電波が戻ったら自動で送ります。'}`}${!sending&&online?'<br><button class="hv-small" id="hv-sync">今すぐ送る ↻</button>':''}</div>`;
+  if(st.problems.length)h+=`<div class="hv-alert hv-bad"><strong>送れなかった記録があります</strong>${st.problems.slice(-5).map(x=>`<div>・${esc(x.text)}：${esc(x.reason)}</div>`).join('')}<div>内容を確かめて、必要なら入れ直してください。</div><button class="hv-small" id="hv-problems-ok">確認しました</button></div>`;
+  if(loadError&&!authProblem)h+=`<div class="hv-alert">最新の記録を受け取れませんでした（${esc(loadError)}）。表示は前に受け取った内容です。</div>`;
+  return h;
+}
+function render(){
+  const root=$('harvest-root');if(!root||!st)return;
+  const c=document.querySelector('#harvest-open .hv-count');if(c){c.hidden=!st.queue.length;c.textContent='未送信 '+st.queue.length;}
+  if(!st.server){root.innerHTML=statusHtml()+`<p class="hv-empty">${navigator.onLine===false?'初めて開く時は、園地の一覧を受け取るため電波が必要です。電波のある所で開いてください。':loading?'読み込んでいます…':'園地の一覧を受け取れませんでした。電波のある所で開き直してください。'}</p>`;return;}
+  const list=records(),day=ui.date||today(),os=orchards().filter(o=>!o.hidden);
+  const rows=os.map(o=>{const y=yearOf(day,o),s=stateOf(list,y,o.id);return {o,y,s};});
+  const years=[...new Set(rows.map(r=>r.y))].sort(),mainYear=rows.length?rows.filter(r=>!r.o.sameYear)[0]?.y??rows[0].y:Number(day.slice(0,4));
+  const open=rows.filter(r=>!r.s.closed);
+  if(ui.orchard&&!open.some(r=>r.o.id===ui.orchard))ui.orchard='';
+  const dayList=list.filter(x=>x.date===day).sort((a,b)=>a.createdAt-b.createdAt),dayTotal=dayList.reduce((n,x)=>n+x.boxes,0);
+  const canEdit=x=>x.employeeId===me().id||isAdmin();
+  root.innerHTML=statusHtml()+(toastText?`<div class="hv-toast" role="status">${esc(toastText)}</div>`:'')+`
+  <h2 class="hv-title">収穫の記録</h2>
+  <form id="hv-form" class="hv-card" autocomplete="off">
+    <label class="hv-field"><span>収穫した日</span><input type="date" id="hv-date" value="${esc(day)}" max="${today()}"></label>
+    <label class="hv-field"><span>園地</span><select id="hv-orchard"><option value="">園地を選んでください</option>${open.map(r=>`<option value="${esc(r.o.id)}" ${ui.orchard===r.o.id?'selected':''}>${esc(r.o.name)}${r.s.boxes?`（${r.s.boxes}箱）`:''}${r.y!==mainYear?`・${r.y}年産`:''}</option>`).join('')}</select></label>
+    ${open.length<rows.length?`<p class="hv-hint">終わった園地（${rows.length-open.length}）は候補に出ません。下の一覧で確認できます。</p>`:''}
+    <label class="hv-field"><span>箱数</span><span class="hv-boxes"><button type="button" class="hv-step" data-hv-step="-1" aria-label="1箱減らす">−</button><input id="hv-boxes" type="number" inputmode="numeric" min="0" max="999" step="1" value="${esc(ui.boxes)}" placeholder="0"><button type="button" class="hv-step" data-hv-step="1" aria-label="1箱増やす">＋</button><b>箱</b></span></label>
+    <label class="hv-check"><input type="checkbox" id="hv-end" ${ui.end?'checked':''}><span>この園地の収穫はこれで終わり</span></label>
+    <label class="hv-field"><span>メモ（なくてもよい）</span><input id="hv-note" maxlength="200" value="${esc(ui.note)}"></label>
+    <p id="hv-error" class="hv-error" role="alert" ${ui.message?'':'hidden'}>${esc(ui.message)}</p>
+    <button type="submit" class="hv-primary">内容を確認する</button>
+  </form>
+  <section class="hv-card">
+    <h3 class="hv-h">園地ごとの状況（${mainYear}年産${years.length>1?`。せとかは${years.filter(y=>y!==mainYear).join('・')}年産`:''}）</h3>
+    <p class="hv-hint">園地を押すと、その園地の記録が見られます。</p>
+    <div class="hv-table">${rows.map(r=>`<button type="button" class="hv-orow ${r.s.closed?'done':''}" data-hv-orchard="${esc(r.o.id)}"><span>${esc(r.o.name)}${r.y!==mainYear?`<small>${r.y}年産</small>`:''}</span><span class="n">${r.s.boxes?r.s.boxes+'箱':'—'}</span><span class="s">${r.s.closed?`終わり<small>${esc(r.s.by)} ${md(r.s.on)}</small>`:r.s.boxes?'まだ':''}</span></button>`).join('')}</div>
+  </section>
+  <section class="hv-card">
+    <h3 class="hv-h">${md(day)} の記録（全員）<span class="hv-total">${dayTotal}箱</span></h3>
+    ${dayList.length?dayList.map(x=>`<div class="hv-rec"><span><b>${esc(orchard(x.orchardId)?.name||x.orchardName)}</b><small>${esc(x.name)}${x.pending?'・未送信':''}${x.judge&&/修正/.test(x.judge)?'・直し済み':''}${x.note?'・'+esc(x.note):''}</small></span><span class="n">${x.end==='再開'?'終わりを取消':x.boxes+'箱'}${x.end==='終わり'?'<small>終わり</small>':''}</span>${canEdit(x)?`<button type="button" class="hv-small" data-hv-edit="${esc(x.id)}">直す</button>`:'<span></span>'}</div>`).join(''):'<p class="hv-empty">この日の記録はまだありません。</p>'}
+  </section>`;
+}
+/* ===== 小窓（確認・直す・園地の記録） ===== */
+/* 小窓は初めて使う時に作る（打刻の画面の小窓 #modal とは別。使わない人の画面には足さない） */
+function box(){let d=$('hv-dialog');if(!d){d=document.createElement('dialog');d.id='hv-dialog';d.setAttribute('aria-label','収穫の記録');document.body.appendChild(d);d.addEventListener('close',()=>{edit=null;pendingSave=null;});}return d;}
+function dialog(html){const d=box();d.innerHTML=html;if(!d.open)d.showModal();}
+function closeDialog(){const d=$('hv-dialog');if(d?.open)d.close();edit=null;pendingSave=null;}
+function readForm(){ui.date=$('hv-date').value||today();ui.orchard=$('hv-orchard').value;ui.boxes=$('hv-boxes').value.trim();ui.end=$('hv-end').checked;ui.note=$('hv-note').value.trim();}
+function check(rec,ignoreId){
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(rec.date))return '収穫した日を入れてください。';
+  if(rec.date>today())return 'これからの日は入れられません。';
+  const o=orchard(rec.orchardId);if(!o)return '園地を選んでください。';
+  if(!(Number.isInteger(rec.boxes)&&rec.boxes>=0&&rec.boxes<=999))return '箱数は0〜999の数で入れてください。';
+  if(!rec.boxes&&!rec.end)return '箱数を入れてください。';
+  if(rec.originalId)return '';
+  const s=stateOf(records().filter(x=>x.id!==ignoreId),yearOf(rec.date,o),o.id);
+  if(s.closed&&!isAdmin())return `${o.name}の収穫は終わっています（${s.by}さん ${md(s.on)}）。`;
+  if(s.closed&&rec.end==='終わり'&&!rec.boxes)return `${o.name}の収穫は、もう終わりになっています。`;
+  return '';
+}
+function review(){
+  readForm();const rec={id:newId(),createdAt:Date.now(),date:ui.date,orchardId:ui.orchard,boxes:ui.boxes===''?0:Number(ui.boxes),end:ui.end?'終わり':'',note:ui.note};
+  const err=check(rec);if(err){ui.message=err;render();$('hv-error')?.scrollIntoView({block:'center'});return;}
+  ui.message='';pendingSave=rec;const o=orchard(rec.orchardId),y=yearOf(rec.date,o),s=stateOf(records(),y,o.id);
+  dialog(`<h2 class="hv-dtitle">この内容で記録しますか？</h2><dl class="hv-dl"><dt>収穫した日</dt><dd>${md(rec.date)}（${y}年産）</dd><dt>園地</dt><dd>${esc(o.name)}</dd><dt>箱数</dt><dd><b>${rec.boxes}箱</b>${s.boxes?`<small>この園地の合計 ${s.boxes}→${s.boxes+rec.boxes}箱</small>`:''}</dd>${rec.end?'<dt>終わり</dt><dd><b>この園地の収穫はこれで終わり</b><small>全員の候補から外れます</small></dd>':''}${rec.note?`<dt>メモ</dt><dd>${esc(rec.note)}</dd>`:''}</dl><div class="hv-buttons"><button type="button" class="hv-small" data-hv-close>戻る</button><button type="button" class="hv-primary" id="hv-save">この内容で記録</button></div>`);
+}
+function save(){
+  if(!pendingSave)return;const rec=pendingSave;
+  try{enqueue(rec);}catch(err){dialog(`<p class="hv-error">${esc(err.message)}</p><div class="hv-buttons"><button type="button" class="hv-small" data-hv-close>閉じる</button></div>`);return;}
+  closeDialog();const o=orchard(rec.orchardId);ui={date:rec.date,orchard:'',boxes:'',end:false,note:'',message:''};render();
+  toast(`${o.name} ${rec.boxes}箱${rec.end?'（終わり）':''}を記録しました。`,false,3000);
+}
+function openEdit(id){
+  const x=records().find(r=>r.id===id);if(!x)return;edit={x,cancelArmed:false};
+  const os=orchards().filter(o=>!o.hidden||o.id===x.orchardId);
+  dialog(`<h2 class="hv-dtitle">記録を直す</h2><p class="hv-hint">${esc(x.name)}さんの記録${x.employeeId!==me().id?'（管理者として直します）':''}</p>
+  ${x.end==='再開'?'<p>終わりの取り消しの記録です。間違いなら「この記録を取り消す」を押してください。</p>':`<label class="hv-field"><span>収穫した日</span><input type="date" id="hv-e-date" value="${esc(x.date)}" max="${today()}"></label>
+  <label class="hv-field"><span>園地</span><select id="hv-e-orchard">${os.map(o=>`<option value="${esc(o.id)}" ${o.id===x.orchardId?'selected':''}>${esc(o.name)}</option>`).join('')}</select></label>
+  <label class="hv-field"><span>箱数</span><input id="hv-e-boxes" type="number" inputmode="numeric" min="0" max="999" value="${x.boxes}"></label>
+  <label class="hv-check"><input type="checkbox" id="hv-e-end" ${x.end==='終わり'?'checked':''}><span>この園地の収穫はこれで終わり</span></label>
+  <label class="hv-field"><span>メモ</span><input id="hv-e-note" maxlength="200" value="${esc(x.note)}"></label>`}
+  <p id="hv-e-error" class="hv-error" hidden></p>
+  <div class="hv-buttons">${x.end==='再開'?'':'<button type="button" class="hv-primary" id="hv-e-save">直して保存</button>'}<button type="button" class="hv-danger" id="hv-e-cancel">この記録を取り消す</button><button type="button" class="hv-small" data-hv-close>閉じる</button></div>`);
+}
+function editSave(){
+  const x=edit.x,rec={id:newId(),createdAt:Date.now(),originalId:x.id,date:$('hv-e-date').value,orchardId:$('hv-e-orchard').value,boxes:$('hv-e-boxes').value.trim()===''?0:Number($('hv-e-boxes').value),end:$('hv-e-end').checked?'終わり':'',note:$('hv-e-note').value.trim()};
+  if(rec.date===x.date&&rec.orchardId===x.orchardId&&rec.boxes===x.boxes&&rec.end===(x.end||'')&&rec.note===(x.note||'')){closeDialog();return;}
+  const err=check(rec);if(err){const el=$('hv-e-error');el.hidden=false;el.textContent=err;return;}
+  try{enqueue(rec);}catch(e){const el=$('hv-e-error');el.hidden=false;el.textContent=e.message;return;}
+  closeDialog();toast('直しました。',false,2500);
+}
+function editCancel(){
+  if(!edit.cancelArmed){edit.cancelArmed=true;const b=$('hv-e-cancel');b.textContent='もう一度押すと取り消します';return;}
+  const x=edit.x;try{enqueue({id:newId(),createdAt:Date.now(),originalId:x.id,cancel:true,date:x.date,orchardId:x.orchardId,boxes:x.boxes,end:x.end||'',note:x.note||''});}catch(e){const el=$('hv-e-error');el.hidden=false;el.textContent=e.message;return;}
+  closeDialog();toast('記録を取り消しました。',false,2500);
+}
+function openOrchard(id){
+  const o=orchard(id),day=ui.date||today(),y=yearOf(day,o),list=records().filter(x=>x.orchardId===id&&x.year===y).sort((a,b)=>a.date<b.date?-1:a.date>b.date?1:a.createdAt-b.createdAt),s=stateOf(list,y,id);
+  const canEdit=x=>x.employeeId===me().id||isAdmin();
+  dialog(`<h2 class="hv-dtitle">${esc(o.name)}<small>${y}年産</small></h2><p class="hv-big">${s.boxes}箱 ・ ${s.closed?`終わり（${esc(s.by)} ${md(s.on)}）`:'まだ'}</p>
+  ${list.length?list.map(x=>`<div class="hv-rec"><span><b>${md(x.date)}</b><small>${esc(x.name)}${x.pending?'・未送信':''}${x.note?'・'+esc(x.note):''}</small></span><span class="n">${x.end==='再開'?'終わりを取消':x.boxes+'箱'}${x.end==='終わり'?'<small>終わり</small>':''}</span>${canEdit(x)?`<button type="button" class="hv-small" data-hv-edit="${esc(x.id)}">直す</button>`:'<span></span>'}</div>`).join(''):'<p class="hv-empty">この年産の記録はまだありません。</p>'}
+  <p id="hv-o-error" class="hv-error" hidden></p>
+  <div class="hv-buttons">${s.closed?`<button type="button" class="hv-danger" data-hv-reopen="${esc(id)}">終わりを取り消す（まだ取る）</button>`:''}<button type="button" class="hv-small" data-hv-close>閉じる</button></div>`);
+}
+function reopen(id,btn){
+  if(btn.dataset.armed!=='1'){btn.dataset.armed='1';btn.textContent='もう一度押すと、終わりを取り消します';return;}
+  const o=orchard(id),day=ui.date||today();
+  try{enqueue({id:newId(),createdAt:Date.now(),date:day,orchardId:id,boxes:0,end:'再開',note:''});}catch(e){const el=$('hv-o-error');el.hidden=false;el.textContent=e.message;return;}
+  closeDialog();toast(`${o.name}の終わりを取り消しました。`,false,3000);
+}
+/* ===== 操作 ===== */
+document.addEventListener('submit',ev=>{if(ev.target.id==='hv-form'){ev.preventDefault();review();}});
+document.addEventListener('change',ev=>{const t=ev.target;if(!t.closest?.('#harvest-root'))return;if(t.id==='hv-date'){readForm();ui.message='';render();}else if(['hv-orchard','hv-end'].includes(t.id)){readForm();}});
+document.addEventListener('input',ev=>{if(ev.target.closest?.('#hv-form'))readForm();});
+document.addEventListener('click',ev=>{const b=ev.target.closest('button');if(!b||!st)return;
+  if(!b.closest('#harvest-panel')&&!b.closest('#hv-dialog'))return;
+  if(b.id==='hv-sync')flush();
+  else if(b.id==='hv-problems-ok'){st.problems=[];try{write();}catch(e){}render();}
+  else if(b.dataset.hvStep){readForm();ui.boxes=String(Math.max(0,Math.min(999,(Number(ui.boxes)||0)+Number(b.dataset.hvStep))));$('hv-boxes').value=ui.boxes;}
+  else if(b.dataset.hvOrchard)openOrchard(b.dataset.hvOrchard);
+  else if(b.dataset.hvEdit)openEdit(b.dataset.hvEdit);
+  else if(b.dataset.hvReopen)reopen(b.dataset.hvReopen,b);
+  else if(b.hasAttribute('data-hv-close'))closeDialog();
+  else if(b.id==='hv-save')save();
+  else if(b.id==='hv-e-save')editSave();
+  else if(b.id==='hv-e-cancel')editCancel();
+});
+window.addEventListener('online',()=>{render();flush();});window.addEventListener('offline',render);
+document.addEventListener('visibilitychange',()=>{if(document.hidden||!st)return;if(!$('harvest-panel')?.hidden)refresh();else if(st.queue.length)flush();});
+setInterval(()=>{if(!document.hidden&&st?.queue.length)flush();},60000);
+window.TCWork={
+  /** 開いた時：今日の日付で、送ってから全員の最新を受け取る */
+  open(){if(!ensure())return;if(!ui.boxes&&!ui.orchard)ui.date=today();render();refresh();},
+  /** その人のまだ送れていない記録の件数（ログアウトの前の確認） */
+  pending(id){if(!id)return 0;if(st&&owner===id)return st.queue.length;return read(id).queue.length;},
+  /** ログインした時・開き直した時：まだ送れていない分があれば送る */
+  wake(){if(ensure()){render();if(st.queue.length)flush();}}
+};
+})();
+</script></body></html>
