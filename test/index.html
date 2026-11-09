@@ -240,7 +240,7 @@ body::before{content:"試験用の画面（従業員には出していません�
     <p class="fine-print" id="days-note"></p>
   </div>
   
-</main><dialog id="modal"><div id="modal-body"></div></dialog><script>window.P02_WEB={"apiUrl":"https://script.google.com/macros/s/AKfycbyWHfh2BhCTCFzcXWaASMX0BKiA0x6mpyEQpf3BGQHnGnrh00Y_wHGYqX1SslAX6SNcOA/exec","version":"20261110.w48"};</script><script>(function(root){
+</main><dialog id="modal"><div id="modal-body"></div></dialog><script>window.P02_WEB={"apiUrl":"https://script.google.com/macros/s/AKfycbyWHfh2BhCTCFzcXWaASMX0BKiA0x6mpyEQpf3BGQHnGnrh00Y_wHGYqX1SslAX6SNcOA/exec","version":"20261110.w50"};</script><script>(function(root){
 'use strict';
 const api={};
 api.id=()=>{if(root.crypto.randomUUID)return root.crypto.randomUUID();const bytes=root.crypto.getRandomValues(new Uint8Array(16));bytes[6]=(bytes[6]&15)|64;bytes[8]=(bytes[8]&63)|128;const hex=[...bytes].map(x=>x.toString(16).padStart(2,'0')).join('');return hex.slice(0,8)+'-'+hex.slice(8,12)+'-'+hex.slice(12,16)+'-'+hex.slice(16,20)+'-'+hex.slice(20);};
@@ -404,6 +404,8 @@ const HELP_NOTE='<p class="help-note">直し方が分からなければ、農園
 const MIN_WORK=60;
 /** 始めてから4時間30分未満（4時間29分まで）なら、昼休憩の初期は「なし」（半日で12:00〜12:29に帰る日など） */
 const SHORT_DAY=270;
+/** 12:00以降に始めた日は、昼をとってから来るので昼休憩なしを初期にする（2026/11/10 農園主） */
+const LATE_START=720;
 const WEEK='日月火水木金土',md=d=>Number(d.slice(5,7))+'/'+Number(d.slice(8,10))+'（'+WEEK[new Date(d+'T12:00:00+09:00').getUTCDay()]+'）';
 const CLIENT_VERSION=WEB?WEB.version:'20261104.5';
 const APP_URL='https://script.google.com/macros/s/AKfycby-w8l6me8DyQfZX5PXZDLk5PXUTVT-BY3xomKUANceDVHtCn_QrUrFfLp6pu7iZdF1tg/exec';
@@ -555,8 +557,11 @@ function startOptions(st){const list=[];for(let m=SELF_EARLIEST;m<=780;m+=30)lis
 function startPicker(st,opts={}){const own=st!==startOf();return `<div class="work-start">${opts.noText?'':`<span class="start-text" ${own?'hidden':''}>始業 ${M.hm(startOf())}</span>`}<button type="button" class="soft-button" data-start-toggle ${own?'hidden':''}>今日は始業が違う</button><label id="start-wrap" ${own?'':'hidden'}>この日の始業<select name="start_time">${startOptions(st)}</select></label></div>`;}
 /** 退勤の確認・直す画面の中身。昼休憩は最初から基本時間を選んでおく */
 function workFields(p,opts={}){const rest=Number.isInteger(p.lunchMinutes)?p.lunchMinutes:defaultLunch,custom=rest!==0&&rest!==defaultLunch,confirmed=p.confirmedMinutes,st=Number.isInteger(opts.start)?opts.start:startOf();
-  return `<fieldset id="lunch-fields" class="lunch-fields"><legend>昼休憩</legend><div class="lunch-choices"><label><input type="radio" name="lunch" value="${defaultLunch}" ${rest===defaultLunch?'checked':''} required><span>あり<small>${defaultLunch}分</small></span></label><label><input type="radio" name="lunch" value="0" ${rest===0?'checked':''} required>なし</label><label><input type="radio" name="lunch" value="custom" ${custom?'checked':''} required>その他</label></div><label id="lunch-custom-wrap" ${custom?'':'hidden'}>昼休憩の分数<input name="lunch_custom" type="number" inputmode="numeric" min="0" max="1440" step="1" value="${custom?rest:30}"></label>${breakNote?`<p class="break-note">${esc(breakNote)}</p>`:''}</fieldset><section id="work-confirm" class="work-confirm"><h3>勤務時間</h3><p id="work-start-text" class="work-start-text"></p>${opts.editStart?startPicker(st):''}<div class="work-inputs"><label>時間<input name="confirmed_hours" type="number" inputmode="numeric" min="0" max="24" step="1" value="${Number.isInteger(confirmed)?Math.floor(confirmed/60):''}" required></label><label>分<select name="confirmed_minutes" required>${[...new Set([0,30,...(Number.isInteger(confirmed)?[confirmed%60]:[])])].sort((a,b)=>a-b).map(m=>`<option value="${m}" ${Number.isInteger(confirmed)&&confirmed%60===m?'selected':''}>${String(m).padStart(2,'0')}</option>`).join('')}</select></label></div><p id="work-proposal" class="work-proposal"></p><p class="fine-print">違う場合は直してから保存してください。</p></section>${transportFields(p)}`;
+  return `<fieldset id="lunch-fields" class="lunch-fields"><legend>昼休憩</legend><div class="lunch-choices"><label><input type="radio" name="lunch" value="${defaultLunch}" ${rest===defaultLunch?'checked':''} required><span>あり<small>${defaultLunch}分</small></span></label><label><input type="radio" name="lunch" value="0" ${rest===0?'checked':''} required>なし</label><label><input type="radio" name="lunch" value="custom" ${custom?'checked':''} required>その他</label></div><label id="lunch-custom-wrap" ${custom?'':'hidden'}>昼休憩の分数<input name="lunch_custom" type="number" inputmode="numeric" min="0" max="1440" step="1" value="${custom?rest:30}"></label>${breakNote?`<p class="break-note">${esc(breakNote)}</p>`:''}</fieldset><section id="work-confirm" class="work-confirm"><h3>勤務時間</h3><p id="work-start-text" class="work-start-text"></p>${opts.editStart?startPicker(st):''}<div class="work-inputs"><label>時間<select name="confirmed_hours" required>${hourOptions(Number.isInteger(confirmed)?Math.floor(confirmed/60):null)}</select></label><label>分<select name="confirmed_minutes" required>${[...new Set([0,30,...(Number.isInteger(confirmed)?[confirmed%60]:[])])].sort((a,b)=>a-b).map(m=>`<option value="${m}" ${Number.isInteger(confirmed)&&confirmed%60===m?'selected':''}>${String(m).padStart(2,'0')}</option>`).join('')}</select></label></div><p id="work-proposal" class="work-proposal"></p><p class="fine-print">違う場合は直してから保存してください。</p></section>${transportFields(p)}`;
 }
+/** 勤務時間の「時間」はプルダウン（1〜10時間。キーボードを出さない）。前の値が範囲の外ならそれも入れる */
+function hourOptions(sel){const list=[];for(let h=1;h<=10;h++)list.push(h);if(Number.isInteger(sel)&&!list.includes(sel))list.push(sel);return `<option value="" ${Number.isInteger(sel)?'':'selected'}>—</option>`+list.sort((a,b)=>a-b).map(h=>`<option value="${h}" ${h===sel?'selected':''}>${h}</option>`).join('');}
+function setHours(sel,h){if(h!==''&&![...sel.options].some(o=>o.value===String(h)))sel.insertAdjacentHTML('beforeend',`<option value="${h}">${h}</option>`);sel.value=String(h);}
 /** 送迎（従業員の「送迎」があり の人だけ。前に選んだ記録を直すときも出す）。初めは毎回「なし」 */
 const TRANSPORTS=['片道','往復'];
 function transportFields(p){const cur=TRANSPORTS.includes(p.transport)?p.transport:'';if(!data.session?.employee?.transport&&!cur)return '';
@@ -585,10 +590,10 @@ function updateWorkForm(form){autoLunch(form);const w=workSpan(form),isOut=w.kin
   if(rest>w.raw){message.textContent='昼休憩が勤務時間より長くなっています。';return;}
   const calculated=Math.max(0,w.span-rest),shown=Math.max(MIN_WORK,M.floor30(calculated));
   message.textContent=form.id==='punch-form'||form.elements.in_time?'':'計算：'+M.duration(calculated)+(shown!==calculated?' → '+M.duration(shown)+'（30分未満切り捨て）':'')+(form.dataset.manual==='true'&&Number(hours.value)*60+Number(minutes.value)!==shown?'。下の時間は前に入れたままです。':'');
-  if(form.dataset.manual!=='true'){hours.value=Math.floor(shown/60);minutes.value=shown%60;}
+  if(form.dataset.manual!=='true'){setHours(hours,Math.floor(shown/60));minutes.value=shown%60;}
 }
 function autoLunch(form){if(form.dataset.lunchTouched||form.dataset.mode==='fix'||!form.elements.in_time)return;const w=workSpan(form);if(w.raw===null)return;
-  const want=w.raw<SHORT_DAY?'0':String(defaultLunch),r=form.querySelector(`[name="lunch"][value="${want}"]`);if(r&&!r.checked){r.checked=true;if(form.dataset.manual!=='true')form.dataset.manual='false';}}
+  const inM=M.parseHm(form.elements.in_time.value||''),want=w.raw<SHORT_DAY||inM!==null&&inM>=LATE_START?'0':String(defaultLunch),r=form.querySelector(`[name="lunch"][value="${want}"]`);if(r&&!r.checked){r.checked=true;if(form.dataset.manual!=='true')form.dataset.manual='false';}}
 function readWorkForm(form){updateWorkForm(form);if(!form.reportValidity())return null;const w=workSpan(form);if(w.kind!=='退勤')return{};
   const choice=form.querySelector('[name="lunch"]:checked'),rest=choice.value==='custom'?Number(form.elements.lunch_custom.value):Number(choice.value),hours=Number(form.elements.confirmed_hours.value),minutes=Number(form.elements.confirmed_minutes.value),confirmed=hours*60+minutes;
   if(!Number.isInteger(rest)||rest<0||rest>1440||(w.raw!==null&&rest>w.raw))throw Error('昼休憩の分数を確認してください。');
@@ -875,7 +880,7 @@ function adminFormValues(f){const inAt=f.elements.a_in.value?Number(f.elements.a
   const span=inAt!==null&&outAt!==null&&outAt>inAt?Math.max(0,M.minute(outAt)-M.countFrom(inAt,st)):null;return{inAt,outAt,st,lunch,span,calc:span===null?null:Math.max(MIN_WORK,M.floor30(Math.max(0,span-lunch)))};}
 function updateAdminForm(f){if(!f)return;
   /* 新しく入れる日は、出勤〜退勤が4時間30分未満なら昼休憩0分を初期にする */
-  if(f.dataset.newDay&&!f.dataset.lunchTouched&&f.elements.a_in.value&&f.elements.a_out.value){const raw=M.minute(Number(f.elements.a_out.value))-M.minute(Number(f.elements.a_in.value)),want=raw<SHORT_DAY?'0':String(defaultLunch);if([...f.elements.a_lunch.options].some(o=>o.value===want))f.elements.a_lunch.value=want;}const v=adminFormValues(f),c=$('admin-calc');
+  if(f.dataset.newDay&&!f.dataset.lunchTouched&&f.elements.a_in.value&&f.elements.a_out.value){const raw=M.minute(Number(f.elements.a_out.value))-M.minute(Number(f.elements.a_in.value)),inM=Math.floor((Number(f.elements.a_in.value)-Date.parse(f.dataset.date+'T00:00:00+09:00'))/60000),want=raw<SHORT_DAY||inM>=LATE_START?'0':String(defaultLunch);if([...f.elements.a_lunch.options].some(o=>o.value===want))f.elements.a_lunch.value=want;}const v=adminFormValues(f),c=$('admin-calc');
   if(v.inAt!==null&&v.outAt!==null&&v.outAt<=v.inAt){c.textContent='退勤は出勤より後にしてください。';return;}
   if(v.calc===null){c.textContent=v.outAt===null?'退勤が「なし」の日は、勤務時間を入れません。':'出勤と退勤を選ぶと計算します。';return;}
   c.textContent='計算：'+M.duration(v.calc)+'（30分未満切り捨て）';
