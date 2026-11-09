@@ -211,7 +211,7 @@ body::before{content:"試験用の画面（従業員には出していません�
     <p class="fine-print" id="days-note"></p>
   </div>
   
-</main><dialog id="modal"><div id="modal-body"></div></dialog><script>window.P02_WEB={"apiUrl":"https://script.google.com/macros/s/AKfycbyWHfh2BhCTCFzcXWaASMX0BKiA0x6mpyEQpf3BGQHnGnrh00Y_wHGYqX1SslAX6SNcOA/exec","version":"20261109.w40a"};</script><script>(function(root){
+</main><dialog id="modal"><div id="modal-body"></div></dialog><script>window.P02_WEB={"apiUrl":"https://script.google.com/macros/s/AKfycbyWHfh2BhCTCFzcXWaASMX0BKiA0x6mpyEQpf3BGQHnGnrh00Y_wHGYqX1SslAX6SNcOA/exec","version":"20261109.w41"};</script><script>(function(root){
 'use strict';
 const api={};
 api.id=()=>{if(root.crypto.randomUUID)return root.crypto.randomUUID();const bytes=root.crypto.getRandomValues(new Uint8Array(16));bytes[6]=(bytes[6]&15)|64;bytes[8]=(bytes[8]&63)|128;const hex=[...bytes].map(x=>x.toString(16).padStart(2,'0')).join('');return hex.slice(0,8)+'-'+hex.slice(8,12)+'-'+hex.slice(12,16)+'-'+hex.slice(16,20)+'-'+hex.slice(20);};
@@ -1017,7 +1017,8 @@ function records(){
   return list;
 }
 /** 園地のその年産の状況：箱数の合計と終わり（いちばん新しい「終わり」「再開」） */
-function stateOf(list,year,id){let boxes=0,last=null;for(const x of list){if(x.year!==year||x.orchardId!==id)continue;boxes+=x.boxes;if((x.end==='終わり'||x.end==='再開')&&(!last||x.createdAt>=last.createdAt))last=x;}return {boxes,closed:!!last&&last.end==='終わり',by:last?.end==='終わり'?last.name:'',on:last?.end==='終わり'?last.date:''};}
+/* 開始＝箱数のあるいちばん早い収穫日、終了＝今「終わり」の記録の日（保存先 harvestEvents_ と同じ。PC の園地別・日誌と揃える） */
+function stateOf(list,year,id){let boxes=0,last=null,start='';for(const x of list){if(x.year!==year||x.orchardId!==id)continue;boxes+=x.boxes;if(x.boxes>0&&(!start||x.date<start))start=x.date;if((x.end==='終わり'||x.end==='再開')&&(!last||x.createdAt>=last.createdAt))last=x;}return {boxes,start,closed:!!last&&last.end==='終わり',by:last?.end==='終わり'?last.name:'',on:last?.end==='終わり'?last.date:''};}
 /** 画面の上に短く出す（最初の画面の知らせは隠れているため） */
 function toast(text){toastText=text;clearTimeout(toastTimer);toastTimer=setTimeout(()=>{toastText='';render();},3500);render();}
 /** まだ送れていない記録を置き、送る */
@@ -1087,7 +1088,7 @@ function render(){
   <section class="hv-card">
     <h3 class="hv-h">園地ごとの状況（${mainYear}年産${years.length>1?`。せとかは${years.filter(y=>y!==mainYear).join('・')}年産`:''}）</h3>
     <p class="hv-hint">園地を押すと、その園地の記録が見られます。</p>
-    <div class="hv-table">${rows.map(r=>`<button type="button" class="hv-orow ${r.s.closed?'done':''}" data-hv-orchard="${esc(r.o.id)}"><span>${esc(r.o.name)}${r.y!==mainYear?`<small>${r.y}年産</small>`:''}</span><span class="n">${r.s.boxes?r.s.boxes+'箱':'—'}</span><span class="s">${r.s.closed?`終わり<small>${esc(r.s.by)} ${md(r.s.on)}</small>`:r.s.boxes?'まだ':''}</span></button>`).join('')}</div>
+    <div class="hv-table">${rows.map(r=>`<button type="button" class="hv-orow ${r.s.closed?'done':''}" data-hv-orchard="${esc(r.o.id)}"><span>${esc(r.o.name)}${r.y!==mainYear?`<small>${r.y}年産</small>`:''}</span><span class="n">${r.s.boxes?r.s.boxes+'箱':'—'}</span><span class="s">${r.s.closed?`終了<small>${md(r.s.on)}</small>`:r.s.start?`収穫中<small>${md(r.s.start)}〜</small>`:''}</span></button>`).join('')}</div>
   </section>
   <section class="hv-card">
     <h3 class="hv-h">${md(day)} の記録（全員）<span class="hv-total">${dayTotal}箱</span></h3>
@@ -1151,7 +1152,7 @@ function editCancel(){
 function openOrchard(id){
   const o=orchard(id),day=ui.date||today(),y=yearOf(day,o),list=records().filter(x=>x.orchardId===id&&x.year===y).sort((a,b)=>a.date<b.date?-1:a.date>b.date?1:a.createdAt-b.createdAt),s=stateOf(list,y,id);
   const canEdit=x=>x.employeeId===me().id||isAdmin();
-  dialog(`<h2 class="hv-dtitle">${esc(o.name)}<small>${y}年産</small></h2><p class="hv-big">${s.boxes}箱 ・ ${s.closed?`終わり（${esc(s.by)} ${md(s.on)}）`:'まだ'}</p>
+  dialog(`<h2 class="hv-dtitle">${esc(o.name)}<small>${y}年産</small></h2><p class="hv-big">${s.boxes}箱 ・ ${s.closed?'終了':s.start?'収穫中':'記録なし'}</p><p class="hv-hint" style="margin-top:0">開始 ${s.start?md(s.start):'—'} ／ 終了 ${s.closed?`${md(s.on)}（${esc(s.by)}）`:'—'}</p>
   ${list.length?list.map(x=>`<div class="hv-rec"><span><b>${md(x.date)}</b><small>${esc(x.name)}${x.pending?'・未送信':''}${x.note?'・'+esc(x.note):''}</small></span><span class="n">${x.end==='再開'?'終わりを取消':x.boxes+'箱'}${x.end==='終わり'?'<small>終わり</small>':''}</span>${canEdit(x)?`<button type="button" class="hv-small" data-hv-edit="${esc(x.id)}">直す</button>`:'<span></span>'}</div>`).join(''):'<p class="hv-empty">この年産の記録はまだありません。</p>'}
   <p id="hv-o-error" class="hv-error" hidden></p>
   <div class="hv-buttons">${s.closed?`<button type="button" class="hv-danger" data-hv-reopen="${esc(id)}">終わりを取り消す（まだ取る）</button>`:''}<button type="button" class="hv-small" data-hv-close>閉じる</button></div>`);
