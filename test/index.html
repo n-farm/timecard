@@ -172,6 +172,15 @@ dialog label select{display:block;width:100%;margin-top:4px;font-size:17px;paddi
 #harvest-panel .hv-danger{border:0;background:#f7e9e2;color:#9e4d32;border-radius:12px;padding:13px;font-size:16px;font-weight:700;min-height:54px}
 #harvest-panel .hv-orow{cursor:default}
 #harvest-panel .hv-orow .hv-reopen{grid-column:1/-1;justify-self:end;margin-top:2px;font-size:13px;padding:6px 10px}
+/* w43：箱数はボタンで入れる（キーボードを出さない）。よく使う数 26・36 と ±1・±10 */
+#harvest-panel .hv-picker{display:grid;gap:8px}
+#harvest-panel .hv-pick-show{display:flex;align-items:baseline;justify-content:center;gap:6px}
+#harvest-panel .hv-pick-value{width:3.2em!important;display:inline-block!important;text-align:center;font-size:34px!important;font-weight:800;border:0!important;background:transparent!important;padding:0!important;color:var(--ink);pointer-events:none;caret-color:transparent}
+#harvest-panel .hv-pick-show b{font-size:18px}
+#harvest-panel .hv-pick-row{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:8px}
+#harvest-panel .hv-preset{min-height:52px;border-radius:12px;border:2px solid var(--green);background:#fff;color:var(--green);font-size:20px;font-weight:800}
+#harvest-panel .hv-picker .hv-step{width:auto;height:auto;min-height:48px;font-size:17px}
+#harvest-panel .hv-rec-open .hv-picker{margin:4px 0 12px}
 
 body::before{content:"試験用の画面（従業員には出していません）";display:block;background:#8a2a1c;color:#fff;text-align:center;font-size:13px;padding:4px}</style></head><body>
 <main class="app">
@@ -221,7 +230,7 @@ body::before{content:"試験用の画面（従業員には出していません�
     <p class="fine-print" id="days-note"></p>
   </div>
   
-</main><dialog id="modal"><div id="modal-body"></div></dialog><script>window.P02_WEB={"apiUrl":"https://script.google.com/macros/s/AKfycbyWHfh2BhCTCFzcXWaASMX0BKiA0x6mpyEQpf3BGQHnGnrh00Y_wHGYqX1SslAX6SNcOA/exec","version":"20261109.w42"};</script><script>(function(root){
+</main><dialog id="modal"><div id="modal-body"></div></dialog><script>window.P02_WEB={"apiUrl":"https://script.google.com/macros/s/AKfycbyWHfh2BhCTCFzcXWaASMX0BKiA0x6mpyEQpf3BGQHnGnrh00Y_wHGYqX1SslAX6SNcOA/exec","version":"20261109.w43"};</script><script>(function(root){
 'use strict';
 const api={};
 api.id=()=>{if(root.crypto.randomUUID)return root.crypto.randomUUID();const bytes=root.crypto.getRandomValues(new Uint8Array(16));bytes[6]=(bytes[6]&15)|64;bytes[8]=(bytes[8]&63)|128;const hex=[...bytes].map(x=>x.toString(16).padStart(2,'0')).join('');return hex.slice(0,8)+'-'+hex.slice(8,12)+'-'+hex.slice(12,16)+'-'+hex.slice(16,20)+'-'+hex.slice(20);};
@@ -1087,16 +1096,16 @@ function render(){
   const canEdit=x=>x.employeeId===me().id||isAdmin();
   root.innerHTML=statusHtml()+(toastText?`<div class="hv-toast" role="status">${esc(toastText)}</div>`:'')+`
   <h2 class="hv-title">収穫の記録</h2>
-  <form id="hv-form" class="hv-card" autocomplete="off">
+  <div id="hv-form" class="hv-card">
     <label class="hv-field"><span>収穫した日</span><input type="date" id="hv-date" value="${esc(day)}" max="${today()}"></label>
     <label class="hv-field"><span>園地</span><select id="hv-orchard"><option value="">園地を選んでください</option>${open.map(r=>`<option value="${esc(r.o.id)}" ${ui.orchard===r.o.id?'selected':''}>${esc(r.o.name)}${r.s.boxes?`（${r.s.boxes}箱）`:''}${r.y!==mainYear?`・${r.y}年産`:''}</option>`).join('')}</select></label>
     ${open.length<rows.length?`<p class="hv-hint">終わった園地（${rows.length-open.length}）は候補に出ません。下の一覧で確認できます。</p>`:''}
-    <label class="hv-field"><span>箱数</span><span class="hv-boxes"><button type="button" class="hv-step" data-hv-step="-1" aria-label="1箱減らす">−</button><input id="hv-boxes" type="number" inputmode="numeric" min="0" max="999" step="1" value="${esc(ui.boxes)}" placeholder="0"><button type="button" class="hv-step" data-hv-step="1" aria-label="1箱増やす">＋</button><b>箱</b></span></label>
+    <div class="hv-field"><span>箱数</span>${boxPicker('hv-boxes',ui.boxes,'f')}</div>
     <label class="hv-check"><input type="checkbox" id="hv-end" ${ui.end?'checked':''}><span>この園地の収穫はこれで終わり</span></label>
-    <label class="hv-field"><span>メモ（なくてもよい）</span><input id="hv-note" maxlength="200" value="${esc(ui.note)}"></label>
+    <label class="hv-field"><span>メモ（なくてもよい）</span><input id="hv-note" maxlength="200" autocomplete="off" autocorrect="off" name="hv-memo-${Date.now()}" value="${esc(ui.note)}"></label>
     <p id="hv-error" class="hv-error" role="alert" ${ui.message?'':'hidden'}>${esc(ui.message)}</p>
-    <button type="submit" class="hv-primary">内容を確認する</button>
-  </form>
+    <button type="button" class="hv-primary" id="hv-review">内容を確認する</button>
+  </div>
   <section class="hv-card">
     <h3 class="hv-h">${md(day)} の記録（全員）<span class="hv-total">${dayTotal}箱</span></h3>
     ${dayList.length?`<p class="hv-hint">${dayList.some(canEdit)?'直す・消すときは、その行を押してください。':''}</p>`+dayList.map(x=>recRow(x,canEdit(x))).join(''):'<p class="hv-empty">この日の記録はまだありません。</p>'}
@@ -1107,6 +1116,15 @@ function render(){
   </section>`;
   if(keep&&$('hv-r-boxes')){$('hv-r-boxes').value=keep.b;$('hv-r-end').checked=keep.e;$('hv-r-note').value=keep.n;}
 }
+/* 箱数はキーボードを出さずにボタンで入れる（iPhone の鍵・カードの欄を出さない）。よく使う数（26・36）を押して ±1・±10 で直す（上限は設けない。保存先と同じ999まで） */
+const MAX_BOXES=999,PRESETS=[26,36];
+function boxPicker(id,value,kind){
+  const v=value===''||value==null?'':String(value);
+  return `<div class="hv-picker"><div class="hv-pick-show"><input id="${id}" class="hv-pick-value" value="${esc(v)}" placeholder="0" readonly tabindex="-1" inputmode="none" autocomplete="off" aria-label="箱数"><b>箱</b></div>
+    <div class="hv-pick-row">${PRESETS.map(n=>`<button type="button" class="hv-preset" data-hv-set="${kind}:${n}">${n}</button>`).join('')}</div>
+    <div class="hv-pick-row">${[-10,-1,1,10].map(n=>`<button type="button" class="hv-step" data-hv-add="${kind}:${n}" aria-label="${Math.abs(n)}箱${n<0?'減らす':'増やす'}">${n<0?'−'+Math.abs(n):'＋'+n}</button>`).join('')}</div></div>`;
+}
+function setBoxes(kind,fn){const el=$(kind==='r'?'hv-r-boxes':'hv-boxes');if(!el)return;const n=Math.max(0,Math.min(MAX_BOXES,fn(Number(el.value)||0)));el.value=String(n);if(kind!=='r')ui.boxes=el.value;}
 /** その日の記録の1行。押すとその場で開き、箱数・終わり・メモを直す／消す（日付・園地を間違えたら消して入れ直す） */
 function recRow(x,can){
   const head=`<span><b>${esc(orchard(x.orchardId)?.name||x.orchardName)}</b><small>${esc(x.name)}${x.pending?'・未送信':''}${x.judge&&/修正/.test(x.judge)?'・直し済み':''}${x.note?'・'+esc(x.note):''}</small></span><span class="n">${x.boxes}箱${x.end==='終わり'?'<small>終わり</small>':''}</span>`;
@@ -1114,9 +1132,9 @@ function recRow(x,can){
   if(openRow!==x.id)return `<button type="button" class="hv-rec hv-rec-btn" data-hv-row="${esc(x.id)}">${head}<span class="hv-chev" aria-hidden="true">›</span></button>`;
   return `<div class="hv-rec-open" data-hv-open="${esc(x.id)}"><div class="hv-rec">${head}<button type="button" class="hv-small" data-hv-row="">閉じる</button></div>
     ${x.employeeId!==me().id?`<p class="hv-hint">${esc(x.name)}さんの記録を管理者として直します。</p>`:''}
-    <span class="hv-boxes"><button type="button" class="hv-step" data-hv-rstep="-1" aria-label="1箱減らす">−</button><input id="hv-r-boxes" type="number" inputmode="numeric" min="0" max="999" step="1" value="${x.boxes}"><button type="button" class="hv-step" data-hv-rstep="1" aria-label="1箱増やす">＋</button><b>箱</b></span>
+    ${boxPicker('hv-r-boxes',x.boxes,'r')}
     <label class="hv-check"><input type="checkbox" id="hv-r-end" ${x.end==='終わり'?'checked':''}><span>この園地の収穫はこれで終わり</span></label>
-    <label class="hv-field"><span>メモ</span><input id="hv-r-note" maxlength="200" value="${esc(x.note)}"></label>
+    <label class="hv-field"><span>メモ</span><input id="hv-r-note" maxlength="200" autocomplete="off" autocorrect="off" value="${esc(x.note)}"></label>
     <p id="hv-r-error" class="hv-error" hidden></p>
     <div class="hv-rbuttons"><button type="button" class="hv-primary" id="hv-r-save">直す</button><button type="button" class="hv-danger" id="hv-r-del">${armed==='del:'+x.id?'もう一度押すと消えます':'消す'}</button></div></div>`;
 }
@@ -1130,7 +1148,7 @@ function check(rec,ignoreId){
   if(!/^\d{4}-\d{2}-\d{2}$/.test(rec.date))return '収穫した日を入れてください。';
   if(rec.date>today())return 'これからの日は入れられません。';
   const o=orchard(rec.orchardId);if(!o)return '園地を選んでください。';
-  if(!(Number.isInteger(rec.boxes)&&rec.boxes>=0&&rec.boxes<=999))return '箱数は0〜999の数で入れてください。';
+  if(!(Number.isInteger(rec.boxes)&&rec.boxes>=0&&rec.boxes<=MAX_BOXES))return `箱数は0〜${MAX_BOXES}で入れてください。`;
   if(!rec.boxes&&!rec.end)return '箱数を入れてください。';
   if(rec.originalId)return '';
   const s=stateOf(records().filter(x=>x.id!==ignoreId),yearOf(rec.date,o),o.id);
@@ -1175,16 +1193,16 @@ function reopen(id){
   toast(`${o.name}を収穫中に戻しました。`);
 }
 /* ===== 操作 ===== */
-document.addEventListener('submit',ev=>{if(ev.target.id==='hv-form'){ev.preventDefault();review();}});
 document.addEventListener('change',ev=>{const t=ev.target;if(!t.closest?.('#harvest-root'))return;if(t.id==='hv-date'){readForm();ui.message='';openRow='';armed='';render();}else if(['hv-orchard','hv-end'].includes(t.id)){readForm();}});
 document.addEventListener('input',ev=>{if(ev.target.closest?.('#hv-form'))readForm();});
 document.addEventListener('click',ev=>{const b=ev.target.closest('button');if(!b||!st)return;
   if(!b.closest('#harvest-panel')&&!b.closest('#hv-dialog'))return;
   if(b.id==='hv-sync')flush();
   else if(b.id==='hv-problems-ok'){st.problems=[];try{write();}catch(e){}render();}
-  else if(b.dataset.hvStep){readForm();ui.boxes=String(Math.max(0,Math.min(999,(Number(ui.boxes)||0)+Number(b.dataset.hvStep))));$('hv-boxes').value=ui.boxes;}
-  else if(b.dataset.hvRow!==undefined){openRow=openRow===b.dataset.hvRow?'':b.dataset.hvRow;armed='';render();if(openRow)$('hv-r-boxes')?.focus();}
-  else if(b.dataset.hvRstep){const el=$('hv-r-boxes');el.value=String(Math.max(0,Math.min(999,(Number(el.value)||0)+Number(b.dataset.hvRstep))));}
+  else if(b.id==='hv-review')review();
+  else if(b.dataset.hvSet){const [k,n]=b.dataset.hvSet.split(':');if(k==='f')readForm();setBoxes(k,()=>Number(n));}
+  else if(b.dataset.hvAdd){const [k,n]=b.dataset.hvAdd.split(':');if(k==='f')readForm();setBoxes(k,v=>v+Number(n));}
+  else if(b.dataset.hvRow!==undefined){openRow=openRow===b.dataset.hvRow?'':b.dataset.hvRow;armed='';render();}
   else if(b.dataset.hvReopen)reopen(b.dataset.hvReopen);
   else if(b.hasAttribute('data-hv-close'))closeDialog();
   else if(b.id==='hv-save')save();
