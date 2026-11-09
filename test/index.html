@@ -238,7 +238,7 @@ body::before{content:"試験用の画面（従業員には出していません�
     <p class="fine-print" id="days-note"></p>
   </div>
   
-</main><dialog id="modal"><div id="modal-body"></div></dialog><script>window.P02_WEB={"apiUrl":"https://script.google.com/macros/s/AKfycbyWHfh2BhCTCFzcXWaASMX0BKiA0x6mpyEQpf3BGQHnGnrh00Y_wHGYqX1SslAX6SNcOA/exec","version":"20261109.w45"};</script><script>(function(root){
+</main><dialog id="modal"><div id="modal-body"></div></dialog><script>window.P02_WEB={"apiUrl":"https://script.google.com/macros/s/AKfycbyWHfh2BhCTCFzcXWaASMX0BKiA0x6mpyEQpf3BGQHnGnrh00Y_wHGYqX1SslAX6SNcOA/exec","version":"20261109.w46"};</script><script>(function(root){
 'use strict';
 const api={};
 api.id=()=>{if(root.crypto.randomUUID)return root.crypto.randomUUID();const bytes=root.crypto.getRandomValues(new Uint8Array(16));bytes[6]=(bytes[6]&15)|64;bytes[8]=(bytes[8]&63)|128;const hex=[...bytes].map(x=>x.toString(16).padStart(2,'0')).join('');return hex.slice(0,8)+'-'+hex.slice(8,12)+'-'+hex.slice(12,16)+'-'+hex.slice(16,20)+'-'+hex.slice(20);};
@@ -1119,7 +1119,7 @@ function render(){
   </section>
   <section class="hv-card">
     <h3 class="hv-h">園地ごとの状況（${mainYear}年産${years.length>1?`。せとかは${years.filter(y=>y!==mainYear).join('・')}年産`:''}）</h3>
-    <p class="hv-hint">園地を押すと「終了」。収穫中に戻すときは、その園地を2回押します。終了した園地は上の園地の候補から外れます（全員）。</p>
+    <p class="hv-hint">園地を押すと「終了」（終了日はその園地の最後の収穫日）。収穫中に戻すときは、その園地を2回押します。終了した園地は上の園地の候補から外れます（全員）。</p>
     <div class="hv-table">${rows.map(r=>`<button type="button" class="hv-orow ${r.s.closed?'done':''}" data-hv-toggle="${esc(r.o.id)}" aria-pressed="${r.s.closed}"><span>${esc(r.o.name)}${r.y!==mainYear?`<small>${r.y}年産</small>`:''}</span><span class="n">${r.s.boxes?r.s.boxes+'箱':'—'}</span><span class="s">${r.s.closed&&armed==='reopen:'+r.o.id?'<b class="hv-arm">もう一度押すと収穫中に戻ります</b>':r.s.closed?`終了<small>${md(r.s.on)}</small>`:r.s.start?`収穫中<small>${md(r.s.start)}〜</small>`:''}</span></button>`).join('')}</div>
   </section>`;
   if(keep&&$('hv-r-boxes')){$('hv-r-boxes').value=keep.b;$('hv-r-note').value=keep.n;}
@@ -1192,16 +1192,19 @@ function rowDelete(){
   try{enqueue({id:newId(),createdAt:Date.now(),originalId:x.id,cancel:true,date:x.date,orchardId:x.orchardId,boxes:x.boxes,end:x.end||'',note:x.note||''});}catch(e){rowError(e.message);return;}
   openRow='';armed='';render();toast(`${orchard(x.orchardId)?.name||''} ${x.boxes}箱を削除しました。`);
 }
-/** 園地を押すと 終了⇄収穫中。終了日は上の「収穫した日」 */
+/** 園地を押すと 終了⇄収穫中。
+ *  終了日＝押した時点で、その園地（その年産）の最後の収穫日。押した日・押し直しではずれない。箱数の記録がない園地だけ上の「収穫した日」。
+ *  終了日は押した時に決まり、あとで記録を消しても変わらない（収穫中に戻すと終了はなくなり、また終了にした時に決め直す） */
 let armTimer=0;
 function toggleOrchard(id){
   const o=orchard(id),day=ui.date||today(),s0=stateOf(records(),yearOf(day,o),id);
   /* 終了は1回押し。収穫中に戻すのは2回押し（1回目のあと押さなければ4秒で元の表示に戻る。ほかを押しても取りやめ） */
   if(s0.closed&&armed!=='reopen:'+id){armed='reopen:'+id;clearTimeout(armTimer);armTimer=setTimeout(()=>{if(armed==='reopen:'+id){armed='';render();}},4000);render();return;}
   armed='';clearTimeout(armTimer);
-  try{enqueue({id:newId(),createdAt:Date.now(),date:day,orchardId:id,boxes:0,end:s0.closed?'再開':'終わり',note:''});}catch(e){toast(e.message);return;}
+  const y=yearOf(day,o),lastDay=records().filter(x=>x.orchardId===id&&x.year===y&&x.boxes>0).reduce((m,x)=>x.date>m?x.date:m,''),endDay=s0.closed?day:(lastDay||day);
+  try{enqueue({id:newId(),createdAt:Date.now(),date:endDay,orchardId:id,boxes:0,end:s0.closed?'再開':'終わり',note:''});}catch(e){toast(e.message);return;}
   if(!s0.closed&&ui.orchard===id)ui.orchard='';
-  toast(s0.closed?`${o.name}を収穫中に戻しました。`:`${o.name}を終了にしました（${md(day)}）。`);
+  toast(s0.closed?`${o.name}を収穫中に戻しました。`:`${o.name}を終了にしました（終了日 ${md(endDay)}）。`);
 }
 /* ===== 操作 ===== */
 document.addEventListener('change',ev=>{const t=ev.target;if(!t.closest?.('#harvest-root'))return;if(t.id==='hv-date'){readForm();ui.message='';openRow='';armed='';render();}else if(t.id==='hv-orchard'){readForm();}});
