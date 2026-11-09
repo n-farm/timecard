@@ -162,6 +162,16 @@ dialog label select{display:block;width:100%;margin-top:4px;font-size:17px;paddi
 #harvest-panel input[type=date]::-webkit-date-and-time-value,#hv-dialog input[type=date]::-webkit-date-and-time-value{text-align:left;margin:0}
 #harvest-panel .hv-field,#hv-dialog .hv-field{min-width:0;max-width:100%}
 #harvest-root,#hv-dialog{overflow-x:hidden}
+/* w42：その日の記録は行を押すとその場で開く（小窓・奥の画面なし）。園地の状況は1行で完結 */
+#harvest-panel .hv-rec-btn{width:100%;background:none;border:0;border-top:1px solid var(--line);text-align:left;color:var(--ink);font:inherit;font-size:16px;cursor:pointer}
+#harvest-panel .hv-chev{color:#9aa79c;font-size:22px;padding:0 4px}
+#harvest-panel .hv-rec-open{border:2px solid var(--green);border-radius:12px;padding:0 12px 12px;margin:8px 0;background:#fbfcf9}
+#harvest-panel .hv-rec-open>.hv-rec{border-top:0}
+#harvest-panel .hv-rec-open .hv-boxes{margin:4px 0 12px}
+#harvest-panel .hv-rbuttons{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+#harvest-panel .hv-danger{border:0;background:#f7e9e2;color:#9e4d32;border-radius:12px;padding:13px;font-size:16px;font-weight:700;min-height:54px}
+#harvest-panel .hv-orow{cursor:default}
+#harvest-panel .hv-orow .hv-reopen{grid-column:1/-1;justify-self:end;margin-top:2px;font-size:13px;padding:6px 10px}
 
 body::before{content:"試験用の画面（従業員には出していません）";display:block;background:#8a2a1c;color:#fff;text-align:center;font-size:13px;padding:4px}</style></head><body>
 <main class="app">
@@ -211,7 +221,7 @@ body::before{content:"試験用の画面（従業員には出していません�
     <p class="fine-print" id="days-note"></p>
   </div>
   
-</main><dialog id="modal"><div id="modal-body"></div></dialog><script>window.P02_WEB={"apiUrl":"https://script.google.com/macros/s/AKfycbyWHfh2BhCTCFzcXWaASMX0BKiA0x6mpyEQpf3BGQHnGnrh00Y_wHGYqX1SslAX6SNcOA/exec","version":"20261109.w41"};</script><script>(function(root){
+</main><dialog id="modal"><div id="modal-body"></div></dialog><script>window.P02_WEB={"apiUrl":"https://script.google.com/macros/s/AKfycbyWHfh2BhCTCFzcXWaASMX0BKiA0x6mpyEQpf3BGQHnGnrh00Y_wHGYqX1SslAX6SNcOA/exec","version":"20261109.w42"};</script><script>(function(root){
 'use strict';
 const api={};
 api.id=()=>{if(root.crypto.randomUUID)return root.crypto.randomUUID();const bytes=root.crypto.getRandomValues(new Uint8Array(16));bytes[6]=(bytes[6]&15)|64;bytes[8]=(bytes[8]&63)|128;const hex=[...bytes].map(x=>x.toString(16).padStart(2,'0')).join('');return hex.slice(0,8)+'-'+hex.slice(8,12)+'-'+hex.slice(12,16)+'-'+hex.slice(16,20)+'-'+hex.slice(20);};
@@ -997,12 +1007,12 @@ const md=d=>d?`${Number(d.slice(5,7))}/${Number(d.slice(8,10))}`:'';
 const newId=()=>(crypto.randomUUID?crypto.randomUUID():'hv-'+Date.now().toString(36)+Math.random().toString(36).slice(2,12)).replace(/[^A-Za-z0-9_-]/g,'');
 /** 年産：保存先の harvestYear_ と同じ */
 const yearOf=(day,o)=>{const y=Number(day.slice(0,4)),m=Number(day.slice(5,7));return o&&o.sameYear?y:(m<=6?y-1:y);};
-let toastText='',toastTimer=0,owner='',st=null,sending=false,loading=false,authProblem='',loadError='',ui={date:'',orchard:'',boxes:'',end:false,note:'',message:''},edit=null,pendingSave=null;
+let toastText='',toastTimer=0,owner='',st=null,sending=false,loading=false,authProblem='',loadError='',ui={date:'',orchard:'',boxes:'',end:false,note:'',message:''},edit=null,pendingSave=null,openRow='',armed='';
 const A=()=>window.TCApp;const me=()=>A()?.session?.employee||null;const isAdmin=()=>me()?.role==='管理者';
 const key=id=>'p02-harvest-v1-'+id;
 function read(id){try{const v=JSON.parse(localStorage.getItem(key(id))||'null');if(v&&v.schema===1&&Array.isArray(v.queue))return {problems:[],...v};}catch(e){}return {schema:1,server:null,queue:[],problems:[]};}
 function write(){localStorage.setItem(key(owner),JSON.stringify(st));}
-function ensure(){const e=me();if(!e)return false;if(owner!==e.id){owner=e.id;st=read(owner);authProblem='';loadError='';edit=null;pendingSave=null;ui={date:today(),orchard:'',boxes:'',end:false,note:'',message:''};}return true;}
+function ensure(){const e=me();if(!e)return false;if(owner!==e.id){owner=e.id;st=read(owner);authProblem='';loadError='';pendingSave=null;openRow='';armed='';ui={date:today(),orchard:'',boxes:'',end:false,note:'',message:''};}return true;}
 const orchards=()=>st.server?.orchards||[];
 const orchard=id=>orchards().find(o=>o.id===id);
 /** 画面に出す記録：保存先の全員分に、まだ送れていない自分の分を当てる（直した元は外し、取消は両方外す） */
@@ -1064,6 +1074,8 @@ function statusHtml(){
 }
 function render(){
   const root=$('harvest-root');if(!root||!st)return;
+  /* 開いている行の入力は、裏で受け取った時の描き直しでも消さない */
+  const keep=openRow&&$('hv-r-boxes')?{b:$('hv-r-boxes').value,e:$('hv-r-end').checked,n:$('hv-r-note').value}:null;
   const c=document.querySelector('#harvest-open .hv-count');if(c){c.hidden=!st.queue.length;c.textContent='未送信 '+st.queue.length;}
   if(!st.server){root.innerHTML=statusHtml()+`<p class="hv-empty">${navigator.onLine===false?'初めて開く時は、園地の一覧を受け取るため電波が必要です。電波のある所で開いてください。':loading?'読み込んでいます…':'園地の一覧を受け取れませんでした。電波のある所で開き直してください。'}</p>`;return;}
   const list=records(),day=ui.date||today(),os=orchards().filter(o=>!o.hidden);
@@ -1071,7 +1083,7 @@ function render(){
   const years=[...new Set(rows.map(r=>r.y))].sort(),mainYear=rows.length?rows.filter(r=>!r.o.sameYear)[0]?.y??rows[0].y:Number(day.slice(0,4));
   const open=rows.filter(r=>!r.s.closed);
   if(ui.orchard&&!open.some(r=>r.o.id===ui.orchard))ui.orchard='';
-  const dayList=list.filter(x=>x.date===day).sort((a,b)=>a.createdAt-b.createdAt),dayTotal=dayList.reduce((n,x)=>n+x.boxes,0);
+  const dayList=list.filter(x=>x.date===day&&x.end!=='再開').sort((a,b)=>a.createdAt-b.createdAt),dayTotal=dayList.reduce((n,x)=>n+x.boxes,0);
   const canEdit=x=>x.employeeId===me().id||isAdmin();
   root.innerHTML=statusHtml()+(toastText?`<div class="hv-toast" role="status">${esc(toastText)}</div>`:'')+`
   <h2 class="hv-title">収穫の記録</h2>
@@ -1086,20 +1098,33 @@ function render(){
     <button type="submit" class="hv-primary">内容を確認する</button>
   </form>
   <section class="hv-card">
-    <h3 class="hv-h">園地ごとの状況（${mainYear}年産${years.length>1?`。せとかは${years.filter(y=>y!==mainYear).join('・')}年産`:''}）</h3>
-    <p class="hv-hint">園地を押すと、その園地の記録が見られます。</p>
-    <div class="hv-table">${rows.map(r=>`<button type="button" class="hv-orow ${r.s.closed?'done':''}" data-hv-orchard="${esc(r.o.id)}"><span>${esc(r.o.name)}${r.y!==mainYear?`<small>${r.y}年産</small>`:''}</span><span class="n">${r.s.boxes?r.s.boxes+'箱':'—'}</span><span class="s">${r.s.closed?`終了<small>${md(r.s.on)}</small>`:r.s.start?`収穫中<small>${md(r.s.start)}〜</small>`:''}</span></button>`).join('')}</div>
+    <h3 class="hv-h">${md(day)} の記録（全員）<span class="hv-total">${dayTotal}箱</span></h3>
+    ${dayList.length?`<p class="hv-hint">${dayList.some(canEdit)?'直す・消すときは、その行を押してください。':''}</p>`+dayList.map(x=>recRow(x,canEdit(x))).join(''):'<p class="hv-empty">この日の記録はまだありません。</p>'}
   </section>
   <section class="hv-card">
-    <h3 class="hv-h">${md(day)} の記録（全員）<span class="hv-total">${dayTotal}箱</span></h3>
-    ${dayList.length?dayList.map(x=>`<div class="hv-rec"><span><b>${esc(orchard(x.orchardId)?.name||x.orchardName)}</b><small>${esc(x.name)}${x.pending?'・未送信':''}${x.judge&&/修正/.test(x.judge)?'・直し済み':''}${x.note?'・'+esc(x.note):''}</small></span><span class="n">${x.end==='再開'?'終わりを取消':x.boxes+'箱'}${x.end==='終わり'?'<small>終わり</small>':''}</span>${canEdit(x)?`<button type="button" class="hv-small" data-hv-edit="${esc(x.id)}">直す</button>`:'<span></span>'}</div>`).join(''):'<p class="hv-empty">この日の記録はまだありません。</p>'}
+    <h3 class="hv-h">園地ごとの状況（${mainYear}年産${years.length>1?`。せとかは${years.filter(y=>y!==mainYear).join('・')}年産`:''}）</h3>
+    <div class="hv-table">${rows.map(r=>`<div class="hv-orow ${r.s.closed?'done':''}"><span>${esc(r.o.name)}${r.y!==mainYear?`<small>${r.y}年産</small>`:''}</span><span class="n">${r.s.boxes?r.s.boxes+'箱':'—'}</span><span class="s">${r.s.closed?`終了<small>${md(r.s.on)}</small>`:r.s.start?`収穫中<small>${md(r.s.start)}〜</small>`:''}</span>${r.s.closed?`<button type="button" class="hv-small hv-reopen" data-hv-reopen="${esc(r.o.id)}">${armed==='reopen:'+r.o.id?'もう一度押すと収穫中に戻ります':'終わりを取り消す'}</button>`:''}</div>`).join('')}</div>
   </section>`;
+  if(keep&&$('hv-r-boxes')){$('hv-r-boxes').value=keep.b;$('hv-r-end').checked=keep.e;$('hv-r-note').value=keep.n;}
 }
-/* ===== 小窓（確認・直す・園地の記録） ===== */
+/** その日の記録の1行。押すとその場で開き、箱数・終わり・メモを直す／消す（日付・園地を間違えたら消して入れ直す） */
+function recRow(x,can){
+  const head=`<span><b>${esc(orchard(x.orchardId)?.name||x.orchardName)}</b><small>${esc(x.name)}${x.pending?'・未送信':''}${x.judge&&/修正/.test(x.judge)?'・直し済み':''}${x.note?'・'+esc(x.note):''}</small></span><span class="n">${x.boxes}箱${x.end==='終わり'?'<small>終わり</small>':''}</span>`;
+  if(!can)return `<div class="hv-rec">${head}<span></span></div>`;
+  if(openRow!==x.id)return `<button type="button" class="hv-rec hv-rec-btn" data-hv-row="${esc(x.id)}">${head}<span class="hv-chev" aria-hidden="true">›</span></button>`;
+  return `<div class="hv-rec-open" data-hv-open="${esc(x.id)}"><div class="hv-rec">${head}<button type="button" class="hv-small" data-hv-row="">閉じる</button></div>
+    ${x.employeeId!==me().id?`<p class="hv-hint">${esc(x.name)}さんの記録を管理者として直します。</p>`:''}
+    <span class="hv-boxes"><button type="button" class="hv-step" data-hv-rstep="-1" aria-label="1箱減らす">−</button><input id="hv-r-boxes" type="number" inputmode="numeric" min="0" max="999" step="1" value="${x.boxes}"><button type="button" class="hv-step" data-hv-rstep="1" aria-label="1箱増やす">＋</button><b>箱</b></span>
+    <label class="hv-check"><input type="checkbox" id="hv-r-end" ${x.end==='終わり'?'checked':''}><span>この園地の収穫はこれで終わり</span></label>
+    <label class="hv-field"><span>メモ</span><input id="hv-r-note" maxlength="200" value="${esc(x.note)}"></label>
+    <p id="hv-r-error" class="hv-error" hidden></p>
+    <div class="hv-rbuttons"><button type="button" class="hv-primary" id="hv-r-save">直す</button><button type="button" class="hv-danger" id="hv-r-del">${armed==='del:'+x.id?'もう一度押すと消えます':'消す'}</button></div></div>`;
+}
+/* ===== 小窓（記録する前の確認だけ） ===== */
 /* 小窓は初めて使う時に作る（打刻の画面の小窓 #modal とは別。使わない人の画面には足さない） */
-function box(){let d=$('hv-dialog');if(!d){d=document.createElement('dialog');d.id='hv-dialog';d.setAttribute('aria-label','収穫の記録');document.body.appendChild(d);d.addEventListener('close',()=>{edit=null;pendingSave=null;});}return d;}
+function box(){let d=$('hv-dialog');if(!d){d=document.createElement('dialog');d.id='hv-dialog';d.setAttribute('aria-label','収穫の記録');document.body.appendChild(d);d.addEventListener('close',()=>{pendingSave=null;});}return d;}
 function dialog(html){const d=box();d.innerHTML=html;if(!d.open)d.showModal();}
-function closeDialog(){const d=$('hv-dialog');if(d?.open)d.close();edit=null;pendingSave=null;}
+function closeDialog(){const d=$('hv-dialog');if(d?.open)d.close();pendingSave=null;}
 function readForm(){ui.date=$('hv-date').value||today();ui.orchard=$('hv-orchard').value;ui.boxes=$('hv-boxes').value.trim();ui.end=$('hv-end').checked;ui.note=$('hv-note').value.trim();}
 function check(rec,ignoreId){
   if(!/^\d{4}-\d{2}-\d{2}$/.test(rec.date))return '収穫した日を入れてください。';
@@ -1123,62 +1148,48 @@ function save(){
   if(!pendingSave)return;const rec=pendingSave;
   try{enqueue(rec);}catch(err){dialog(`<p class="hv-error">${esc(err.message)}</p><div class="hv-buttons"><button type="button" class="hv-small" data-hv-close>閉じる</button></div>`);return;}
   closeDialog();const o=orchard(rec.orchardId);ui={date:rec.date,orchard:'',boxes:'',end:false,note:'',message:''};render();
-  toast(`${o.name} ${rec.boxes}箱${rec.end?'（終わり）':''}を記録しました。`,false,3000);
+  toast(`${o.name} ${rec.boxes}箱${rec.end?'（終わり）':''}を記録しました。`);
 }
-function openEdit(id){
-  const x=records().find(r=>r.id===id);if(!x)return;edit={x,cancelArmed:false};
-  const os=orchards().filter(o=>!o.hidden||o.id===x.orchardId);
-  dialog(`<h2 class="hv-dtitle">記録を直す</h2><p class="hv-hint">${esc(x.name)}さんの記録${x.employeeId!==me().id?'（管理者として直します）':''}</p>
-  ${x.end==='再開'?'<p>終わりの取り消しの記録です。間違いなら「この記録を取り消す」を押してください。</p>':`<label class="hv-field"><span>収穫した日</span><input type="date" id="hv-e-date" value="${esc(x.date)}" max="${today()}"></label>
-  <label class="hv-field"><span>園地</span><select id="hv-e-orchard">${os.map(o=>`<option value="${esc(o.id)}" ${o.id===x.orchardId?'selected':''}>${esc(o.name)}</option>`).join('')}</select></label>
-  <label class="hv-field"><span>箱数</span><input id="hv-e-boxes" type="number" inputmode="numeric" min="0" max="999" value="${x.boxes}"></label>
-  <label class="hv-check"><input type="checkbox" id="hv-e-end" ${x.end==='終わり'?'checked':''}><span>この園地の収穫はこれで終わり</span></label>
-  <label class="hv-field"><span>メモ</span><input id="hv-e-note" maxlength="200" value="${esc(x.note)}"></label>`}
-  <p id="hv-e-error" class="hv-error" hidden></p>
-  <div class="hv-buttons">${x.end==='再開'?'':'<button type="button" class="hv-primary" id="hv-e-save">直して保存</button>'}<button type="button" class="hv-danger" id="hv-e-cancel">この記録を取り消す</button><button type="button" class="hv-small" data-hv-close>閉じる</button></div>`);
+function rowError(msg){const el=$('hv-r-error');if(el){el.hidden=false;el.textContent=msg;}}
+/** 開いた行を直す：箱数・終わり・メモだけ（日付・園地はそのまま） */
+function rowSave(){
+  const x=records().find(r=>r.id===openRow);if(!x)return;
+  const rec={id:newId(),createdAt:Date.now(),originalId:x.id,date:x.date,orchardId:x.orchardId,boxes:$('hv-r-boxes').value.trim()===''?0:Number($('hv-r-boxes').value),end:$('hv-r-end').checked?'終わり':'',note:$('hv-r-note').value.trim()};
+  if(rec.boxes===x.boxes&&rec.end===(x.end||'')&&rec.note===(x.note||'')){openRow='';armed='';render();return;}
+  const err=check(rec);if(err){rowError(err);return;}
+  try{enqueue(rec);}catch(e){rowError(e.message);return;}
+  openRow='';armed='';render();toast('直しました。');
 }
-function editSave(){
-  const x=edit.x,rec={id:newId(),createdAt:Date.now(),originalId:x.id,date:$('hv-e-date').value,orchardId:$('hv-e-orchard').value,boxes:$('hv-e-boxes').value.trim()===''?0:Number($('hv-e-boxes').value),end:$('hv-e-end').checked?'終わり':'',note:$('hv-e-note').value.trim()};
-  if(rec.date===x.date&&rec.orchardId===x.orchardId&&rec.boxes===x.boxes&&rec.end===(x.end||'')&&rec.note===(x.note||'')){closeDialog();return;}
-  const err=check(rec);if(err){const el=$('hv-e-error');el.hidden=false;el.textContent=err;return;}
-  try{enqueue(rec);}catch(e){const el=$('hv-e-error');el.hidden=false;el.textContent=e.message;return;}
-  closeDialog();toast('直しました。',false,2500);
+/** 開いた行を消す（2回押し）。保存先には「取消」の行を足して残す */
+function rowDelete(){
+  const x=records().find(r=>r.id===openRow);if(!x)return;
+  if(armed!=='del:'+x.id){armed='del:'+x.id;render();return;}
+  try{enqueue({id:newId(),createdAt:Date.now(),originalId:x.id,cancel:true,date:x.date,orchardId:x.orchardId,boxes:x.boxes,end:x.end||'',note:x.note||''});}catch(e){rowError(e.message);return;}
+  openRow='';armed='';render();toast(`${orchard(x.orchardId)?.name||''} ${x.boxes}箱を消しました。`);
 }
-function editCancel(){
-  if(!edit.cancelArmed){edit.cancelArmed=true;const b=$('hv-e-cancel');b.textContent='もう一度押すと取り消します';return;}
-  const x=edit.x;try{enqueue({id:newId(),createdAt:Date.now(),originalId:x.id,cancel:true,date:x.date,orchardId:x.orchardId,boxes:x.boxes,end:x.end||'',note:x.note||''});}catch(e){const el=$('hv-e-error');el.hidden=false;el.textContent=e.message;return;}
-  closeDialog();toast('記録を取り消しました。',false,2500);
-}
-function openOrchard(id){
-  const o=orchard(id),day=ui.date||today(),y=yearOf(day,o),list=records().filter(x=>x.orchardId===id&&x.year===y).sort((a,b)=>a.date<b.date?-1:a.date>b.date?1:a.createdAt-b.createdAt),s=stateOf(list,y,id);
-  const canEdit=x=>x.employeeId===me().id||isAdmin();
-  dialog(`<h2 class="hv-dtitle">${esc(o.name)}<small>${y}年産</small></h2><p class="hv-big">${s.boxes}箱 ・ ${s.closed?'終了':s.start?'収穫中':'記録なし'}</p><p class="hv-hint" style="margin-top:0">開始 ${s.start?md(s.start):'—'} ／ 終了 ${s.closed?`${md(s.on)}（${esc(s.by)}）`:'—'}</p>
-  ${list.length?list.map(x=>`<div class="hv-rec"><span><b>${md(x.date)}</b><small>${esc(x.name)}${x.pending?'・未送信':''}${x.note?'・'+esc(x.note):''}</small></span><span class="n">${x.end==='再開'?'終わりを取消':x.boxes+'箱'}${x.end==='終わり'?'<small>終わり</small>':''}</span>${canEdit(x)?`<button type="button" class="hv-small" data-hv-edit="${esc(x.id)}">直す</button>`:'<span></span>'}</div>`).join(''):'<p class="hv-empty">この年産の記録はまだありません。</p>'}
-  <p id="hv-o-error" class="hv-error" hidden></p>
-  <div class="hv-buttons">${s.closed?`<button type="button" class="hv-danger" data-hv-reopen="${esc(id)}">終わりを取り消す（まだ取る）</button>`:''}<button type="button" class="hv-small" data-hv-close>閉じる</button></div>`);
-}
-function reopen(id,btn){
-  if(btn.dataset.armed!=='1'){btn.dataset.armed='1';btn.textContent='もう一度押すと、終わりを取り消します';return;}
-  const o=orchard(id),day=ui.date||today();
-  try{enqueue({id:newId(),createdAt:Date.now(),date:day,orchardId:id,boxes:0,end:'再開',note:''});}catch(e){const el=$('hv-o-error');el.hidden=false;el.textContent=e.message;return;}
-  closeDialog();toast(`${o.name}の終わりを取り消しました。`,false,3000);
+/** 終わりを取り消す（2回押し）：その園地が収穫中に戻るだけ。一覧には行を出さない */
+function reopen(id){
+  if(armed!=='reopen:'+id){armed='reopen:'+id;render();return;}
+  const o=orchard(id),day=ui.date||today();armed='';
+  try{enqueue({id:newId(),createdAt:Date.now(),date:day,orchardId:id,boxes:0,end:'再開',note:''});}catch(e){toast(e.message);return;}
+  toast(`${o.name}を収穫中に戻しました。`);
 }
 /* ===== 操作 ===== */
 document.addEventListener('submit',ev=>{if(ev.target.id==='hv-form'){ev.preventDefault();review();}});
-document.addEventListener('change',ev=>{const t=ev.target;if(!t.closest?.('#harvest-root'))return;if(t.id==='hv-date'){readForm();ui.message='';render();}else if(['hv-orchard','hv-end'].includes(t.id)){readForm();}});
+document.addEventListener('change',ev=>{const t=ev.target;if(!t.closest?.('#harvest-root'))return;if(t.id==='hv-date'){readForm();ui.message='';openRow='';armed='';render();}else if(['hv-orchard','hv-end'].includes(t.id)){readForm();}});
 document.addEventListener('input',ev=>{if(ev.target.closest?.('#hv-form'))readForm();});
 document.addEventListener('click',ev=>{const b=ev.target.closest('button');if(!b||!st)return;
   if(!b.closest('#harvest-panel')&&!b.closest('#hv-dialog'))return;
   if(b.id==='hv-sync')flush();
   else if(b.id==='hv-problems-ok'){st.problems=[];try{write();}catch(e){}render();}
   else if(b.dataset.hvStep){readForm();ui.boxes=String(Math.max(0,Math.min(999,(Number(ui.boxes)||0)+Number(b.dataset.hvStep))));$('hv-boxes').value=ui.boxes;}
-  else if(b.dataset.hvOrchard)openOrchard(b.dataset.hvOrchard);
-  else if(b.dataset.hvEdit)openEdit(b.dataset.hvEdit);
-  else if(b.dataset.hvReopen)reopen(b.dataset.hvReopen,b);
+  else if(b.dataset.hvRow!==undefined){openRow=openRow===b.dataset.hvRow?'':b.dataset.hvRow;armed='';render();if(openRow)$('hv-r-boxes')?.focus();}
+  else if(b.dataset.hvRstep){const el=$('hv-r-boxes');el.value=String(Math.max(0,Math.min(999,(Number(el.value)||0)+Number(b.dataset.hvRstep))));}
+  else if(b.dataset.hvReopen)reopen(b.dataset.hvReopen);
   else if(b.hasAttribute('data-hv-close'))closeDialog();
   else if(b.id==='hv-save')save();
-  else if(b.id==='hv-e-save')editSave();
-  else if(b.id==='hv-e-cancel')editCancel();
+  else if(b.id==='hv-r-save')rowSave();
+  else if(b.id==='hv-r-del')rowDelete();
 });
 window.addEventListener('online',()=>{render();flush();});window.addEventListener('offline',render);
 document.addEventListener('visibilitychange',()=>{if(document.hidden||!st)return;if(!$('harvest-panel')?.hidden)refresh();else if(st.queue.length)flush();});
