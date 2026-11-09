@@ -157,6 +157,11 @@ dialog label select{display:block;width:100%;margin-top:4px;font-size:17px;paddi
 #hv-dialog .hv-dl dd{margin:0}
 #hv-dialog .hv-dl small{display:block;font-size:13px;color:#748577}
 #hv-dialog .hv-buttons{display:grid;gap:10px;margin-top:16px}
+/* iPhone（Safari・Chrome とも WebKit）の日付の欄は、幅100%でも中身の幅で横にはみ出すため、見た目を素の欄にして幅を抑える（w40 9:15） */
+#harvest-panel input[type=date],#hv-dialog input[type=date]{-webkit-appearance:none;appearance:none;min-width:0;max-width:100%;width:100%;min-height:50px;background:#fff;text-align:left}
+#harvest-panel input[type=date]::-webkit-date-and-time-value,#hv-dialog input[type=date]::-webkit-date-and-time-value{text-align:left;margin:0}
+#harvest-panel .hv-field,#hv-dialog .hv-field{min-width:0;max-width:100%}
+#harvest-root,#hv-dialog{overflow-x:hidden}
 
 body::before{content:"試験用の画面（従業員には出していません）";display:block;background:#8a2a1c;color:#fff;text-align:center;font-size:13px;padding:4px}</style></head><body>
 <main class="app">
@@ -206,7 +211,7 @@ body::before{content:"試験用の画面（従業員には出していません�
     <p class="fine-print" id="days-note"></p>
   </div>
   
-</main><dialog id="modal"><div id="modal-body"></div></dialog><script>window.P02_WEB={"apiUrl":"https://script.google.com/macros/s/AKfycbyWHfh2BhCTCFzcXWaASMX0BKiA0x6mpyEQpf3BGQHnGnrh00Y_wHGYqX1SslAX6SNcOA/exec","version":"20261108.w40"};</script><script>(function(root){
+</main><dialog id="modal"><div id="modal-body"></div></dialog><script>window.P02_WEB={"apiUrl":"https://script.google.com/macros/s/AKfycbyWHfh2BhCTCFzcXWaASMX0BKiA0x6mpyEQpf3BGQHnGnrh00Y_wHGYqX1SslAX6SNcOA/exec","version":"20261109.w40a"};</script><script>(function(root){
 'use strict';
 const api={};
 api.id=()=>{if(root.crypto.randomUUID)return root.crypto.randomUUID();const bytes=root.crypto.getRandomValues(new Uint8Array(16));bytes[6]=(bytes[6]&15)|64;bytes[8]=(bytes[8]&63)|128;const hex=[...bytes].map(x=>x.toString(16).padStart(2,'0')).join('');return hex.slice(0,8)+'-'+hex.slice(8,12)+'-'+hex.slice(12,16)+'-'+hex.slice(16,20)+'-'+hex.slice(20);};
