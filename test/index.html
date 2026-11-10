@@ -240,7 +240,7 @@ body::before{content:"試験用の画面（従業員には出していません�
     <p class="fine-print" id="days-note"></p>
   </div>
   
-</main><dialog id="modal"><div id="modal-body"></div></dialog><script>window.P02_WEB={"apiUrl":"https://script.google.com/macros/s/AKfycbyWHfh2BhCTCFzcXWaASMX0BKiA0x6mpyEQpf3BGQHnGnrh00Y_wHGYqX1SslAX6SNcOA/exec","version":"20261110.w53"};</script><script>(function(root){
+</main><dialog id="modal"><div id="modal-body"></div></dialog><script>window.P02_WEB={"apiUrl":"https://script.google.com/macros/s/AKfycbyWHfh2BhCTCFzcXWaASMX0BKiA0x6mpyEQpf3BGQHnGnrh00Y_wHGYqX1SslAX6SNcOA/exec","version":"20261110.w54"};</script><script>(function(root){
 'use strict';
 const api={};
 api.id=()=>{if(root.crypto.randomUUID)return root.crypto.randomUUID();const bytes=root.crypto.getRandomValues(new Uint8Array(16));bytes[6]=(bytes[6]&15)|64;bytes[8]=(bytes[8]&63)|128;const hex=[...bytes].map(x=>x.toString(16).padStart(2,'0')).join('');return hex.slice(0,8)+'-'+hex.slice(8,12)+'-'+hex.slice(12,16)+'-'+hex.slice(16,20)+'-'+hex.slice(20);};
@@ -459,7 +459,7 @@ function request(action,body={}){
 }
 function requireOk(result){if(!result?.ok){const err=Error(result?.message||'保存先から正しい応答がありません。');err.code=result?.error;throw err;}if(Number.isInteger(result.defaultLunchMinutes))defaultLunch=result.defaultLunchMinutes;if(typeof result.breakNote==='string')breakNote=result.breakNote;if(typeof result.version==='string')serverVersion=result.version;return result;}
 /** 従業員に見せる場所の結果は、やさしい言葉にする（シートの判定はそのまま） */
-function placeText(p){const j=String(p.judge||'');if(!j||p.originalId)return '';if(/範囲内/.test(j))return '場所OK'+(p.placeName?'（'+p.placeName+'）':'');if(/位置なし/.test(j))return /後から入力/.test(j)?'後から入力':'場所を確認できませんでした';if(/精度が低い/.test(j))return '場所が正確に分かりませんでした';if(/範囲外/.test(j))return '登録した場所の外で押しました';if(/場所未設定/.test(j))return '';return '';}
+function placeText(p){const j=String(p.judge||'');if(!j||p.originalId)return '';if(/範囲内/.test(j))return '場所OK'+(p.placeName?'（'+p.placeName+'）':'');if(/位置省略/.test(j))return '';if(/位置なし/.test(j))return /後から入力/.test(j)?'後から入力':'場所を確認できませんでした';if(/精度が低い/.test(j))return '場所が正確に分かりませんでした';if(/範囲外/.test(j))return '登録した場所の外で押しました';if(/場所未設定/.test(j))return '';return '';}
 function historyNote(p){const parts=[];if(p.error)return p.error;if(p.kind==='退勤'){if(Number.isInteger(p.lunchMinutes))parts.push('昼休憩 '+p.lunchMinutes+'分');if(Number.isInteger(p.confirmedMinutes))parts.push('勤務 '+M.duration(p.confirmedMinutes));if(p.transport)parts.push('送迎 '+p.transport);}const place=placeText(p);if(place)parts.push(place);return parts.join(' ／ ');}
 function ownHistory(){const id=data.session?.employee.id;return M.merge(data.history.filter(p=>p.employeeId===id),data.queue.filter(p=>p.employeeId===id).map(p=>({...p.record,employeeId:id,name:data.session.employee.name,sent:false,error:p.error})));}
 function render(){
@@ -536,8 +536,10 @@ async function flush(){
   }catch(err){if(['invalid-token','inactive','replaced'].includes(err.code)){const ids=new Set(batch.map(q=>q.record.id));await save(current=>({...current,queue:current.queue.map(q=>ids.has(q.record.id)?{...q,error:err.message}:q)}));if(data.session?.token===next.token)verified=false;progress=true;}notify(err.message,true);}finally{sending=false;render();}
   if(data.queue.some(q=>!q.error)&&progress)setTimeout(flush,500);
 }
+/** 短期バイターは位置を取らない（許可も求めない・場所の理由もいらない。2026/11/10 農園主） */
+const noGps=()=>data.session?.employee?.category==='短期バイター';
 function position(){return new Promise(resolve=>{
-  if(window.P02_PREVIEW_BRIDGE)return resolve(null);
+  if(window.P02_PREVIEW_BRIDGE||noGps())return resolve(null);
   if(!navigator.geolocation)return resolve(null);let done=false;const settle=v=>{if(done)return;done=true;clearTimeout(timer);resolve(v);};
   const timer=setTimeout(()=>settle(null),10000);navigator.geolocation.getCurrentPosition(p=>settle({lat:p.coords.latitude,lon:p.coords.longitude,accuracy:p.coords.accuracy}),e=>settle({lat:null,denied:e?.code===1}),{enableHighAccuracy:true,timeout:9000,maximumAge:0});
 });}
@@ -614,7 +616,7 @@ function readWorkForm(form){updateWorkForm(form);if(!form.reportValidity())retur
 const closeButtons=(label,action)=>`<div class="buttons"><button class="btn" data-close>戻る</button><button class="btn primary" data-action="${action}">${label}</button></div>`;
 const LOCATION_HELP='<div class="notice-box"><strong>位置情報がオフになっています。</strong>打刻は記録できますが、場所を確認できません。<br>iPhone：設定 → プライバシーとセキュリティ → 位置情報サービス → 使っているブラウザ（SafariやChrome）→「使用中のみ」<br>Android：ブラウザのアドレス欄の左の印 → 権限（サイトの設定）→ 位置情報 →「許可」</div>';
 /** 押した場所の判定と、外・位置なしのときの理由欄 */
-function placeOf(p){if(!p||p.lat==null)return{kind:'none'};return M.placeCheck({lat:p.lat,lon:p.lon,accuracy:p.accuracy},data.session?.places||[]);}
+function placeOf(p){if((!p||p.lat==null)&&noGps())return{kind:'skip'};if(!p||p.lat==null)return{kind:'none'};return M.placeCheck({lat:p.lat,lon:p.lon,accuracy:p.accuracy},data.session?.places||[]);}
 const needReason=c=>['none','out','weak'].includes(c.kind);
 function placeNote(fix){const el=$('place-note');if(!el||!pending)return;const c=placeOf(pending),kept=$('place-reason')?.value||'';
   if(!needReason(c)){el.innerHTML=c.kind==='in'?'<p class="place-ok">場所OK'+(c.place?.name?'（'+esc(c.place.name)+'）':'')+'</p>':'';return;}
@@ -875,7 +877,7 @@ function adminGuide(r){const items=r.reasons.filter(x=>ADMIN_CHECK[x]);
 /** その日の打刻ごとの場所（例「退勤 17:05 倉庫」「登録した場所の外（誤差約15m）」「位置なし」）と、地図で見るリンク */
 function placeLabel(p){const j=p.judge||'',acc=Number.isFinite(p.accuracy)?'（誤差約'+Math.round(p.accuracy)+'m）':'';
   if(/退勤時に入力/.test(j))return '退勤のときに入力（位置なし）';if(/管理者/.test(j))return '管理者が入力';if(/後から/.test(j))return '後から入力（位置なし）';if(/本人修正/.test(j))return '本人が直した';
-  if(/範囲内/.test(j))return p.placeName||'登録した場所の中';if(/範囲外/.test(j))return '登録した場所の外'+acc;if(/精度が低い/.test(j))return '位置が正確に分からない'+acc;if(/位置なし/.test(j))return '位置なし';if(/場所未設定/.test(j))return '場所が未登録';return '—';}
+  if(/範囲内/.test(j))return p.placeName||'登録した場所の中';if(/範囲外/.test(j))return '登録した場所の外'+acc;if(/精度が低い/.test(j))return '位置が正確に分からない'+acc;if(/位置省略/.test(j))return '位置なし（短期バイター）';if(/位置なし/.test(j))return '位置なし';if(/場所未設定/.test(j))return '場所が未登録';return '—';}
 function adminPlaces(recs){if(!recs.length)return '';
   return '<div class="place-list"><h3>押した場所</h3>'+recs.map(p=>`<div class="place-line">${esc(p.kind)} ${M.time(p.at)}　${esc(placeLabel(p))}${Number.isFinite(p.lat)&&Number.isFinite(p.lon)?`<a class="map-link" href="https://www.google.com/maps/search/?api=1&query=${p.lat},${p.lon}" target="_blank" rel="noopener">地図で見る</a>`:''}${p.placeReason?`<span class="place-reason">理由：${esc(p.placeReason)}</span>`:''}</div>`).join('')+'</div>';}
 function adminFormValues(f){const inAt=f.elements.a_in.value?Number(f.elements.a_in.value):null,outAt=f.elements.a_out.value?Number(f.elements.a_out.value):null,st=inAt!==null?Math.floor((inAt-Date.parse(f.dataset.date+'T00:00:00+09:00'))/60000):null,lunch=Number(f.elements.a_lunch.value);
