@@ -239,7 +239,7 @@ dialog label select{display:block;width:100%;margin-top:4px;font-size:17px;paddi
     <p class="fine-print" id="days-note"></p>
   </div>
   
-</main><dialog id="modal"><div id="modal-body"></div></dialog><script>window.P02_WEB={"apiUrl":"https://script.google.com/macros/s/AKfycby-w8l6me8DyQfZX5PXZDLk5PXUTVT-BY3xomKUANceDVHtCn_QrUrFfLp6pu7iZdF1tg/exec","version":"20261110.w52"};</script><script>(function(root){
+</main><dialog id="modal"><div id="modal-body"></div></dialog><script>window.P02_WEB={"apiUrl":"https://script.google.com/macros/s/AKfycby-w8l6me8DyQfZX5PXZDLk5PXUTVT-BY3xomKUANceDVHtCn_QrUrFfLp6pu7iZdF1tg/exec","version":"20261110.w53"};</script><script>(function(root){
 'use strict';
 const api={};
 api.id=()=>{if(root.crypto.randomUUID)return root.crypto.randomUUID();const bytes=root.crypto.getRandomValues(new Uint8Array(16));bytes[6]=(bytes[6]&15)|64;bytes[8]=(bytes[8]&63)|128;const hex=[...bytes].map(x=>x.toString(16).padStart(2,'0')).join('');return hex.slice(0,8)+'-'+hex.slice(8,12)+'-'+hex.slice(12,16)+'-'+hex.slice(16,20)+'-'+hex.slice(20);};
@@ -281,7 +281,7 @@ api.attendance=(records,date,startMinutes=null)=>{
     if(!start){if(api.day(p.at)===date)uncertain=true;continue;}
     if(api.day(p.at)!==api.day(start.at)){if(api.day(p.at)===date||api.day(start.at)===date)uncertain=true;start=null;continue;}
     if(api.day(p.at)===date){
-      count++;const st=Number.isInteger(p.startMinutes)?p.startMinutes:Number.isInteger(start.startMinutes)?start.startMinutes:startMinutes,span=Math.max(0,api.minute(p.at)-api.countFrom(start.at,st)),rest=p.lunchMinutes,value=p.confirmedMinutes;
+      count++;const st=Number.isInteger(p.startMinutes)?p.startMinutes:Number.isInteger(start.startMinutes)?start.startMinutes:startMinutes,span=Math.max(0,api.roundOut(api.minute(p.at))-api.countFrom(start.at,st)),rest=p.lunchMinutes,value=p.confirmedMinutes;
       if(!Number.isInteger(rest)||rest<0||rest>api.minute(p.at)-api.minute(start.at)||!Number.isInteger(value)||value<0||value>1440)missing=true;
       else{const calc=Math.max(0,span-rest);calculated+=calc;confirmed+=value;lunch+=rest;if(value!==calc&&value!==api.floor30(calc)&&value!==Math.max(60,api.floor30(calc)))changed=true;}
       inRec=start;outRec=p;startUsed=st;
@@ -295,6 +295,8 @@ api.attendance=(records,date,startMinutes=null)=>{
 };
 /** 表示用：30分未満は切り捨て（8時間29分→8時間、8時間45分→8時間30分）。記録は実際の分数のまま。 */
 api.floor30=minutes=>Math.floor(minutes/30)*30;
+/** 退勤が 00分・30分の5分前（25〜29分・55〜59分）なら、その 00分・30分まで繰り上げて数える（2026/11/10 農園主。打刻の時刻はそのまま残す） */
+api.roundOut=minuteOfDay=>{const r=minuteOfDay%30;return r>=25?minuteOfDay+30-r:minuteOfDay;};
 /** その月の合計。日ごとに30分未満を切り捨ててから足す（紙の出勤簿と同じ）。 */
 api.month=(records,date,startMinutes=null)=>{
   const ym=date.slice(0,7),days=[...new Set(api.effective(records).map(p=>api.day(p.at)).filter(d=>d.slice(0,7)===ym))].sort();
@@ -577,7 +579,7 @@ function workSpan(form){const c=formWorkContext(form);let inAt=null;
   if(form.elements.in_time){const v=form.elements.in_time.value;inAt=v?Date.parse(form.elements.date.value+'T'+v+':00+09:00'):null;}
   else inAt=M.checkoutIn(ownHistory(),c.at,form.dataset.exclude||'')?.at??null;
   const st=formStart(form);if(inAt===null||!Number.isFinite(inAt)||!Number.isFinite(c.at)||inAt>c.at)return{...c,st,inAt:null,span:null,raw:null};
-  return{...c,st,inAt,span:Math.max(0,M.minute(c.at)-M.countFrom(inAt,st)),raw:M.minute(c.at)-M.minute(inAt)};}
+  return{...c,st,inAt,span:Math.max(0,M.roundOut(M.minute(c.at))-M.countFrom(inAt,st)),raw:M.minute(c.at)-M.minute(inAt)};}
 function updateWorkForm(form){autoLunch(form);const w=workSpan(form),isOut=w.kind==='退勤',fields=form.querySelector('#lunch-fields'),section=form.querySelector('#work-confirm');fields.hidden=!isOut;fields.disabled=!isOut;section.hidden=!isOut;const tf=form.querySelector('#transport-fields');if(tf){tf.hidden=!isOut;tf.disabled=!isOut;}
   const hours=form.elements.confirmed_hours,minutes=form.elements.confirmed_minutes;hours.disabled=minutes.disabled=!isOut;if(!isOut)return;
   const choice=form.querySelector('[name="lunch"]:checked'),custom=choice?.value==='custom',other=form.elements.lunch_custom;form.querySelector('#lunch-custom-wrap').hidden=!custom;other.disabled=!custom;other.required=custom;
