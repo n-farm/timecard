@@ -240,7 +240,7 @@ body::before{content:"試験用の画面（従業員には出していません�
     <p class="fine-print" id="days-note"></p>
   </div>
   
-</main><dialog id="modal"><div id="modal-body"></div></dialog><script>window.P02_WEB={"apiUrl":"https://script.google.com/macros/s/AKfycbyWHfh2BhCTCFzcXWaASMX0BKiA0x6mpyEQpf3BGQHnGnrh00Y_wHGYqX1SslAX6SNcOA/exec","version":"20261110.w54"};</script><script>(function(root){
+</main><dialog id="modal"><div id="modal-body"></div></dialog><script>window.P02_WEB={"apiUrl":"https://script.google.com/macros/s/AKfycbyWHfh2BhCTCFzcXWaASMX0BKiA0x6mpyEQpf3BGQHnGnrh00Y_wHGYqX1SslAX6SNcOA/exec","version":"20261110.w55"};</script><script>(function(root){
 'use strict';
 const api={};
 api.id=()=>{if(root.crypto.randomUUID)return root.crypto.randomUUID();const bytes=root.crypto.getRandomValues(new Uint8Array(16));bytes[6]=(bytes[6]&15)|64;bytes[8]=(bytes[8]&63)|128;const hex=[...bytes].map(x=>x.toString(16).padStart(2,'0')).join('');return hex.slice(0,8)+'-'+hex.slice(8,12)+'-'+hex.slice(12,16)+'-'+hex.slice(16,20)+'-'+hex.slice(20);};
@@ -536,8 +536,8 @@ async function flush(){
   }catch(err){if(['invalid-token','inactive','replaced'].includes(err.code)){const ids=new Set(batch.map(q=>q.record.id));await save(current=>({...current,queue:current.queue.map(q=>ids.has(q.record.id)?{...q,error:err.message}:q)}));if(data.session?.token===next.token)verified=false;progress=true;}notify(err.message,true);}finally{sending=false;render();}
   if(data.queue.some(q=>!q.error)&&progress)setTimeout(flush,500);
 }
-/** 短期バイターは位置を取らない（許可も求めない・場所の理由もいらない。2026/11/10 農園主） */
-const noGps=()=>data.session?.employee?.category==='短期バイター';
+/** GPS「なし」の人は位置を取らない（許可も求めない・場所の理由もいらない。管理者の「従業員の表示」で切り替え。2026/11/10 農園主） */
+const noGps=()=>data.session?.employee?.gps===false;
 function position(){return new Promise(resolve=>{
   if(window.P02_PREVIEW_BRIDGE||noGps())return resolve(null);
   if(!navigator.geolocation)return resolve(null);let done=false;const settle=v=>{if(done)return;done=true;clearTimeout(timer);resolve(v);};
@@ -824,7 +824,7 @@ function renderAdmin(){const p=$('admin-panel');if(!p)return;const ym=monthOf(ad
     body.innerHTML=status+'<h3 class="admin-h">従業員一覧</h3><table class="emp-table"><thead><tr><th>名前</th><th>日数</th><th>時間</th><th>確認</th></tr></thead><tbody>'+totals.map(x=>`<tr data-admin-emp="${esc(x.e.id)}" tabindex="0"><td><strong>${esc(x.e.name)}</strong>${x.e.category?`<small>${esc(x.e.category)}</small>`:''}${x.e.status==='無効'?'<small>無効</small>':''}</td><td>${x.days}日</td><td>${hm(x.sum)}</td><td>${x.check?`<span class="tag warn">${x.check}</span>`:'—'}</td></tr>`).join('')+`</tbody><tfoot><tr><td>合計（${totals.length}人）</td><td>${all.days}日</td><td>${hm(all.sum)}</td><td>${items.length||'—'}</td></tr></tfoot></table><p class="fine-print">名前を押すと、その人の日別を開きます。</p><button class="soft-button wide" data-admin-grid>日ごとの表（出勤簿の形）</button>`
       +`<h3 class="admin-h">確認が必要な日（${items.length}件）</h3>`+(items.length?'<div class="days-list">'+items.map(x=>`<button class="day-row" data-admin-day="${esc(x.e.id)}|${x.d}"><span class="day-date">${md(x.d)}</span><span class="day-times"><strong class="admin-name">${esc(x.e.name)}</strong><br>${x.r.reasons.map(s=>'<span class="tag warn">'+s+'</span>').join('')}${x.r.test?'<span class="tag">試験</span>':''}${x.r.reasons.includes('場所の外')?x.r.placeRecs.map(p=>'<span class="place-reason-row">'+esc(p.kind)+' '+M.time(p.at)+'：'+(p.placeReason?'理由「'+esc(p.placeReason)+'」':'理由なし')+'</span>').join(''):''}</span><span class="chev">›</span></button>`).join('')+'</div>':'<div class="empty">ありません。</div>')
       +(()=>{const none=admin.data.employees.filter(e=>e.status!=='無効'&&e.role!=='管理者'&&!e.category);return none.length?`<div class="cat-missing">区分が未設定の人がいます（${none.map(e=>esc(e.name)).join('、')}）。<button class="text-button" data-admin-emps>従業員の表示で選ぶ ›</button></div>`:'';})()
-      +'<h3 class="admin-h">設定</h3><button class="soft-button wide" data-admin-settings>始業（今日だけの始業も）・昼休憩・小休憩の文言</button><button class="soft-button wide" data-admin-emps>従業員の表示（シーズン終わり・戻す・区分・送迎）</button>';
+      +'<h3 class="admin-h">設定</h3><button class="soft-button wide" data-admin-settings>始業（今日だけの始業も）・昼休憩・小休憩の文言</button><button class="soft-button wide" data-admin-emps>従業員の表示（シーズン終わり・戻す・区分・送迎・GPS）</button>';
     return;}
   if(admin.emp==='__grid'){const days=adminDays(),W='日月火水木金土';
     /* 人（列）の並び：登録順・名前順・区分順。選んだ並びはこのスマホで覚える */
@@ -877,7 +877,7 @@ function adminGuide(r){const items=r.reasons.filter(x=>ADMIN_CHECK[x]);
 /** その日の打刻ごとの場所（例「退勤 17:05 倉庫」「登録した場所の外（誤差約15m）」「位置なし」）と、地図で見るリンク */
 function placeLabel(p){const j=p.judge||'',acc=Number.isFinite(p.accuracy)?'（誤差約'+Math.round(p.accuracy)+'m）':'';
   if(/退勤時に入力/.test(j))return '退勤のときに入力（位置なし）';if(/管理者/.test(j))return '管理者が入力';if(/後から/.test(j))return '後から入力（位置なし）';if(/本人修正/.test(j))return '本人が直した';
-  if(/範囲内/.test(j))return p.placeName||'登録した場所の中';if(/範囲外/.test(j))return '登録した場所の外'+acc;if(/精度が低い/.test(j))return '位置が正確に分からない'+acc;if(/位置省略/.test(j))return '位置なし（短期バイター）';if(/位置なし/.test(j))return '位置なし';if(/場所未設定/.test(j))return '場所が未登録';return '—';}
+  if(/範囲内/.test(j))return p.placeName||'登録した場所の中';if(/範囲外/.test(j))return '登録した場所の外'+acc;if(/精度が低い/.test(j))return '位置が正確に分からない'+acc;if(/位置省略/.test(j))return '位置なし（GPSなし）';if(/位置なし/.test(j))return '位置なし';if(/場所未設定/.test(j))return '場所が未登録';return '—';}
 function adminPlaces(recs){if(!recs.length)return '';
   return '<div class="place-list"><h3>押した場所</h3>'+recs.map(p=>`<div class="place-line">${esc(p.kind)} ${M.time(p.at)}　${esc(placeLabel(p))}${Number.isFinite(p.lat)&&Number.isFinite(p.lon)?`<a class="map-link" href="https://www.google.com/maps/search/?api=1&query=${p.lat},${p.lon}" target="_blank" rel="noopener">地図で見る</a>`:''}${p.placeReason?`<span class="place-reason">理由：${esc(p.placeReason)}</span>`:''}</div>`).join('')+'</div>';}
 function adminFormValues(f){const inAt=f.elements.a_in.value?Number(f.elements.a_in.value):null,outAt=f.elements.a_out.value?Number(f.elements.a_out.value):null,st=inAt!==null?Math.floor((inAt-Date.parse(f.dataset.date+'T00:00:00+09:00'))/60000):null,lunch=Number(f.elements.a_lunch.value);
@@ -927,8 +927,8 @@ function todayFields(d,emps){const ts=d.todayStart||{all:null,emps:{}},today=M.d
   return `<h3 class="admin-h">今日だけの始業（${md(today)}）</h3><p class="fine-print">急に始業が変わった日に使います。明日には自動で元に戻ります。退勤のときの「始めた時刻」の最初の値になります。</p><label class="today-start">全員<select name="t_all">${opts(ts.all)}</select></label>${emps.map(e=>`<label class="admin-emp-start">${esc(e.name)}<select data-today-start="${esc(e.id)}">${opts(Number.isInteger(ts.emps?.[e.id])?ts.emps[e.id]:null)}</select></label>`).join('')}`;}
 /** 従業員の表示：今シーズンが終わった人（バイターなど）を外す・戻す。外した人はログインできず、記録のない月の一覧にも出ない。記録は残る */
 function adminEmps(){const d=admin.data;if(!d)return;const me=data.session.employee.id,list=d.employees.slice().sort((a,b)=>(a.status==='無効')-(b.status==='無効')||String(a.category).localeCompare(String(b.category))),baiter=list.filter(e=>e.status!=='無効'&&(e.category==='バイター'||e.category==='短期バイター')&&e.role!=='管理者'&&e.id!==me);
-  const row=e=>{const off=e.status==='無効',fixed=e.role==='管理者'||e.id===me;return `<div class="emp-status-row ${off?'off':''}"><span>${esc(e.name)}<small>${off?'外しています':''}</small><select class="cat-select" data-emp-cat="${esc(e.id)}" aria-label="${esc(e.name)}さんの区分">${['','常勤','常勤バイト','バイター','短期バイター'].map(c=>`<option value="${c}" ${(e.category||'')===c?'selected':''}>${c||'区分：未設定'}</option>`).join('')}</select><select class="cat-select" data-emp-work="${esc(e.id)}" aria-label="${esc(e.name)}さんの作業報告"><option value="" ${e.workReport?'':'selected'}>作業報告：なし</option><option value="あり" ${e.workReport?'selected':''}>作業報告：あり</option></select><select class="cat-select" data-emp-transport="${esc(e.id)}" aria-label="${esc(e.name)}さんの送迎"><option value="" ${e.transport?'':'selected'}>送迎：なし</option><option value="1" ${e.transport?'selected':''}>送迎：あり</option></select></span>${fixed?'<small>管理者</small>':`<button class="btn ${off?'primary':''}" data-emp-status="${off?'有効':'無効'}" data-emp-ids="${esc(e.id)}">${off?'戻す':'今シーズンは終わり'}</button>`}</div>`;};
-  modal(`<h2>従業員の表示</h2><p class="fine-print">区分（常勤／常勤バイト／バイター／短期バイター）は名前の下で選びます。選ぶとすぐ保存します。本人の画面には出ません。</p><p class="fine-print">作業報告を「あり」にした人は、退勤の下に「収穫の記録」が出ます（本人が⚙か日別の時間を開いた時、または次の退勤の時から）。</p><p class="fine-print">送迎を「あり」にした人は、退勤の画面に「送迎：なし／片道／往復」が出ます。</p><p class="fine-print">「今シーズンは終わり」にした人はログインできなくなり、記録のない月の一覧・日ごとの表に出なくなります。記録は消えず、働いた月の出勤簿や合計には出ます。来シーズンにまた来る人は、新しい登録URLから同じお名前で登録し直してもらえば、同じ人として記録が続きます（ここで「戻す」を押しても使えます）。</p>${baiter.length?`<button class="btn wide" data-emp-status="無効" data-emp-ids="${esc(baiter.map(e=>e.id).join(','))}" data-emp-bulk>バイター・短期バイター ${baiter.length}人をまとめて「今シーズンは終わり」にする</button>`:''}<div class="emp-status-list">${list.map(row).join('')}</div><div id="dialog-error" class="error" hidden role="alert"></div><div class="buttons"><button class="btn" data-close>閉じる</button></div>`);}
+  const row=e=>{const off=e.status==='無効',fixed=e.role==='管理者'||e.id===me;return `<div class="emp-status-row ${off?'off':''}"><span>${esc(e.name)}<small>${off?'外しています':''}</small><select class="cat-select" data-emp-cat="${esc(e.id)}" aria-label="${esc(e.name)}さんの区分">${['','常勤','常勤バイト','バイター','短期バイター'].map(c=>`<option value="${c}" ${(e.category||'')===c?'selected':''}>${c||'区分：未設定'}</option>`).join('')}</select><select class="cat-select" data-emp-work="${esc(e.id)}" aria-label="${esc(e.name)}さんの作業報告"><option value="" ${e.workReport?'':'selected'}>作業報告：なし</option><option value="あり" ${e.workReport?'selected':''}>作業報告：あり</option></select><select class="cat-select" data-emp-transport="${esc(e.id)}" aria-label="${esc(e.name)}さんの送迎"><option value="" ${e.transport?'':'selected'}>送迎：なし</option><option value="1" ${e.transport?'selected':''}>送迎：あり</option></select><select class="cat-select" data-emp-gps="${esc(e.id)}" aria-label="${esc(e.name)}さんのGPS"><option value="1" ${e.gps!==false?'selected':''}>GPS：あり</option><option value="" ${e.gps===false?'selected':''}>GPS：なし</option></select></span>${fixed?'<small>管理者</small>':`<button class="btn ${off?'primary':''}" data-emp-status="${off?'有効':'無効'}" data-emp-ids="${esc(e.id)}">${off?'戻す':'今シーズンは終わり'}</button>`}</div>`;};
+  modal(`<h2>従業員の表示</h2><p class="fine-print">区分（常勤／常勤バイト／バイター／短期バイター）は名前の下で選びます。選ぶとすぐ保存します。本人の画面には出ません。</p><p class="fine-print">作業報告を「あり」にした人は、退勤の下に「収穫の記録」が出ます（本人が⚙か日別の時間を開いた時、または次の退勤の時から）。</p><p class="fine-print">送迎を「あり」にした人は、退勤の画面に「送迎：なし／片道／往復」が出ます。</p><p class="fine-print">GPS を「なし」にした人は、退勤のときに位置を取りません（場所の理由も聞きません）。新しく登録した人は「なし」から始まります。</p><p class="fine-print">「今シーズンは終わり」にした人はログインできなくなり、記録のない月の一覧・日ごとの表に出なくなります。記録は消えず、働いた月の出勤簿や合計には出ます。来シーズンにまた来る人は、新しい登録URLから同じお名前で登録し直してもらえば、同じ人として記録が続きます（ここで「戻す」を押しても使えます）。</p>${baiter.length?`<button class="btn wide" data-emp-status="無効" data-emp-ids="${esc(baiter.map(e=>e.id).join(','))}" data-emp-bulk>バイター・短期バイター ${baiter.length}人をまとめて「今シーズンは終わり」にする</button>`:''}<div class="emp-status-list">${list.map(row).join('')}</div><div id="dialog-error" class="error" hidden role="alert"></div><div class="buttons"><button class="btn" data-close>閉じる</button></div>`);}
 async function adminEmpStatus(b){if(b.dataset.empBulk!==undefined&&!b.dataset.confirmed){b.dataset.confirmed='1';b.textContent='もう一度押すと、まとめて外します';return;}
   const ids=b.dataset.empIds.split(',').filter(Boolean),label=b.textContent;b.disabled=true;b.textContent='保存しています…';
   let r;try{r=requireOk(await request('adminEmpStatus',{token:data.session.token,deviceId:data.deviceId,ym:monthOf(0).slice(0,7),ids,status:b.dataset.empStatus}));}catch(err){b.disabled=false;b.textContent=label;throw err;}
@@ -984,6 +984,11 @@ document.addEventListener('submit',async ev=>{if(!['punch-form','day-form'].incl
 document.addEventListener('input',ev=>{const form=ev.target.closest('form');if(form&&['lunch','lunch_custom','a_lunch'].includes(ev.target.name))form.dataset.lunchTouched='1';if(!form||!['punch-form','day-form'].includes(form.id))return;if(['start_time','time','in_time','out_time'].includes(ev.target.name)&&form.id==='day-form'||ev.target.name==='start_time'||ev.target.name==='in_time'&&form.id==='punch-form'){form.dataset.manual='false';updateWorkForm(form);}if(['confirmed_hours','confirmed_minutes'].includes(ev.target.name))form.dataset.manual='true';if(ev.target.name==='lunch_custom'){form.dataset.manual='false';updateWorkForm(form);}});
 $('pw-keyboard').addEventListener('click',()=>{const f=$('login-password');f.inputMode='text';$('pw-keyboard').hidden=true;f.blur();f.focus();});
 document.addEventListener('change',async ev=>{
+  /* 従業員の GPS（なし：退勤で位置を取らない） */
+  if(ev.target.dataset?.empGps){const sel=ev.target,id=sel.dataset.empGps;sel.disabled=true;
+    try{admin.data=requireOk(await request('adminEmpGps',{token:data.session.token,deviceId:data.deviceId,ym:monthOf(0).slice(0,7),id,gps:sel.value==='1'}));renderAdmin();adminEmps();notify('GPSを保存しました。',false,2500);if(id===data.session.employee.id)refresh(false);}
+    catch(err){sel.disabled=false;const el=$('dialog-error');if(el){el.hidden=false;el.textContent=err.message;}}
+    return;}
   /* 従業員の送迎（あり：退勤の画面に送迎の欄を出す） */
   if(ev.target.dataset?.empTransport){const sel=ev.target,id=sel.dataset.empTransport;sel.disabled=true;
     try{admin.data=requireOk(await request('adminEmpTransport',{token:data.session.token,deviceId:data.deviceId,ym:monthOf(0).slice(0,7),id,transport:sel.value==='1'}));renderAdmin();adminEmps();notify('送迎を保存しました。',false,2500);if(id===data.session.employee.id)refresh(false);}
@@ -1124,28 +1129,30 @@ function render(){
   const years=[...new Set(rows.map(r=>r.y))].sort(),mainYear=rows.length?rows.filter(r=>!r.o.sameYear)[0]?.y??rows[0].y:Number(day.slice(0,4));
   const open=rows.filter(r=>!r.s.closed);
   if(ui.orchard&&!open.some(r=>r.o.id===ui.orchard))ui.orchard='';
-  const at=x=>x.firstAt||x.createdAt,dayList=list.filter(x=>x.date===day&&x.boxes>0).sort((a,b)=>at(a)-at(b)),dayTotal=dayList.reduce((n,x)=>n+x.boxes,0);
+  /* 管理者以外は今日の記録だけを見る。園地ごとの状況（終了の切り替え）は管理者だけ（2026/11/10 農園主） */
+  const view=isAdmin()?day:today();
+  const at=x=>x.firstAt||x.createdAt,dayList=list.filter(x=>x.date===view&&x.boxes>0).sort((a,b)=>at(a)-at(b)),dayTotal=dayList.reduce((n,x)=>n+x.boxes,0);
   const canEdit=x=>x.employeeId===me().id||isAdmin();
   root.innerHTML=statusHtml()+(toastText?`<div class="hv-toast" role="status">${esc(toastText)}</div>`:'')+`
   <h2 class="hv-title">収穫の記録</h2>
   <div id="hv-form" class="hv-card">
     <label class="hv-field"><span>収穫した日</span><input type="date" id="hv-date" value="${esc(day)}" max="${today()}"></label>
-    <label class="hv-field"><span>園地</span><select id="hv-orchard"><option value="">園地を選んでください</option>${open.map(r=>`<option value="${esc(r.o.id)}" ${ui.orchard===r.o.id?'selected':''}>${esc(r.o.name)}${r.s.boxes?`（${r.s.boxes}箱）`:''}${r.y!==mainYear?`・${r.y}年産`:''}</option>`).join('')}</select></label>
-    ${open.length<rows.length?`<p class="hv-hint">終わった園地（${rows.length-open.length}）は候補に出ません。下の一覧で確認できます。</p>`:''}
+    <label class="hv-field"><span>園地</span><select id="hv-orchard"><option value="">園地を選んでください</option>${open.map(r=>`<option value="${esc(r.o.id)}" ${ui.orchard===r.o.id?'selected':''}>${esc(r.o.name)}${r.s.boxes&&isAdmin()?`（${r.s.boxes}箱）`:''}${r.y!==mainYear?`・${r.y}年産`:''}</option>`).join('')}</select></label>
+    ${open.length<rows.length?`<p class="hv-hint">終わった園地（${rows.length-open.length}）は候補に出ません。${isAdmin()?'下の一覧で確認できます。':''}</p>`:''}
     <div class="hv-field"><span>箱数</span>${boxPicker('hv-boxes',ui.boxes,'f')}</div>
     <label class="hv-field"><span>メモ（なくてもよい）</span><input id="hv-note" maxlength="200" autocomplete="off" autocorrect="off" name="hv-memo-${Date.now()}" value="${esc(ui.note)}"></label>
     <p id="hv-error" class="hv-error" role="alert" ${ui.message?'':'hidden'}>${esc(ui.message)}</p>
     <button type="button" class="hv-primary" id="hv-review">内容を確認する</button>
   </div>
   <section class="hv-card">
-    <h3 class="hv-h">${md(day)} の記録（全員）<span class="hv-total">${dayTotal}箱</span></h3>
+    <h3 class="hv-h">${md(view)}${view===today()&&!isAdmin()?'（今日）':''} の記録（全員）<span class="hv-total">${dayTotal}箱</span></h3>
     ${dayList.length?`<p class="hv-hint">${dayList.some(canEdit)?'修正・削除するときは、その行を押してください。':''}</p>`+dayList.map((x,i)=>{const pm=new Date(at(x)).getHours()>=12,prevAm=i>0&&new Date(at(dayList[i-1])).getHours()<12;const h=recRow(x,canEdit(x));return pm&&prevAm?h.replace('class="','class="hv-pm-start '):h;}).join(''):'<p class="hv-empty">この日の記録はまだありません。</p>'}
   </section>
-  <section class="hv-card">
+  ${isAdmin()?`<section class="hv-card">
     <h3 class="hv-h">園地ごとの状況（${mainYear}年産${years.length>1?`。せとかは${years.filter(y=>y!==mainYear).join('・')}年産`:''}）</h3>
     <p class="hv-hint">園地を押すと「終了」（終了日はその園地の最後の収穫日）。収穫中に戻すときは、その園地を2回押します。終了した園地は上の園地の候補から外れます（全員）。</p>
     <div class="hv-table">${rows.map(r=>`<button type="button" class="hv-orow ${r.s.closed?'done':''}" data-hv-toggle="${esc(r.o.id)}" aria-pressed="${r.s.closed}"><span>${esc(r.o.name)}${r.y!==mainYear?`<small>${r.y}年産</small>`:''}</span><span class="n">${r.s.boxes?r.s.boxes+'箱':'—'}</span><span class="s">${r.s.closed&&armed==='reopen:'+r.o.id?'<b class="hv-arm">もう一度押すと収穫中に戻ります</b>':r.s.closed?`終了<small>${md(r.s.on)}</small>`:r.s.start?`収穫中<small>${md(r.s.start)}〜</small>`:''}</span></button>`).join('')}</div>
-  </section>`;
+  </section>`:''}`;
   if(keep&&$('hv-r-boxes')){$('hv-r-boxes').value=keep.b;$('hv-r-note').value=keep.n;}
 }
 /* 箱数はキーボードを出さずにボタンで入れる（iPhone の鍵・カードの欄を出さない）。よく使う数（26・36）を押して ±1・±10 で直す（上限は設けない。保存先と同じ999まで） */
@@ -1220,7 +1227,7 @@ function rowDelete(){
  *  終了日＝押した時点で、その園地（その年産）の最後の収穫日。押した日・押し直しではずれない。箱数の記録がない園地だけ上の「収穫した日」。
  *  終了日は押した時に決まり、あとで記録を消しても変わらない（収穫中に戻すと終了はなくなり、また終了にした時に決め直す） */
 let armTimer=0;
-function toggleOrchard(id){
+function toggleOrchard(id){if(!isAdmin())return;
   const o=orchard(id),day=ui.date||today(),s0=stateOf(records(),yearOf(day,o),id);
   /* 終了は1回押し。収穫中に戻すのは2回押し（1回目のあと押さなければ4秒で元の表示に戻る。ほかを押しても取りやめ） */
   if(s0.closed&&armed!=='reopen:'+id){armed='reopen:'+id;clearTimeout(armTimer);armTimer=setTimeout(()=>{if(armed==='reopen:'+id){armed='';render();}},4000);render();return;}
