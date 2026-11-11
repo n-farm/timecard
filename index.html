@@ -231,7 +231,7 @@ dialog label select{display:block;width:100%;margin-top:4px;font-size:17px;paddi
     <p class="fine-print" id="days-note"></p>
   </div>
   
-</main><dialog id="modal"><div id="modal-body"></div></dialog><script>window.P02_WEB={"apiUrl":"https://script.google.com/macros/s/AKfycby-w8l6me8DyQfZX5PXZDLk5PXUTVT-BY3xomKUANceDVHtCn_QrUrFfLp6pu7iZdF1tg/exec","version":"20261111.w57"};</script><script>(function(root){
+</main><dialog id="modal"><div id="modal-body"></div></dialog><script>window.P02_WEB={"apiUrl":"https://script.google.com/macros/s/AKfycby-w8l6me8DyQfZX5PXZDLk5PXUTVT-BY3xomKUANceDVHtCn_QrUrFfLp6pu7iZdF1tg/exec","version":"20261112.w58"};</script><script>(function(root){
 'use strict';
 const api={};
 api.id=()=>{if(root.crypto.randomUUID)return root.crypto.randomUUID();const bytes=root.crypto.getRandomValues(new Uint8Array(16));bytes[6]=(bytes[6]&15)|64;bytes[8]=(bytes[8]&63)|128;const hex=[...bytes].map(x=>x.toString(16).padStart(2,'0')).join('');return hex.slice(0,8)+'-'+hex.slice(8,12)+'-'+hex.slice(12,16)+'-'+hex.slice(16,20)+'-'+hex.slice(20);};
@@ -542,7 +542,7 @@ function workSpan(form){const c=formWorkContext(form);let inAt=null;
   if(form.elements.in_time){const v=form.elements.in_time.value;inAt=v?Date.parse(form.elements.date.value+'T'+v+':00+09:00'):null;}
   else inAt=M.checkoutIn(ownHistory(),c.at,form.dataset.exclude||'')?.at??null;
   const st=formStart(form);if(inAt===null||!Number.isFinite(inAt)||!Number.isFinite(c.at)||inAt>c.at)return{...c,st,inAt:null,span:null,raw:null};
-  return{...c,st,inAt,span:Math.max(0,M.roundOut(M.minute(c.at))-M.countFrom(inAt,st)),raw:M.minute(c.at)-M.minute(inAt)};}
+  return{...c,st,inAt,span:Math.max(0,M.roundOut(M.minute(c.at))-M.countFrom(inAt,st)),raw:M.roundOut(M.minute(c.at))-M.minute(inAt)};}
 function updateWorkForm(form){autoLunch(form);const w=workSpan(form),isOut=w.kind==='退勤',fields=form.querySelector('#lunch-fields'),section=form.querySelector('#work-confirm');fields.hidden=!isOut;fields.disabled=!isOut;section.hidden=!isOut;const tf=form.querySelector('#transport-fields');if(tf){tf.hidden=!isOut;tf.disabled=!isOut;}
   const hours=form.elements.confirmed_hours,minutes=form.elements.confirmed_minutes;hours.disabled=minutes.disabled=!isOut;if(!isOut)return;
   const choice=form.querySelector('[name="lunch"]:checked'),custom=choice?.value==='custom',other=form.elements.lunch_custom;form.querySelector('#lunch-custom-wrap').hidden=!custom;other.disabled=!custom;other.required=custom;
@@ -563,7 +563,7 @@ function readWorkForm(form){updateWorkForm(form);if(!form.reportValidity())retur
   if(!Number.isInteger(rest)||rest<0||rest>1440||(w.raw!==null&&rest>w.raw))throw Error('昼休憩の分数を確認してください。');
   if(!Number.isInteger(hours)||!Number.isInteger(minutes)||minutes<0||minutes>59||confirmed<0||confirmed>1440)throw Error('勤務時間を入れてください。');
   if(confirmed<MIN_WORK)throw Error('勤務時間は最低1時間です。働いていない日は「この日は出勤していない」で取り消してください。');
-  if(w.raw!==null&&confirmed>Math.max(MIN_WORK,w.raw))throw Error(`時間が長すぎます。${M.time(w.inAt)}〜${M.time(w.at)}は最大${M.duration(Math.max(MIN_WORK,w.raw))}です。`);
+  if(w.raw!==null&&confirmed>Math.max(MIN_WORK,w.raw))throw Error(`時間が長すぎます。${M.time(w.inAt)}〜${M.time(M.roundOut(M.minute(w.at))*60000)}は最大${M.duration(Math.max(MIN_WORK,w.raw))}です。`);
   /* これからの時刻は入れられない（始業・始めた時刻・終えた時刻）。試験モードは除く */
   if(!isTest()){const date=form.elements.date?.value||M.day(w.at),now=Date.now();
     if(Number.isFinite(w.at)&&w.at>now+60000)throw Error('これからの時刻は入れられません。');
@@ -854,7 +854,7 @@ function updateAdminForm(f){if(!f)return;
   if(v.inAt!==null&&v.outAt!==null&&v.outAt<=v.inAt){c.textContent='退勤は出勤より後にしてください。';return;}
   if(v.calc===null){c.textContent=v.outAt===null?'退勤が「なし」の日は、勤務時間を入れません。':'出勤と退勤を選ぶと計算します。';return;}
   c.textContent='計算：'+M.duration(v.calc)+'（30分未満切り捨て）';
-  const conf=Number(f.elements.a_hours.value)*60+Number(f.elements.a_minutes.value),raw=M.minute(v.outAt)-M.minute(v.inAt);
+  const conf=Number(f.elements.a_hours.value)*60+Number(f.elements.a_minutes.value),raw=M.roundOut(M.minute(v.outAt))-M.minute(v.inAt);
   if(f.dataset.manual==='true'&&f.elements.a_hours.value!==''&&conf>Math.max(MIN_WORK,raw))c.textContent+='。勤務時間が、出勤から退勤まで（'+M.duration(raw)+'）より長いので保存できません。';
   if(f.dataset.manual!=='true'){f.elements.a_hours.value=Math.floor(v.calc/60);f.elements.a_minutes.value=String(v.calc%60);}}
 async function adminSaveDay(cancelAll){const f=$('admin-form');if(!f)return;const e=adminEmp(f.dataset.emp),date=f.dataset.date,r=adminDay(e,date),ins=r.dayRecs.filter(p=>p.kind==='出勤'),outs=r.dayRecs.filter(p=>p.kind==='退勤'),inRec=ins[0]||null,outRec=outs.at(-1)||null,list=[];
@@ -870,7 +870,7 @@ async function adminSaveDay(cancelAll){const f=$('admin-form');if(!f)return;cons
     if(v.outAt===null){if(outRec)cancel(outRec);}
     else{const h=Number(f.elements.a_hours.value),mi=Number(f.elements.a_minutes.value),conf=h*60+mi;if(!Number.isInteger(h)||h<0||h>24||f.elements.a_hours.value==='')throw Error('勤務時間を入れてください。');
       if(conf<MIN_WORK)throw Error('勤務時間は最低1時間です。働いていない日は「勤務なし」にしてください。');
-      if(v.inAt!==null&&conf>Math.max(MIN_WORK,M.minute(v.outAt)-M.minute(v.inAt)))throw Error('勤務時間が、出勤から退勤まで（'+M.duration(M.minute(v.outAt)-M.minute(v.inAt))+'）より長くなっています。');
+      if(v.inAt!==null&&conf>Math.max(MIN_WORK,M.roundOut(M.minute(v.outAt))-M.minute(v.inAt)))throw Error('勤務時間が、出勤から退勤まで（'+M.duration(M.roundOut(M.minute(v.outAt))-M.minute(v.inAt))+'）より長くなっています。');
       /* 中身を変えずに保存したら「管理者確認」（直したのではなく、確かめた印） */
       const tr=f.elements.a_transport?f.elements.a_transport.value:(outRec?.transport||'');
       const same=!list.length&&inRec&&outRec&&inRec.at===v.inAt&&outRec.at===v.outAt&&outRec.lunchMinutes===v.lunch&&outRec.confirmedMinutes===conf&&(outRec.transport||'')===tr;
