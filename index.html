@@ -183,6 +183,7 @@ dialog label select{display:block;width:100%;margin-top:4px;font-size:17px;paddi
 #harvest-panel .hv-group{border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:999px;padding:10px 16px;font-size:16px;font-weight:600;min-height:44px}
 #harvest-panel .hv-group.on{background:var(--green);border-color:var(--green);color:#fff}
 #harvest-panel .hv-group:disabled{opacity:.6}
+#hv-dialog .hv-send-note{font-size:18px;line-height:1.6;margin:8px 0 4px}
 </style></head><body>
 <main class="app">
   <header class="header"><button id="home-link" class="brand" aria-label="最初の画面へ"><span class="brand-icon">◷</span><span><span id="brand-title">農園出勤簿</span><small id="brand-sub">FARM ATTENDANCE BOOK</small></span></button><button id="settings" class="icon-button" aria-label="保存・アカウントの設定">⚙</button></header>
@@ -231,7 +232,7 @@ dialog label select{display:block;width:100%;margin-top:4px;font-size:17px;paddi
     <p class="fine-print" id="days-note"></p>
   </div>
   
-</main><dialog id="modal"><div id="modal-body"></div></dialog><script>window.P02_WEB={"apiUrl":"https://script.google.com/macros/s/AKfycby-w8l6me8DyQfZX5PXZDLk5PXUTVT-BY3xomKUANceDVHtCn_QrUrFfLp6pu7iZdF1tg/exec","version":"20261112.w58"};</script><script>(function(root){
+</main><dialog id="modal"><div id="modal-body"></div></dialog><script>window.P02_WEB={"apiUrl":"https://script.google.com/macros/s/AKfycby-w8l6me8DyQfZX5PXZDLk5PXUTVT-BY3xomKUANceDVHtCn_QrUrFfLp6pu7iZdF1tg/exec","version":"20261112.w59"};</script><script>(function(root){
 'use strict';
 const api={};
 api.id=()=>{if(root.crypto.randomUUID)return root.crypto.randomUUID();const bytes=root.crypto.getRandomValues(new Uint8Array(16));bytes[6]=(bytes[6]&15)|64;bytes[8]=(bytes[8]&63)|128;const hex=[...bytes].map(x=>x.toString(16).padStart(2,'0')).join('');return hex.slice(0,8)+'-'+hex.slice(8,12)+'-'+hex.slice(12,16)+'-'+hex.slice(16,20)+'-'+hex.slice(20);};
@@ -1058,6 +1059,19 @@ function records(){
 function stateOf(list,year,id){let boxes=0,last=null,start='';for(const x of list){if(x.year!==year||x.orchardId!==id)continue;boxes+=x.boxes;if(x.boxes>0&&(!start||x.date<start))start=x.date;if((x.end==='終わり'||x.end==='再開')&&(!last||x.createdAt>=last.createdAt))last=x;}return {boxes,start,closed:!!last&&last.end==='終わり',by:last?.end==='終わり'?last.name:'',on:last?.end==='終わり'?last.date:''};}
 /** 画面の上に短く出す（最初の画面の知らせは隠れているため） */
 function toast(text){toastText=text;clearTimeout(toastTimer);toastTimer=setTimeout(()=>{toastText='';render();},3500);render();}
+/** 記録したあと：退勤と同じく小窓で「送信しています」を出し、送れたら閉じる（w59。画面の上の帯は見えにくいため） */
+async function sent(title,id){
+  dialog(`<h2 class="hv-dtitle">${esc(title)}</h2><p class="hv-send-note" id="hv-send-note">送信していますのでお待ちください。</p>`);
+  const sleep=ms=>new Promise(r=>setTimeout(r,Math.max(0,ms))),until=Date.now()+10000;
+  const waiting=()=>st.queue.some(q=>q.id===id);
+  /* 送信が止まっていても10秒で区切る（送信はそのまま続き、届けば消える） */
+  while(waiting()&&navigator.onLine!==false&&Date.now()<until){if(!sending)flush();await sleep(400);}
+  const note=$('hv-send-note');if(!note||!$('hv-dialog')?.open)return;
+  const bad=st.problems.find(x=>x.id===id);
+  if(bad){note.textContent='送れませんでした：'+bad.reason;note.insertAdjacentHTML('afterend','<div class="hv-buttons"><button type="button" class="hv-small" data-hv-close>閉じる</button></div>');return;}
+  if(waiting()){note.textContent=authProblem||'電波が弱いため、記録はあとで自動で送ります。このまま閉じて大丈夫です。';note.insertAdjacentHTML('afterend','<div class="hv-buttons"><button type="button" class="hv-small" data-hv-close>閉じる</button></div>');return;}
+  note.textContent='送信しました。';await sleep(1200);closeDialog();
+}
 /** まだ送れていない記録を置き、送る */
 function enqueue(rec){
   st.queue.push(rec);
@@ -1077,7 +1091,7 @@ async function flush(){
   try{
     const batch=st.queue.slice(0,50),r=A().requireOk(await A().request('harvestSave',{token:s.token,deviceId:A().deviceId,records:batch}));
     if(owner!==s.employee.id)return;
-    const done=new Set();for(const x of r.results||[]){if(x.status==='saved'||x.status==='duplicate')done.add(x.id);else if(x.status==='rejected'){done.add(x.id);const q=batch.find(q=>q.id===x.id);st.problems.push({text:q?describe(q):'収穫の記録',reason:x.reason||'保存先が受け付けませんでした。'});}}
+    const done=new Set();for(const x of r.results||[]){if(x.status==='saved'||x.status==='duplicate')done.add(x.id);else if(x.status==='rejected'){done.add(x.id);const q=batch.find(q=>q.id===x.id);st.problems.push({id:x.id,text:q?describe(q):'収穫の記録',reason:x.reason||'保存先が受け付けませんでした。'});}}
     st.queue=st.queue.filter(q=>!done.has(q.id));adopt(r);authProblem='';write();again=st.queue.length>0&&done.size>0;
   }catch(err){authError(err);}
   finally{sending=false;render();}
@@ -1191,8 +1205,8 @@ function review(){
 function save(){
   if(!pendingSave)return;const rec=pendingSave;
   try{enqueue(rec);}catch(err){dialog(`<p class="hv-error">${esc(err.message)}</p><div class="hv-buttons"><button type="button" class="hv-small" data-hv-close>閉じる</button></div>`);return;}
-  closeDialog();const o=orchard(rec.orchardId);ui={date:rec.date,orchard:'',boxes:'',end:false,note:'',message:''};render();
-  toast(`${o.name} ${rec.boxes}箱を記録しました。`);
+  const o=orchard(rec.orchardId);ui={date:rec.date,orchard:'',boxes:'',end:false,note:'',message:''};pendingSave=null;render();
+  sent(`${o.name} ${rec.boxes}箱を記録しました。`,rec.id);
 }
 function rowError(msg){const el=$('hv-r-error');if(el){el.hidden=false;el.textContent=msg;}}
 /** 開いた行を直す：箱数・終わり・メモだけ（日付・園地はそのまま） */
@@ -1202,14 +1216,15 @@ function rowSave(){
   if(rec.boxes===x.boxes&&rec.note===(x.note||'')){openRow='';armed='';render();return;}
   const err=check(rec);if(err){rowError(err);return;}
   try{enqueue(rec);}catch(e){rowError(e.message);return;}
-  openRow='';armed='';render();toast('修正しました。');
+  openRow='';armed='';render();sent('修正しました。',rec.id);
 }
 /** 開いた行を消す（2回押し）。保存先には「取消」の行を足して残す */
 function rowDelete(){
   const x=records().find(r=>r.id===openRow);if(!x)return;
   if(armed!=='del:'+x.id){armed='del:'+x.id;render();return;}
-  try{enqueue({id:newId(),createdAt:Date.now(),originalId:x.id,cancel:true,date:x.date,orchardId:x.orchardId,boxes:x.boxes,end:x.end||'',note:x.note||''});}catch(e){rowError(e.message);return;}
-  openRow='';armed='';render();toast(`${orchard(x.orchardId)?.name||''} ${x.boxes}箱を削除しました。`);
+  const del={id:newId(),createdAt:Date.now(),originalId:x.id,cancel:true,date:x.date,orchardId:x.orchardId,boxes:x.boxes,end:x.end||'',note:x.note||''};
+  try{enqueue(del);}catch(e){rowError(e.message);return;}
+  openRow='';armed='';render();sent(`${orchard(x.orchardId)?.name||''} ${x.boxes}箱を削除しました。`,del.id);
 }
 /** 園地を押すと 終了⇄収穫中。
  *  終了日＝押した時点で、その園地（その年産）の最後の収穫日。押した日・押し直しではずれない。箱数の記録がない園地だけ上の「収穫した日」。
@@ -1221,9 +1236,10 @@ function toggleOrchard(id){if(!isAdmin())return;
   if(s0.closed&&armed!=='reopen:'+id){armed='reopen:'+id;clearTimeout(armTimer);armTimer=setTimeout(()=>{if(armed==='reopen:'+id){armed='';render();}},4000);render();return;}
   armed='';clearTimeout(armTimer);
   const y=yearOf(day,o),lastDay=records().filter(x=>x.orchardId===id&&x.year===y&&x.boxes>0).reduce((m,x)=>x.date>m?x.date:m,''),endDay=s0.closed?day:(lastDay||day);
-  try{enqueue({id:newId(),createdAt:Date.now(),date:endDay,orchardId:id,boxes:0,end:s0.closed?'再開':'終わり',note:''});}catch(e){toast(e.message);return;}
+  const rec={id:newId(),createdAt:Date.now(),date:endDay,orchardId:id,boxes:0,end:s0.closed?'再開':'終わり',note:''};
+  try{enqueue(rec);}catch(e){toast(e.message);return;}
   if(!s0.closed&&ui.orchard===id)ui.orchard='';
-  toast(s0.closed?`${o.name}を収穫中に戻しました。`:`${o.name}を終了にしました${lastDay?`（終了日 ${md(endDay)}）`:''}。`);
+  sent(s0.closed?`${o.name}を収穫中に戻しました。`:`${o.name}を終了にしました${lastDay?`（終了日 ${md(endDay)}）`:''}。`,rec.id);
 }
 /* ===== 操作 ===== */
 document.addEventListener('change',ev=>{const t=ev.target;if(!t.closest?.('#harvest-root'))return;if(t.id==='hv-date'){readForm();ui.message='';openRow='';armed='';render();}else if(t.id==='hv-orchard'){readForm();}});
