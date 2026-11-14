@@ -236,7 +236,7 @@ dialog label select{display:block;width:100%;margin-top:4px;font-size:17px;paddi
     <p class="fine-print" id="days-note"></p>
   </div>
   
-</main><dialog id="modal"><div id="modal-body"></div></dialog><script>window.P02_WEB={"apiUrl":"https://script.google.com/macros/s/AKfycby-w8l6me8DyQfZX5PXZDLk5PXUTVT-BY3xomKUANceDVHtCn_QrUrFfLp6pu7iZdF1tg/exec","version":"20261114.w60"};</script><script>(function(root){
+</main><dialog id="modal"><div id="modal-body"></div></dialog><script>window.P02_WEB={"apiUrl":"https://script.google.com/macros/s/AKfycby-w8l6me8DyQfZX5PXZDLk5PXUTVT-BY3xomKUANceDVHtCn_QrUrFfLp6pu7iZdF1tg/exec","version":"20261114.w61"};</script><script>(function(root){
 'use strict';
 const api={};
 api.id=()=>{if(root.crypto.randomUUID)return root.crypto.randomUUID();const bytes=root.crypto.getRandomValues(new Uint8Array(16));bytes[6]=(bytes[6]&15)|64;bytes[8]=(bytes[8]&63)|128;const hex=[...bytes].map(x=>x.toString(16).padStart(2,'0')).join('');return hex.slice(0,8)+'-'+hex.slice(8,12)+'-'+hex.slice(12,16)+'-'+hex.slice(16,20)+'-'+hex.slice(20);};
@@ -1008,7 +1008,7 @@ render();ready.then(async()=>{/* 「使えません」のスマホで新しい�
 <script>/* 収穫の記録（w40）：退勤の下の「収穫の記録」から開く。打刻の流れ・保存には触らない。
    - 使えるのは、従業員シート「作業報告」が「あり」の人だけ（ボタンもその人だけ）。
    - どの園地で何箱取ったか、その園地の収穫が終わったか。全員共通：誰かが「終わり」にした園地は、全員の候補から外れる。
-   - 年産：「取った年」の園地（せとか）は収穫した年、ほか（みかん・伊予柑）は1〜6月なら前の年。保存先（Code.gs harvestYear_）と同じ。
+   - 年産：1〜7月に取った分は前の年、8月からその年（w61。8月1日で切り替え。せとかも同じ）。保存先（Code.gs harvestYear_）と同じ。
    - 記録は端末（localStorage、人ごと）に置いてから送る。電波がなくても入れられ、電波が戻ったら送る。
      画面に出すのは「保存先から受け取った全員の記録」＋「まだ送れていない自分の分」。
    - 直す・取り消すは、本人の分と、管理者はだれの分でも。行は消さず、訂正元IDつきの行を足す（保存先）。 */
@@ -1021,7 +1021,7 @@ const today=()=>{const d=new Date();return `${d.getFullYear()}-${pad(d.getMonth(
 const md=d=>d?`${Number(d.slice(5,7))}/${Number(d.slice(8,10))}`:'';
 const newId=()=>(crypto.randomUUID?crypto.randomUUID():'hv-'+Date.now().toString(36)+Math.random().toString(36).slice(2,12)).replace(/[^A-Za-z0-9_-]/g,'');
 /** 年産：保存先の harvestYear_ と同じ */
-const yearOf=(day,o)=>{const y=Number(day.slice(0,4)),m=Number(day.slice(5,7));return o&&o.sameYear?y:(m<=6?y-1:y);};
+const yearOf=day=>{const y=Number(day.slice(0,4)),m=Number(day.slice(5,7));return m<=7?y-1:y;};
 let toastText='',toastTimer=0,owner='',st=null,sending=false,loading=false,authProblem='',loadError='',ui={date:'',orchard:'',boxes:'',end:false,note:'',message:''},edit=null,pendingSave=null,openRow='',armed='';
 const A=()=>window.TCApp;const me=()=>A()?.session?.employee||null;const isAdmin=()=>me()?.role==='管理者';
 const key=id=>'p02-harvest-v1-'+id;
@@ -1125,7 +1125,7 @@ function render(){
   if(!st.server){root.innerHTML=statusHtml()+`<p class="hv-empty">${navigator.onLine===false?'初めて開く時は、園地の一覧を受け取るため電波が必要です。電波のある所で開いてください。':loading?'読み込んでいます…':'園地の一覧を受け取れませんでした。電波のある所で開き直してください。'}</p>`;return;}
   const list=records(),day=ui.date||today(),os=orchards().filter(o=>!o.hidden);
   const rows=os.map(o=>{const y=yearOf(day,o),s=stateOf(list,y,o.id);return {o,y,s};});
-  const years=[...new Set(rows.map(r=>r.y))].sort(),mainYear=rows.length?rows.filter(r=>!r.o.sameYear)[0]?.y??rows[0].y:Number(day.slice(0,4));
+  const mainYear=rows.length?rows[0].y:yearOf(day);
   /* 候補：終わっていない園地のうち、管理者が今出している組 */
   const open=rows.filter(r=>!r.s.closed&&shown(r.o)),closedN=rows.filter(r=>r.s.closed).length,offN=rows.filter(r=>!r.s.closed&&!shown(r.o)).length;
   if(ui.orchard&&!open.some(r=>r.o.id===ui.orchard))ui.orchard='';
@@ -1156,7 +1156,7 @@ function render(){
   </section>`:''}
   ${varietyTotals(rows)}
   <section class="hv-card">
-    <h3 class="hv-h">園地ごとの状況（${mainYear}年産${years.length>1?`。せとかは${years.filter(y=>y!==mainYear).join('・')}年産`:''}）</h3>
+    <h3 class="hv-h">園地ごとの状況（${mainYear}年産）</h3>
     <p class="hv-hint">園地を押すと「終了」（終了日はその園地の最後の収穫日。1箱も取っていない園地は終了日なし）。収穫中に戻すときは、その園地を2回押します。終了した園地は上の園地の候補から外れます（全員）。</p>
     <div class="hv-table">${rows.map(r=>`<button type="button" class="hv-orow ${r.s.closed?'done':''}" data-hv-toggle="${esc(r.o.id)}" aria-pressed="${r.s.closed}"><span>${esc(r.o.name)}${r.y!==mainYear?`<small>${r.y}年産</small>`:''}</span><span class="n">${r.s.boxes?r.s.boxes+'箱':'—'}</span><span class="s">${r.s.closed&&armed==='reopen:'+r.o.id?'<b class="hv-arm">もう一度押すと収穫中に戻ります</b>':r.s.closed?`終了${r.s.start?`<small>${md(r.s.on)}</small>`:''}`:r.s.start?`収穫中<small>${md(r.s.start)}〜</small>`:''}</span></button>`).join('')}</div>
   </section>`:''}`;
@@ -1170,7 +1170,7 @@ function varietyTotals(rows){
   if(!list.length)return '';
   return `<section class="hv-card"><h3 class="hv-h">品種ごとの合計（今年産）<span class="hv-total">${list.reduce((n,v)=>n+sum.get(v),0)}箱</span></h3>
     <div class="hv-variety">${list.map(v=>`<div class="hv-vrow"><span>${esc(v)}</span><span class="n">${sum.get(v)}箱</span></div>`).join('')}</div>
-    <p class="hv-hint">園地ごとの状況の箱数を、品種でまとめたものです（せとかは取った年の年産）。</p></section>`;
+    <p class="hv-hint">園地ごとの状況の箱数を、品種でまとめたものです。</p></section>`;
 }
 /* 箱数はキーボードを出さずにボタンで入れる（iPhone の鍵・カードの欄を出さない）。よく使う数（26・36）を押して ±1・±10 で直す（上限は設けない。保存先と同じ999まで） */
 const MAX_BOXES=999,PRESETS=[26,36];
