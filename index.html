@@ -184,6 +184,10 @@ dialog label select{display:block;width:100%;margin-top:4px;font-size:17px;paddi
 #harvest-panel .hv-group.on{background:var(--green);border-color:var(--green);color:#fff}
 #harvest-panel .hv-group:disabled{opacity:.6}
 #hv-dialog .hv-send-note{font-size:18px;line-height:1.6;margin:8px 0 4px}
+/* w60 品種ごとの合計（管理者） */
+#harvest-panel .hv-variety{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 14px;margin:4px 0 6px}
+#harvest-panel .hv-vrow{display:flex;justify-content:space-between;border-bottom:1px solid var(--line);padding:8px 2px;font-size:15px}
+#harvest-panel .hv-vrow .n{font-weight:700}
 </style></head><body>
 <main class="app">
   <header class="header"><button id="home-link" class="brand" aria-label="最初の画面へ"><span class="brand-icon">◷</span><span><span id="brand-title">農園出勤簿</span><small id="brand-sub">FARM ATTENDANCE BOOK</small></span></button><button id="settings" class="icon-button" aria-label="保存・アカウントの設定">⚙</button></header>
@@ -232,7 +236,7 @@ dialog label select{display:block;width:100%;margin-top:4px;font-size:17px;paddi
     <p class="fine-print" id="days-note"></p>
   </div>
   
-</main><dialog id="modal"><div id="modal-body"></div></dialog><script>window.P02_WEB={"apiUrl":"https://script.google.com/macros/s/AKfycby-w8l6me8DyQfZX5PXZDLk5PXUTVT-BY3xomKUANceDVHtCn_QrUrFfLp6pu7iZdF1tg/exec","version":"20261112.w59"};</script><script>(function(root){
+</main><dialog id="modal"><div id="modal-body"></div></dialog><script>window.P02_WEB={"apiUrl":"https://script.google.com/macros/s/AKfycby-w8l6me8DyQfZX5PXZDLk5PXUTVT-BY3xomKUANceDVHtCn_QrUrFfLp6pu7iZdF1tg/exec","version":"20261114.w60"};</script><script>(function(root){
 'use strict';
 const api={};
 api.id=()=>{if(root.crypto.randomUUID)return root.crypto.randomUUID();const bytes=root.crypto.getRandomValues(new Uint8Array(16));bytes[6]=(bytes[6]&15)|64;bytes[8]=(bytes[8]&63)|128;const hex=[...bytes].map(x=>x.toString(16).padStart(2,'0')).join('');return hex.slice(0,8)+'-'+hex.slice(8,12)+'-'+hex.slice(12,16)+'-'+hex.slice(16,20)+'-'+hex.slice(20);};
@@ -1150,12 +1154,23 @@ function render(){
     <p class="hv-hint">押して選びます（いくつでも）。選んでいない種類の園地は、上の園地の候補から外れます（全員）。終了にはなりません。選び直せばまた出ます。</p>
     <div class="hv-groups" role="group" aria-label="今、候補に出す園地">${GROUPS.map(g=>`<button type="button" class="hv-group ${groupsOn().includes(g)?'on':''}" data-hv-group="${g}" aria-pressed="${groupsOn().includes(g)}" ${groupBusy?'disabled':''}>${g}</button>`).join('')}</div>
   </section>`:''}
+  ${varietyTotals(rows)}
   <section class="hv-card">
     <h3 class="hv-h">園地ごとの状況（${mainYear}年産${years.length>1?`。せとかは${years.filter(y=>y!==mainYear).join('・')}年産`:''}）</h3>
     <p class="hv-hint">園地を押すと「終了」（終了日はその園地の最後の収穫日。1箱も取っていない園地は終了日なし）。収穫中に戻すときは、その園地を2回押します。終了した園地は上の園地の候補から外れます（全員）。</p>
     <div class="hv-table">${rows.map(r=>`<button type="button" class="hv-orow ${r.s.closed?'done':''}" data-hv-toggle="${esc(r.o.id)}" aria-pressed="${r.s.closed}"><span>${esc(r.o.name)}${r.y!==mainYear?`<small>${r.y}年産</small>`:''}</span><span class="n">${r.s.boxes?r.s.boxes+'箱':'—'}</span><span class="s">${r.s.closed&&armed==='reopen:'+r.o.id?'<b class="hv-arm">もう一度押すと収穫中に戻ります</b>':r.s.closed?`終了${r.s.start?`<small>${md(r.s.on)}</small>`:''}`:r.s.start?`収穫中<small>${md(r.s.start)}〜</small>`:''}</span></button>`).join('')}</div>
   </section>`:''}`;
   if(keep&&$('hv-r-boxes')){$('hv-r-boxes').value=keep.b;$('hv-r-note').value=keep.n;}
+}
+/** 品種ごとの今年産の合計（w60・管理者だけ。2026/11/14 農園主）。園地の組から：極早生→日南、伊予柑・せとか→晩柑。PC の品種別と同じまとめ方 */
+const VARIETY_OF={'極早生':'日南','早生':'早生','南柑':'南柑','伊予柑':'晩柑','せとか':'晩柑'},VARIETY_ORDER=['日南','早生','南柑','晩柑','その他'];
+function varietyTotals(rows){
+  const sum=new Map();for(const r of rows){const v=VARIETY_OF[r.o.group]||'その他';sum.set(v,(sum.get(v)||0)+(r.s.boxes||0));}
+  const list=VARIETY_ORDER.filter(v=>sum.has(v)&&(v!=='その他'||sum.get(v)>0));
+  if(!list.length)return '';
+  return `<section class="hv-card"><h3 class="hv-h">品種ごとの合計（今年産）<span class="hv-total">${list.reduce((n,v)=>n+sum.get(v),0)}箱</span></h3>
+    <div class="hv-variety">${list.map(v=>`<div class="hv-vrow"><span>${esc(v)}</span><span class="n">${sum.get(v)}箱</span></div>`).join('')}</div>
+    <p class="hv-hint">園地ごとの状況の箱数を、品種でまとめたものです（せとかは取った年の年産）。</p></section>`;
 }
 /* 箱数はキーボードを出さずにボタンで入れる（iPhone の鍵・カードの欄を出さない）。よく使う数（26・36）を押して ±1・±10 で直す（上限は設けない。保存先と同じ999まで） */
 const MAX_BOXES=999,PRESETS=[26,36];
