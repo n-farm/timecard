@@ -191,6 +191,122 @@ dialog label select{display:block;width:100%;margin-top:4px;font-size:17px;paddi
 #harvest-panel .hv-variety{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 14px;margin:4px 0 6px}
 #harvest-panel .hv-vrow{display:flex;justify-content:space-between;border-bottom:1px solid var(--line);padding:8px 2px;font-size:15px}
 #harvest-panel .hv-vrow .n{font-weight:700}
+
+/* 作業の記録（w64）。harvest.css を写して、#task-entry・#task-panel・#tk-dialog の中だけに効かせる（収穫と同じ見た目）。下に作業の記録だけのもの */
+#task-entry{margin-top:10px}
+#task-open{display:flex;align-items:center;gap:10px;width:100%;background:#fff;color:var(--green);border:2px solid #b9cfc0;border-radius:14px;padding:12px 16px;font-size:18px;font-weight:700;min-height:54px;text-align:left}
+#task-open .hv-label{flex:1}
+#task-open small{display:block;font-size:13px;font-weight:500;color:#748577}
+#task-open .hv-count{font-size:12px;background:#fff1ce;color:#604410;border-radius:999px;padding:2px 9px}
+#task-panel .hv-title{font-size:20px;margin:6px 0 10px;color:var(--deep)}
+#task-panel .hv-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;margin:12px 0}
+#task-panel .hv-h{font-size:16px;margin:0 0 4px;color:var(--deep);display:flex;justify-content:space-between;gap:8px}
+#task-panel .hv-total{font-size:16px}
+#task-panel .hv-field,#tk-dialog .hv-field{display:block;margin:0 0 14px;border:0;padding:0;font-size:14px;color:#55665a}
+#task-panel .hv-field>span,#tk-dialog .hv-field>span{display:block;margin-bottom:5px;font-weight:600}
+#task-panel .hv-field input,#task-panel .hv-field select,#tk-dialog .hv-field input,#tk-dialog .hv-field select{display:block;width:100%;font-size:18px;padding:12px;margin:0}
+#task-panel .hv-boxes{display:flex!important;align-items:center;gap:8px}
+#task-panel .hv-boxes input{width:auto!important;flex:1;text-align:center;font-size:24px!important;font-weight:700}
+#task-panel .hv-boxes b{font-size:18px;color:var(--ink)}
+#task-panel .hv-step{width:56px;height:56px;border-radius:12px;border:1px solid var(--line);background:#eef3ec;color:var(--green);font-size:26px;font-weight:700}
+#task-panel .hv-primary,#tk-dialog .hv-primary{display:block;width:100%;border:0;border-radius:12px;background:var(--green);color:#fff;font-size:18px;font-weight:700;padding:15px;min-height:54px}
+#task-panel .hv-small,#tk-dialog .hv-small{border:1px solid var(--line);background:#eef3ec;color:var(--green);border-radius:10px;padding:9px 12px;font-size:14px;font-weight:600}
+#tk-dialog .hv-danger{border:0;background:#f7e9e2;color:#9e4d32;border-radius:12px;padding:13px;font-size:15px;font-weight:600;width:100%}
+#task-panel .hv-hint,#tk-dialog .hv-hint{font-size:13px;color:#748577;margin:-6px 0 12px}
+#task-panel .hv-error,#tk-dialog .hv-error{background:#f7e7df;color:#a65035;border-radius:10px;padding:12px;font-size:15px;margin:0 0 12px}
+#task-panel .hv-alert{background:#fff1ce;color:#604410;border-radius:12px;padding:11px 13px;font-size:15px;margin:8px 0}
+#task-panel .hv-alert.hv-bad{background:#fbe6e2;color:#8a2a1c}
+#task-panel .hv-alert button{margin-top:6px}
+#task-panel .hv-toast{background:#e3efe6;color:var(--deep);border-radius:12px;padding:11px 13px;font-size:15px;font-weight:600;margin:8px 0}
+#task-panel .hv-empty,#tk-dialog .hv-empty{color:#748577;font-size:14px;margin:8px 0}
+#task-panel .hv-table{border-top:1px solid var(--line)}
+#task-panel .hv-orow{display:grid;grid-template-columns:1fr 64px 92px;align-items:center;gap:6px;width:100%;background:none;border:0;border-bottom:1px solid var(--line);padding:11px 2px;text-align:left;font-size:16px;color:var(--ink)}
+#task-panel .hv-orow small{display:block;font-size:12px;color:#748577}
+#task-panel .hv-orow .n{text-align:right;font-weight:700}
+#task-panel .hv-orow .s{text-align:right;font-size:14px;color:#55665a}
+#task-panel .hv-orow.done{background:#f3f5f1;color:#748577}
+#task-panel .hv-orow.done .s{color:var(--green);font-weight:700}
+#task-panel .hv-rec,#tk-dialog .hv-rec{display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:10px;border-top:1px solid var(--line);padding:10px 0;font-size:16px}
+#task-panel .hv-rec small,#tk-dialog .hv-rec small{display:block;font-size:12px;color:#748577}
+#task-panel .hv-rec .n,#tk-dialog .hv-rec .n{font-weight:700;text-align:right}
+#tk-dialog .hv-dtitle{font-size:20px;margin:0 0 12px;color:var(--deep)}
+#tk-dialog .hv-dtitle small{font-size:14px;color:#748577;margin-left:8px;font-weight:500}
+#tk-dialog .hv-dl{display:grid;grid-template-columns:96px 1fr;gap:10px;margin:0 0 16px;font-size:16px}
+#tk-dialog .hv-dl dt{color:#748577}
+#tk-dialog .hv-dl dd{margin:0}
+#tk-dialog .hv-dl small{display:block;font-size:13px;color:#748577}
+#tk-dialog .hv-buttons{display:grid;gap:10px;margin-top:16px}
+/* iPhone（Safari・Chrome とも WebKit）の日付の欄は、幅100%でも中身の幅で横にはみ出すため、見た目を素の欄にして幅を抑える（w40 9:15） */
+#task-panel input[type=date],#tk-dialog input[type=date]{-webkit-appearance:none;appearance:none;min-width:0;max-width:100%;width:100%;min-height:50px;background:#fff;text-align:left}
+#task-panel input[type=date]::-webkit-date-and-time-value,#tk-dialog input[type=date]::-webkit-date-and-time-value{text-align:left;margin:0}
+#task-panel .hv-field,#tk-dialog .hv-field{min-width:0;max-width:100%}
+#task-root,#tk-dialog{overflow-x:hidden}
+/* w42：その日の記録は行を押すとその場で開く（小窓・奥の画面なし）。園地の状況は1行で完結 */
+#task-panel .hv-rec-btn{width:100%;background:none;border:0;border-top:1px solid var(--line);text-align:left;color:var(--ink);font:inherit;font-size:16px;cursor:pointer}
+#task-panel .hv-chev{color:#9aa79c;font-size:22px;padding:0 4px}
+#task-panel .hv-rec-open{border:2px solid var(--green);border-radius:12px;padding:0 12px 12px;margin:8px 0;background:#fbfcf9}
+#task-panel .hv-rec-open>.hv-rec{border-top:0}
+#task-panel .hv-rec-open .hv-boxes{margin:4px 0 12px}
+#task-panel .hv-rbuttons{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+#task-panel .hv-danger{border:0;background:#f7e9e2;color:#9e4d32;border-radius:12px;padding:13px;font-size:16px;font-weight:700;min-height:54px}
+#task-panel .hv-orow{cursor:default}
+/* w43：箱数はボタンで入れる（キーボードを出さない）。よく使う数 26・36 と ±1・±10 */
+#task-panel .hv-picker{display:grid;gap:8px}
+#task-panel .hv-pick-show{display:flex;align-items:baseline;justify-content:center;gap:6px}
+#task-panel .hv-pick-value{width:3.2em!important;display:inline-block!important;text-align:center;font-size:34px!important;font-weight:800;border:0!important;background:transparent!important;padding:0!important;color:var(--ink);pointer-events:none;caret-color:transparent}
+#task-panel .hv-pick-show b{font-size:18px}
+#task-panel .hv-pick-row{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:8px}
+#task-panel .hv-preset{min-height:52px;border-radius:12px;border:2px solid var(--green);background:#fff;color:var(--green);font-size:20px;font-weight:800}
+#task-panel .hv-picker .hv-step{width:auto;height:auto;min-height:48px;font-size:17px}
+#task-panel .hv-rec-open .hv-picker{margin:4px 0 12px}
+/* w44：園地の行を押すと 終了⇄収穫中。終了は薄く */
+#task-panel .hv-orow{cursor:pointer}
+#task-panel .hv-orow.done{opacity:.5;background:#eef1ec}
+#task-panel .hv-orow.done .s{color:var(--ink)}
+/* w45：午前と午後の境目（記録した時刻で分ける。時刻は出さない）に太線。w57：境目は13:00（13:00より前が午前） */
+#task-panel .hv-pm-start{border-top:3px solid var(--ink)!important}
+#task-panel .hv-orow .hv-arm{display:block;font-size:13px;color:#9e4d32;line-height:1.3}
+#task-panel .hv-orow.done:has(.hv-arm){opacity:1;background:#fbeee8}
+/* w57：今、候補に出す園地（管理者が種類を選ぶ。いくつでも） */
+#task-panel .hv-groups{display:flex;flex-wrap:wrap;gap:8px}
+#task-panel .hv-group{border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:999px;padding:10px 16px;font-size:16px;font-weight:600;min-height:44px}
+#task-panel .hv-group.on{background:var(--green);border-color:var(--green);color:#fff}
+#task-panel .hv-group:disabled{opacity:.6}
+#tk-dialog .hv-send-note{font-size:18px;line-height:1.6;margin:8px 0 4px}
+/* w60 品種ごとの合計（管理者） */
+#task-panel .hv-variety{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 14px;margin:4px 0 6px}
+#task-panel .hv-vrow{display:flex;justify-content:space-between;border-bottom:1px solid var(--line);padding:8px 2px;font-size:15px}
+#task-panel .hv-vrow .n{font-weight:700}
+/* ===== 作業の記録だけのもの（w64） ===== */
+#task-entry{margin-top:8px}
+#task-panel .tk-cats,#task-panel .tk-done{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:0 0 14px}
+#task-panel .tk-done{grid-template-columns:1fr 1fr;margin:4px 0 12px}
+#task-panel .tk-cat{min-height:48px;border-radius:12px;border:2px solid #b9cfc0;background:#fff;color:var(--green);font-size:17px;font-weight:700}
+#task-panel .tk-cat.on{background:var(--green);border-color:var(--green);color:#fff}
+#task-panel .tk-sum{display:inline;margin-left:8px;font-size:13px;font-weight:500;color:#748577}
+#task-panel .tk-orchards{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+#task-panel .tk-orch{min-height:46px;border-radius:10px;border:1px solid var(--line);background:#fff;color:var(--ink);font-size:15px;text-align:left;padding:8px 10px;line-height:1.3}
+#task-panel .tk-orch small{display:block;font-size:11px;color:#748577}
+#task-panel .tk-orch.on{border:2px solid var(--green);background:#e3efe6;font-weight:700}
+#task-panel .tk-orch.done{opacity:.55}
+#task-panel .tk-after{margin:6px 0 0}
+#task-panel .tk-mats{border-top:1px solid var(--line)}
+#task-panel .tk-mat{display:flex;align-items:center;justify-content:space-between;gap:8px;border-bottom:1px solid var(--line);padding:8px 0;font-size:16px;color:var(--ink)}
+#task-panel .tk-mat label{display:flex;align-items:center;gap:8px;flex:1;min-width:0}
+#task-panel .tk-mat input[type=checkbox]{width:22px;height:22px;flex:none}
+#task-panel .tk-mat span{white-space:nowrap;font-size:14px;color:#55665a}
+#task-panel .tk-mat .tk-rate{width:5.2em;display:inline-block;text-align:right;padding:8px;font-size:16px}
+#task-panel .tk-mat.off{opacity:.5}
+#task-panel .tk-go{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+#task-panel .tk-go button small,#task-panel .tk-mid small{display:block;font-size:12px;font-weight:500;opacity:.85}
+#task-panel .tk-mid{border:2px solid var(--green);background:#fff;color:var(--green);border-radius:12px;font-size:18px;font-weight:700;padding:12px;min-height:54px}
+#task-panel .tk-go .hv-primary{padding:12px}
+#task-panel .tk-type{background:none;color:var(--green);font-size:13px;text-decoration:underline;padding:2px 0;justify-self:center}
+#task-panel .hv-pick-value:not([readonly]){pointer-events:auto;caret-color:auto;border-bottom:2px solid var(--green)!important;width:4.2em!important}
+#task-panel .tk-end{margin-top:12px}
+#task-panel .tk-end .hv-small{width:100%;padding:12px}
+#task-panel .tk-left{text-align:center;margin:4px 0 12px}
+#task-panel .tk-nomats{margin:0 0 14px}
 </style></head><body>
 <main class="app">
   <header class="header"><button id="home-link" class="brand" aria-label="最初の画面へ"><span class="brand-icon">◷</span><span><span id="brand-title">農園出勤簿</span><small id="brand-sub">FARM ATTENDANCE BOOK</small></span></button><button id="settings" class="icon-button" aria-label="保存・アカウントの設定">⚙</button></header>
@@ -216,6 +332,7 @@ dialog label select{display:block;width:100%;margin-top:4px;font-size:17px;paddi
       <p id="night-note" class="night-note" hidden>現在始業前です。前日の退勤の押し忘れは「日別の時間」から入れてください。分からなければ管理者に連絡してください。</p>
       <p class="location-note">⌖ 退勤を押したときだけ、押した場所を送信します</p><div id="notice" role="status" aria-live="polite"></div>
       <div id="harvest-entry" hidden><button id="harvest-open"><span class="hv-label">収穫の記録<small>どの園地で何箱・終わったか</small></span><span class="hv-count" hidden></span><span aria-hidden="true">›</span></button></div>
+      <div id="task-entry" hidden><button id="task-open"><span class="hv-label">作業の記録<small>防除・除草・施肥・潅水（途中・完了）</small></span><span class="hv-count" hidden></span><span aria-hidden="true">›</span></button></div>
     </section>
     <section class="today-section"><div class="section-heading"><h2>出勤簿</h2><span id="today-label" hidden></span></div><div class="stats single"><article><span>今日の時間</span><strong id="work-total">—</strong></article><article><span id="month-label">今月の合計</span><strong id="month-total">—</strong></article></div><div class="book-actions"><button id="days-open" class="soft-button">日別の時間を見る（修正・入力もこちら） ›</button></div></section>
     <input id="history-date" type="hidden">
@@ -230,6 +347,10 @@ dialog label select{display:block;width:100%;margin-top:4px;font-size:17px;paddi
     <div class="days-head"><button id="harvest-back" class="text-button">＜ 最初の画面へ戻る</button></div>
     <div id="harvest-root"></div>
   </div>
+  <div id="task-panel" hidden>
+    <div class="days-head"><button id="task-back" class="text-button">＜ 最初の画面へ戻る</button></div>
+    <div id="task-root"></div>
+  </div>
   <div id="days-panel" hidden>
     <div class="days-head"><button id="days-back" class="text-button">＜ 最初の画面へ戻る</button></div>
     <h2 id="days-title" class="days-title">日別の時間</h2>
@@ -239,7 +360,7 @@ dialog label select{display:block;width:100%;margin-top:4px;font-size:17px;paddi
     <p class="fine-print" id="days-note"></p>
   </div>
   
-</main><dialog id="modal"><div id="modal-body"></div></dialog><script>window.P02_WEB={"apiUrl":"https://script.google.com/macros/s/AKfycby-w8l6me8DyQfZX5PXZDLk5PXUTVT-BY3xomKUANceDVHtCn_QrUrFfLp6pu7iZdF1tg/exec","version":"20261118.w63"};</script><script>(function(root){
+</main><dialog id="modal"><div id="modal-body"></div></dialog><script>window.P02_WEB={"apiUrl":"https://script.google.com/macros/s/AKfycby-w8l6me8DyQfZX5PXZDLk5PXUTVT-BY3xomKUANceDVHtCn_QrUrFfLp6pu7iZdF1tg/exec","version":"20261120.w65"};</script><script>(function(root){
 'use strict';
 const api={};
 api.id=()=>{if(root.crypto.randomUUID)return root.crypto.randomUUID();const bytes=root.crypto.getRandomValues(new Uint8Array(16));bytes[6]=(bytes[6]&15)|64;bytes[8]=(bytes[8]&63)|128;const hex=[...bytes].map(x=>x.toString(16).padStart(2,'0')).join('');return hex.slice(0,8)+'-'+hex.slice(8,12)+'-'+hex.slice(12,16)+'-'+hex.slice(16,20)+'-'+hex.slice(20);};
@@ -442,6 +563,7 @@ function render(){
   const closed=!!s&&data.closed===true;$('closed-panel').hidden=!closed;$('settings').hidden=closed;
   $('auth-panel').hidden=!!s;$('main-panel').hidden=!s||closed||view!=='main';$('days-panel').hidden=!s||closed||view!=='days';$('admin-panel').hidden=!s||closed||view!=='admin';
   /* 収穫の記録（w40）：「作業報告」ありの人だけ、退勤の下にボタン */$('harvest-panel').hidden=!s||closed||view!=='work';$('harvest-entry').hidden=!s||closed||s.employee?.workReport!==true;
+  /* 作業の記録（w64）：保存先が使えると返した人だけ（w65：試しの間は管理者だけ） */$('task-panel').hidden=!s||closed||view!=='tasks';$('task-entry').hidden=!s||closed||s.employee?.workTasks!==true;
   document.querySelectorAll('[data-auth-mode]').forEach(b=>b.classList.toggle('selected',b.dataset.authMode===authMode));
   $('confirm-field').hidden=authMode!=='register';$('pw-keyboard').hidden=authMode==='register'||$('login-password').inputMode==='text';if(authMode==='register')$('login-password').inputMode='numeric';$('login-confirm').required=authMode==='register';$('login-password').autocomplete=authMode==='register'?'new-password':'current-password';
   document.querySelector('#auth-panel h1').textContent=authMode==='register'?'初めて使う':'ログイン';$('auth-submit').textContent=busy?'確認しています…':authMode==='register'?'このスマホで使い始める':'ログイン';$('auth-submit').disabled=busy||!available;
@@ -480,7 +602,7 @@ async function authenticate(ev){
     $('login-password').value='';$('login-confirm').value='';syncUrl();
     if(result.replacedOther)notify('このスマホに引き継ぎました。前のスマホでは打刻できなくなります。',false,6000);
     else notify('ログインしました。',false,3000);
-    window.TCWork?.wake();
+    window.TCWork?.wake();window.TCTasks?.wake();
   }catch(err){authError(err);}finally{busy=false;render();flush();}
 }
 async function refresh(sendPending=true){
@@ -747,6 +869,8 @@ function renderDays(){const first=monthOf(daysMonth),mo=M.month(ownHistory(),fir
 const admin={month:0,data:null,emp:null,loading:false,error:''};
 const isAdmin=()=>data.session?.employee?.role==='管理者';
 /** 収穫の記録（w40）を開く。中身は harvest.js。戻るボタン・スライドで最初の画面へ戻れる */
+/** 作業の記録（w64）を開く。中身は task.js */
+function openTasks(){if(dialog.open)dialog.close();view='tasks';try{history.pushState({tcTasks:1},'');}catch(e){}render();window.scrollTo(0,0);window.TCTasks?.open();}
 function openWork(){if(dialog.open)dialog.close();view='work';try{history.pushState({tcWork:1},'');}catch(e){}render();window.scrollTo(0,0);window.TCWork?.open();}
 function openAdmin(){if(!isAdmin())return;if(dialog.open)dialog.close();view='admin';admin.emp=null;try{history.pushState({tcAdmin:1},'');}catch(e){}render();window.scrollTo(0,0);loadAdmin();}
 async function loadAdmin(){const ym=monthOf(0).slice(0,7);admin.loading=true;admin.error='';renderAdmin();
@@ -933,10 +1057,12 @@ function settings(){const s=data.session,pendingCount=data.queue.filter(q=>!q.er
   modal(`<h2>設定</h2>${s?`<p class="settings-name">${esc(s.employee.name)} さん</p>${pendingCount?`<p>まだ送れていない記録が ${pendingCount}件 あります。電波が戻ったら自動で送ります。</p>`:'<p>打刻はすべて送れています。</p>'}<h3>ホーム画面に置く</h3>${standalone?'<p>いまはホーム画面のアイコンから開いています。</p>':'<p>ブラウザの共有ボタン（□に↑の印）やメニューから「ホーム画面に追加」を選ぶと、次からアイコンで開けます。</p>'}<h3>スマホを替えたとき</h3><p>新しいスマホで、同じお名前とパスワードでログインしてください。前のスマホでは打刻できなくなります。</p>${isAdmin()?`<h3>管理者</h3><button class="btn primary" data-admin-open>管理者の画面</button><h3>試験モード</h3><p>動作を確かめるとき用です。オンの間は、時刻の制限（0:00〜4:59・これからの時刻・締め・6:00より前）なしで記録でき、記録は「試験」として出勤簿・集計から外します。場所の理由の欄と、勤務時間の長さの確認はそのままです。</p><button class="btn" data-action="test-mode">${data.testMode?'試験モードをオフにする（いまオン）':'試験モードをオンにする'}</button>`:''}${!verified?'<button class="btn" data-action="relogin">もう一度ログインする</button>':''}<button class="btn" data-action="password">パスワードを変える</button><button class="btn" data-action="logout">このスマホからログアウト</button>`:'<p>お名前とパスワードでログインしてください。</p>'}<p class="fine-print">アプリの版 ${esc(CLIENT_VERSION)} ／ 保存先 ${esc(serverVersion||'まだ確認していません')}</p><div class="buttons"><button class="btn primary" data-close>閉じる</button></div>`);}
 document.addEventListener('click',async ev=>{const b=ev.target.closest('button,tr[data-admin-emp],td[data-admin-day]');if(!b)return;
   /* 収穫の画面の中のボタンは harvest.js だけが扱う */if(b.closest('#harvest-root')||b.closest('#hv-dialog'))return;
+  /* 作業の記録の画面の中のボタンは task.js だけが扱う */if(b.closest('#task-root')||b.closest('#tk-dialog'))return;
+  if(b.id==='task-open')openTasks();if(b.id==='task-back'){if(history.state?.tcTasks)history.back();else{view='main';render();window.scrollTo(0,0);}}
   if(b.id==='harvest-open')openWork();if(b.id==='harvest-back'){if(history.state?.tcWork)history.back();else{view='main';render();window.scrollTo(0,0);}}
   if(b.dataset.authMode){authMode=b.dataset.authMode;render();}
   if(b.dataset.punch)preparePunch(b.dataset.punch).catch(err=>{busy=false;render();notify(err.message,true);});
-  if(b.id==='home-link'||b.id==='admin-back-top'){if(dialog.open)dialog.close();if(view!=='main'){if(history.state?.tcDays||history.state?.tcAdmin||history.state?.tcWork)history.back();else{view='main';render();}}window.scrollTo(0,0);}
+  if(b.id==='home-link'||b.id==='admin-back-top'){if(dialog.open)dialog.close();if(view!=='main'){if(history.state?.tcDays||history.state?.tcAdmin||history.state?.tcWork||history.state?.tcTasks)history.back();else{view='main';render();}}window.scrollTo(0,0);}
   if(b.dataset.adminOpen!==undefined)openAdmin();if(b.dataset.adminMonth!==undefined){admin.month=Number(b.dataset.adminMonth);if(admin.emp!=='__grid')admin.emp=null;renderAdmin();}if(b.dataset.adminSettings!==undefined)adminSettings();if(b.dataset.adminEmps!==undefined)adminEmps();if(b.dataset.gridOrder){try{localStorage.setItem('tc-grid-order',b.dataset.gridOrder);}catch(err){}renderAdmin();}if(b.dataset.adminGrid!==undefined){admin.emp='__grid';renderAdmin();window.scrollTo(0,0);}if(b.dataset.adminReload!==undefined)loadAdmin();if(b.dataset.adminEmp){admin.emp=b.dataset.adminEmp;renderAdmin();window.scrollTo(0,0);}if(b.dataset.adminList!==undefined){admin.emp=null;renderAdmin();window.scrollTo(0,0);}
   if(b.dataset.adminDay){const [id,d]=b.dataset.adminDay.split('|');adminEditDay(id,d);}
   if(b.id==='settings'){settings();/* 権限などはふだん取りに行かないので、⚙を開いた時に取り直して出し直す */if(data.session)refresh(false).then(()=>{if(dialog.open&&dialog.querySelector('.settings-name'))settings();});}if(b.dataset.day){if(dialog.open)dialog.close();editDay(b.dataset.day);}if(b.id==='days-open'){view='days';refresh(false).then(()=>{if(view==='days')render();});daysMonth=0;try{history.pushState({tcDays:1},'');}catch(e){}render();window.scrollTo(0,0);}if(b.id==='days-back'){if(history.state?.tcDays){history.back();}else{view='main';render();window.scrollTo(0,0);}}if(b.dataset.month!==undefined){daysMonth=Number(b.dataset.month);renderDays();}
@@ -954,10 +1080,10 @@ document.addEventListener('click',async ev=>{const b=ev.target.closest('button,t
     if(b.dataset.adminCancel!==undefined){if(b.dataset.confirmed){await adminSaveDay(true);}else{b.dataset.confirmed='1';b.textContent='もう一度押すと「勤務なし」にします';}}
     if(b.dataset.action==='save-punch'&&pending)await savePunch();
     if(b.dataset.action==='test-mode'&&isAdmin()){const on=!data.testMode;await save(current=>({...current,testMode:on}));dialog.close();render();notify(on?'試験モードをオンにしました。':'試験モードをオフにしました。',false,4000);}
-    if(['logout','relogin'].includes(b.dataset.action)){if((data.queue.length||(window.TCWork?.pending(data.session?.employee?.id)||0)>0)&&b.dataset.action!=='relogin'){modal('<h2>未送信の記録があります</h2><p>先に送信するか、管理者に確認してください。記録を保護するため、ログアウトはまだ行いません。</p><div class="buttons"><button class="btn" data-close>戻る</button></div>');return;}if(data.session)$('login-name').value=data.session.employee.name;await save(current=>({...current,session:null,history:current.queue.length?current.history:[]}));verified=true;syncUrl();dialog.close();render();}
+    if(['logout','relogin'].includes(b.dataset.action)){if((data.queue.length||(window.TCWork?.pending(data.session?.employee?.id)||0)>0||(window.TCTasks?.pending(data.session?.employee?.id)||0)>0)&&b.dataset.action!=='relogin'){modal('<h2>未送信の記録があります</h2><p>先に送信するか、管理者に確認してください。記録を保護するため、ログアウトはまだ行いません。</p><div class="buttons"><button class="btn" data-close>戻る</button></div>');return;}if(data.session)$('login-name').value=data.session.employee.name;await save(current=>({...current,session:null,history:current.queue.length?current.history:[]}));verified=true;syncUrl();dialog.close();render();}
   }catch(err){const el=$('dialog-error');if(el){el.hidden=false;el.textContent=err.message;}else notify(err.message,true);}
 });
-/* 日別の時間ページは、スライドやAndroidの戻るボタンでも打刻の画面へ戻れるようにする */window.addEventListener('popstate',()=>{if(view==='work'&&!history.state?.tcWork){view='main';const hd=$('hv-dialog');if(hd?.open)hd.close();render();window.scrollTo(0,0);return;}if(view==='admin'&&!history.state?.tcAdmin){view='main';if(dialog.open)dialog.close();render();window.scrollTo(0,0);return;}if(view==='days'&&!history.state?.tcDays){view='main';if(dialog.open)dialog.close();render();window.scrollTo(0,0);}});
+/* 日別の時間ページは、スライドやAndroidの戻るボタンでも打刻の画面へ戻れるようにする */window.addEventListener('popstate',()=>{if(view==='work'&&!history.state?.tcWork){view='main';const hd=$('hv-dialog');if(hd?.open)hd.close();render();window.scrollTo(0,0);return;}if(view==='tasks'&&!history.state?.tcTasks){view='main';const td=$('tk-dialog');if(td?.open)td.close();render();window.scrollTo(0,0);return;}if(view==='admin'&&!history.state?.tcAdmin){view='main';if(dialog.open)dialog.close();render();window.scrollTo(0,0);return;}if(view==='days'&&!history.state?.tcDays){view='main';if(dialog.open)dialog.close();render();window.scrollTo(0,0);}});
 $('auth-form').addEventListener('submit',authenticate);$('history-date').value=M.day(Date.now());/* iPhoneの日付選択の「リセット」で空になったら今日に戻す（空のままだと履歴が全部消えたように見える） */const historyDay=()=>{if(!$('history-date').value)$('history-date').value=M.day(Date.now());render();};$('history-date').addEventListener('change',historyDay);$('history-date').addEventListener('input',historyDay);$('history-date').addEventListener('blur',historyDay);
 document.addEventListener('submit',async ev=>{if(!['punch-form','day-form'].includes(ev.target.id))return;ev.preventDefault();if(ev.target.id==='day-form'){try{reviewDay();}catch(err){$('dialog-error').hidden=false;$('dialog-error').textContent=err.message;}return;}try{if(ev.target.id==='punch-form'&&pending){await savePunch();}}catch(err){$('dialog-error').hidden=false;$('dialog-error').textContent=err.message;}});
 document.addEventListener('input',ev=>{const form=ev.target.closest('form');if(form&&['lunch','lunch_custom','a_lunch'].includes(ev.target.name))form.dataset.lunchTouched='1';if(!form||!['punch-form','day-form'].includes(form.id))return;if(['start_time','time','in_time','out_time'].includes(ev.target.name)&&form.id==='day-form'||ev.target.name==='start_time'||ev.target.name==='in_time'&&form.id==='punch-form'){form.dataset.manual='false';updateWorkForm(form);}if(['confirmed_hours','confirmed_minutes'].includes(ev.target.name))form.dataset.manual='true';if(ev.target.name==='lunch_custom'){form.dataset.manual='false';updateWorkForm(form);}});
@@ -1008,9 +1134,9 @@ function resumePunch(){let r=null;try{r=JSON.parse(sessionStorage.getItem('tc-re
   preparePunch('退勤',{at:r.at}).catch(err=>{busy=false;render();notify(err.message,true);});}
 try{const q=new URLSearchParams(location.search);if(q.has('v')){q.delete('v');history.replaceState(null,'',location.pathname+(q.toString()?'?'+q:''));}}catch(e){}
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
-/* 収穫の記録（harvest.js）に、ログインの情報と通信だけを渡す（打刻の記録・送信には触らせない） */
+/* 収穫の記録（harvest.js）・作業の記録（task.js）に、ログインの情報と通信だけを渡す（打刻の記録・送信には触らせない） */
 window.TCApp={get session(){return data.session;},get deviceId(){return data.deviceId;},request,requireOk};
-render();ready.then(async()=>{/* 「使えません」のスマホで新しい登録URLを開いたら、登録し直せるようにする */if(data.closed&&boot.invite){await save(current=>({...current,session:null,history:[],closed:false}));authMode='register';}}).then(()=>{render();resumePunch();window.TCWork?.wake();}).then(()=>{/* ログイン済みなら開いた時は問い合わせない（未送信があれば送るだけ） */if(data.session){available=true;render();return (dialog.open||busy?Promise.resolve(false):switchIfNew(0)).then(moving=>{if(moving)return;/* 「使えません」のスマホだけは、開いた時に戻されていないか確かめる */if(data.closed)refresh();else flush();});}return request('hello').then(requireOk).then(()=>{available=true;render();if(!dialog.open)switchIfNew(0);});}).catch(err=>{available=false;$('cloud-status').textContent=err.message;});
+render();ready.then(async()=>{/* 「使えません」のスマホで新しい登録URLを開いたら、登録し直せるようにする */if(data.closed&&boot.invite){await save(current=>({...current,session:null,history:[],closed:false}));authMode='register';}}).then(()=>{render();resumePunch();window.TCWork?.wake();window.TCTasks?.wake();}).then(()=>{/* ログイン済みなら開いた時は問い合わせない（未送信があれば送るだけ） */if(data.session){available=true;render();return (dialog.open||busy?Promise.resolve(false):switchIfNew(0)).then(moving=>{if(moving)return;/* 「使えません」のスマホだけは、開いた時に戻されていないか確かめる */if(data.closed)refresh();else flush();});}return request('hello').then(requireOk).then(()=>{available=true;render();if(!dialog.open)switchIfNew(0);});}).catch(err=>{available=false;$('cloud-status').textContent=err.message;});
 })();
 </script>
 <script>/* 収穫の記録（w40）：退勤の下の「収穫の記録」から開く。打刻の流れ・保存には触らない。
@@ -1293,6 +1419,339 @@ window.TCWork={
   /** その人のまだ送れていない記録の件数（ログアウトの前の確認） */
   pending(id){if(!id)return 0;if(st&&owner===id)return st.queue.length;return read(id).queue.length;},
   /** ログインした時・開き直した時：まだ送れていない分があれば送る */
+  wake(){if(ensure()){render();if(st.queue.length)flush();}}
+};
+})();
+</script>
+<script>/* 作業の記録（w64）：退勤の下の「作業の記録」から開く。防除・除草・施肥・潅水。打刻の流れ・保存には触らない。収穫（harvest.js）とも別。
+   - 使えるのは、保存先が workTasks を返した人だけ。試しの間は管理者だけ（w65・Code.gs TC_WORK_ADMIN_ONLY）。みんなに出すときは作業報告「あり」の人（収穫と同じ人）。
+   - 1回の報告：作業した日・作業名（PC から届いた処方が入る。倍率は直せる）・園地（1つ、または複数＝合算。量は合計で1つ）・量・「途中」か「完了」。
+   - 全員共通：完了した園地は全員の候補から外れる。作業は、管理者が「終了」にするか、表示している園地がすべて完了すると候補から外れる。
+   - 年度：作業した日の年。お礼肥の1月だけ前の年（保存先 workYear_・PC と同じ）。
+   - 記録は端末（localStorage、人ごと）に置いてから送る。電波がなくても入れられ、電波が戻ったら送る。
+   - 直す・削除は本人の分と、管理者はだれの分でも。保存先は行を増やさず書き換える（収穫と同じ）。
+   - 管理者以外は今日の記録だけを見る（収穫と同じ。2026/11/10 農園主）。園地ごとの状況（完了の切り替え）と作業の終了は管理者だけ。 */
+(function(){
+'use strict';
+const $=id=>document.getElementById(id);
+const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const pad=n=>String(n).padStart(2,'0');
+const today=()=>{const d=new Date();return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;};
+const md=d=>d?`${Number(d.slice(5,7))}/${Number(d.slice(8,10))}`:'';
+const newId=()=>(crypto.randomUUID?crypto.randomUUID():'tk-'+Date.now().toString(36)+Math.random().toString(36).slice(2,12)).replace(/[^A-Za-z0-9_-]/g,'');
+const CATS=['防除','除草','施肥','潅水'],UNIT={'防除':'L','除草':'L','施肥':'袋','潅水':''},MAX={'防除':99999,'除草':99999,'施肥':999};
+/** PC から作業名が届く前の候補（保存先 TC_WORK_DEFAULT と同じ） */
+const DEFAULT={'防除':['1月葉面','3月マシン','4月防除','5月防除①','5月防除②','6月防除','7月防除','8月防除','9月防除','防腐','液肥'],'除草':['除草1回目','除草2回目','除草3回目','除草4回目','除草5回目'],'施肥':['春肥','夏肥','苦土','お礼肥'],'潅水':['潅水']};
+/** 年度：保存先の workYear_ と同じ */
+const yearOf=(day,task)=>{const y=Number(day.slice(0,4)),m=Number(day.slice(5,7));return m===1&&String(task||'').includes('お礼肥')?y-1:y;};
+const fmtQty=(q,cat)=>q===null||q===undefined?'':String(Math.round(q*100)/100)+(UNIT[cat]||'');
+let toastText='',toastTimer=0,owner='',st=null,sending=false,loading=false,authProblem='',loadError='',pendingSave=null,openRow='',armed='',armTimer=0,typing='';
+let ui={cat:'防除',task:'',date:'',orchards:[],qty:'',mats:[],fert:'',note:'',message:'',matsFor:''};
+const A=()=>window.TCApp;const me=()=>A()?.session?.employee||null;const isAdmin=()=>me()?.role==='管理者';
+const key=id=>'p02-task-v1-'+id;
+function read(id){try{const v=JSON.parse(localStorage.getItem(key(id))||'null');if(v&&v.schema===1&&Array.isArray(v.queue))return {problems:[],...v};}catch(e){}return {schema:1,server:null,queue:[],problems:[]};}
+function write(){localStorage.setItem(key(owner),JSON.stringify(st));}
+function ensure(){const e=me();if(!e)return false;if(owner!==e.id){owner=e.id;st=read(owner);authProblem='';loadError='';pendingSave=null;openRow='';armed='';typing='';ui={cat:'防除',task:'',date:today(),orchards:[],qty:'',mats:[],fert:'',note:'',message:'',matsFor:''};}return true;}
+const orchards=()=>st.server?.orchards||[];
+const orchard=id=>orchards().find(o=>o.id===id);
+const visibleIds=()=>orchards().filter(o=>!o.hidden).map(o=>o.id);
+const oname=id=>orchard(id)?.name||id;
+/** その年度の作業名（PC から届いた分。届いていなければ初めの候補・処方なし） */
+function names(year){
+  const w=st.server?.names?.[year];
+  if(w&&Array.isArray(w.list))return w;
+  return {fromPc:false,list:CATS.flatMap(c=>DEFAULT[c].map((task,i)=>({cat:c,task,order:i+1,hidden:false,materials:[]})))};
+}
+const nameOf=(year,cat,task)=>names(year).list.find(x=>x.cat===cat&&x.task===task);
+/** 画面に出す記録：保存先の全員分に、まだ送れていない自分の分を当てる（直した元は外し、削除は両方外す） */
+function records(){
+  const list=(st.server?.records||[]).map(x=>({...x}));const e=me();
+  for(const q of st.queue){
+    const i=q.originalId?list.findIndex(x=>x.id===q.originalId):-1,orig=i>=0?list[i]:null;
+    if(i>=0)list.splice(i,1);if(q.cancel)continue;
+    /* 園地の印・作業の終了の切り替えは、保存先と同じに当てる（行を増やさない） */
+    if(q.kind==='園地'){
+      const same=x=>x.year===q.year&&x.cat===q.cat&&x.task===q.task;
+      for(let j=list.length-1;j>=0;j--){const x=list[j];if(x.kind==='園地'&&same(x)&&x.orchardIds[0]===q.orchardIds[0])list.splice(j,1);}
+      if(q.done==='再開')for(const x of list)if(x.kind==='報告'&&x.done==='完了'&&same(x)&&x.orchardIds.length===1&&x.orchardIds[0]===q.orchardIds[0])x.done='途中';
+      if(orchardState(list,q.year,q.cat,q.task,q.orchardIds[0]).closed===(q.done==='完了'))continue;
+    }
+    if(q.kind==='作業'&&q.done==='再開'){for(let j=list.length-1;j>=0;j--){const x=list[j];if(x.kind==='作業'&&x.year===q.year&&x.cat===q.cat&&x.task===q.task)list.splice(j,1);}continue;}
+    const mine=!orig||orig.employeeId===e.id;
+    list.push({...q,firstAt:orig?(orig.firstAt||orig.createdAt):q.createdAt,createdAt:orig?orig.createdAt:q.createdAt,employeeId:mine?e.id:orig.employeeId,name:mine?e.name:orig.name,judge:'',pending:true});
+  }
+  return list;
+}
+const same=(x,year,cat,task)=>x.year===year&&x.cat===cat&&x.task===task;
+/** 園地の状況：保存先 workOrchardState_ と同じ */
+function orchardState(list,year,cat,task,id){
+  let n=0,lastDay='',last=null;
+  for(const x of list){
+    if(!same(x,year,cat,task)||!x.orchardIds.includes(id))continue;
+    if(x.kind==='報告'){n++;if(!lastDay||x.date>lastDay)lastDay=x.date;}
+    if((x.kind==='報告'&&x.done==='完了')||(x.kind==='園地'&&(x.done==='完了'||x.done==='再開'))){if(!last||x.createdAt>=last.createdAt)last=x;}
+  }
+  const closed=!!last&&last.done==='完了';
+  return {reports:n,lastDay,closed,by:closed?last.name:'',on:closed?(last.kind==='報告'?last.date:(lastDay||last.date)):''};
+}
+/** 作業の終了：保存先 workTaskState_ と同じ */
+function taskState(list,year,cat,task){
+  const mark=list.find(x=>x.kind==='作業'&&x.done==='終了'&&same(x,year,cat,task));
+  if(mark)return {ended:true,manual:true,by:mark.name,on:mark.date};
+  const ids=visibleIds();return {ended:ids.length>0&&ids.every(id=>orchardState(list,year,cat,task,id).closed),manual:false,by:'',on:''};
+}
+function toast(text){toastText=text;clearTimeout(toastTimer);toastTimer=setTimeout(()=>{toastText='';render();},3500);render();}
+async function sent(title,id){
+  dialog(`<h2 class="hv-dtitle">${esc(title)}</h2><p class="hv-send-note" id="tk-send-note">送信していますのでお待ちください。</p>`);
+  const sleep=ms=>new Promise(r=>setTimeout(r,Math.max(0,ms))),until=Date.now()+10000;
+  const waiting=()=>st.queue.some(q=>q.id===id);
+  while(waiting()&&navigator.onLine!==false&&Date.now()<until){if(!sending)flush();await sleep(400);}
+  const note=$('tk-send-note');if(!note||!$('tk-dialog')?.open)return;
+  const bad=st.problems.find(x=>x.id===id);
+  if(bad){note.textContent='送れませんでした：'+bad.reason;note.insertAdjacentHTML('afterend','<div class="hv-buttons"><button type="button" class="hv-small" data-tk-close>閉じる</button></div>');return;}
+  if(waiting()){note.textContent=authProblem||'電波が弱いため、記録はあとで自動で送ります。このまま閉じて大丈夫です。';note.insertAdjacentHTML('afterend','<div class="hv-buttons"><button type="button" class="hv-small" data-tk-close>閉じる</button></div>');return;}
+  note.textContent='送信しました。';await sleep(1200);closeDialog();
+}
+function enqueue(rec){
+  st.queue.push(rec);
+  try{write();}catch(e){st.queue.pop();throw Error('この端末に保存できませんでした。今回分はまだ記録されていません。');}
+  render();setTimeout(flush,0);
+}
+const placeText=ids=>ids.length>1?`${oname(ids[0])} ほか${ids.length-1}園地（合算）`:oname(ids[0]);
+const describe=q=>q.cancel?`${md(q.date)} ${q.task} の削除`:q.kind==='園地'?`${oname(q.orchardIds[0])} の${q.task}を${q.done}`:q.kind==='作業'?`${q.task}を${q.done}`:`${md(q.date)} ${q.task} ${placeText(q.orchardIds)} ${fmtQty(q.qty,q.cat)}（${q.done}）`;
+function authError(err){
+  if(['invalid-token','replaced','inactive'].includes(err.code)){authProblem='このスマホからは送れません。⚙からもう一度ログインしてください（まだ送れていない記録は消えません）。';return true;}
+  if(err.code==='work-off'){authProblem=(err.message||'作業の記録は使えません。')+'（まだ送れていない記録は消えません）';return true;}
+  return false;
+}
+function adopt(r){st.server={orchards:r.orchards,names:r.names,records:r.records,at:Date.now()};}
+async function flush(){
+  if(sending||!ensure()||!st.queue.length||navigator.onLine===false)return;
+  const s=A().session;sending=true;render();let again=false;
+  try{
+    const batch=st.queue.slice(0,50),r=A().requireOk(await A().request('workSave',{token:s.token,deviceId:A().deviceId,records:batch}));
+    if(owner!==s.employee.id)return;
+    const done=new Set();for(const x of r.results||[]){if(x.status==='saved'||x.status==='duplicate')done.add(x.id);else if(x.status==='rejected'){done.add(x.id);const q=batch.find(q=>q.id===x.id);st.problems.push({id:x.id,text:q?describe(q):'作業の記録',reason:x.reason||'保存先が受け付けませんでした。'});}}
+    st.queue=st.queue.filter(q=>!done.has(q.id));adopt(r);authProblem='';write();again=st.queue.length>0&&done.size>0;
+  }catch(err){authError(err);}
+  finally{sending=false;render();}
+  if(again)setTimeout(flush,300);
+}
+async function refresh(){
+  if(!ensure()||navigator.onLine===false||loading)return;loading=true;const s=A().session;render();
+  try{if(st.queue.length)await flush();const r=A().requireOk(await A().request('workData',{token:s.token,deviceId:A().deviceId}));if(owner!==s.employee.id)return;adopt(r);authProblem='';loadError='';write();}
+  catch(err){if(!authError(err))loadError=err.message;}
+  finally{loading=false;render();}
+}
+function statusHtml(){
+  const n=st.queue.length,online=navigator.onLine!==false;let h='';
+  if(authProblem)h+=`<div class="hv-alert">${esc(authProblem)}</div>`;
+  else if(n)h+=`<div class="hv-alert">${sending?`送信しています…（${n}件）`:`まだ送れていない記録が ${n}件 あります。${online?'':'電波が戻ったら自動で送ります。'}`}${!sending&&online?'<br><button class="hv-small" id="tk-sync">今すぐ送る ↻</button>':''}</div>`;
+  if(st.problems.length)h+=`<div class="hv-alert hv-bad"><strong>送れなかった記録があります</strong>${st.problems.slice(-5).map(x=>`<div>・${esc(x.text)}：${esc(x.reason)}</div>`).join('')}<div>内容を確かめて、必要なら入れ直してください。</div><button class="hv-small" id="tk-problems-ok">確認しました</button></div>`;
+  if(loadError&&!authProblem)h+=`<div class="hv-alert">最新の記録を受け取れませんでした（${esc(loadError)}）。表示は前に受け取った内容です。</div>`;
+  return h;
+}
+/** 作業名を選び直した時：処方（PC から届いた資材・倍率）を入れ直す */
+function loadMats(year){
+  const n=ui.task?nameOf(year,ui.cat,ui.task):null,m=n?.materials||[];
+  /* PC から処方が届き直したときも入れ直す */const k=year+'|'+ui.cat+'|'+ui.task+'|'+JSON.stringify(m);if(ui.matsFor===k)return;ui.matsFor=k;
+  ui.mats=m.map(x=>({key:x.key,name:x.name,rate:x.rate||'',use:true}));ui.fert=m[0]?.key||'';
+}
+/* 量はボタンで入れる（収穫と同じ。iPhone のキーボードの上の欄を出さない）。数字で入れたいときは「数字で入れる」 */
+const STEPS={'L':{presets:[500,1000,2000],steps:[-100,-10,10,100]},'袋':{presets:[1,5,10],steps:[-1,-0.5,0.5,1]}};
+function qtyPicker(id,value,kind,cat){
+  const u=UNIT[cat],c=STEPS[u],v=value===''||value==null?'':String(value),free=typing===kind;
+  return `<div class="hv-picker"><div class="hv-pick-show"><input id="${id}" class="hv-pick-value" value="${esc(v)}" placeholder="0" ${free?'inputmode="decimal"':'readonly tabindex="-1" inputmode="none"'} autocomplete="off" aria-label="量（${u}）"><b>${u}</b></div>
+    <div class="hv-pick-row">${c.presets.map(n=>`<button type="button" class="hv-preset" data-tk-set="${kind}:${n}">${n}</button>`).join('')}</div>
+    <div class="hv-pick-row">${c.steps.map(n=>`<button type="button" class="hv-step" data-tk-add="${kind}:${n}" aria-label="${Math.abs(n)}${u}${n<0?'減らす':'増やす'}">${n<0?'−'+Math.abs(n):'＋'+n}</button>`).join('')}</div>
+    ${free?'':`<button type="button" class="tk-type" data-tk-type="${kind}">数字で入れる</button>`}</div>`;
+}
+function setQty(kind,fn){const el=$(kind==='r'?'tk-r-qty':'tk-qty');if(!el)return;const n=Math.max(0,Math.min(MAX[openCat(kind)]||99999,Math.round(fn(Number(el.value)||0)*100)/100));el.value=String(n);if(kind!=='r'){ui.qty=el.value;if(ui.message){ui.message='';const er=$('tk-error');if(er)er.hidden=true;}}}
+const openCat=kind=>kind==='r'?(records().find(x=>x.id===openRow)?.cat||ui.cat):ui.cat;
+function render(){
+  const root=$('task-root');if(!root||!st)return;
+  const keep=openRow&&$('tk-r-qty')?{q:$('tk-r-qty').value,n:$('tk-r-note').value}:null;
+  const c=document.querySelector('#task-open .hv-count');if(c){c.hidden=!st.queue.length;c.textContent='未送信 '+st.queue.length;}
+  if(!st.server){root.innerHTML=statusHtml()+`<p class="hv-empty">${navigator.onLine===false?'初めて開く時は、園地と作業名の一覧を受け取るため電波が必要です。電波のある所で開いてください。':loading?'読み込んでいます…':'園地と作業名の一覧を受け取れませんでした。電波のある所で開き直してください。'}</p>`;return;}
+  const list=records(),day=ui.date||today(),admin=isAdmin();
+  /* 作業名の候補：その日の年度の、表示している作業名。終わった作業は外す（管理者は出して「終了」の印） */
+  const year0=yearOf(day,''),cands=names(year0).list.filter(x=>x.cat===ui.cat&&!x.hidden);
+  const nameRows=cands.map(x=>{const y=yearOf(day,x.task);return {x,y,t:taskState(list,y,x.cat,x.task)};});
+  const open=nameRows.filter(r=>!r.t.ended||admin),endedN=nameRows.filter(r=>r.t.ended).length;
+  if(ui.task&&!open.some(r=>r.x.task===ui.task)){ui.task='';ui.orchards=[];}
+  const year=yearOf(day,ui.task),cur=ui.task?taskState(list,year,ui.cat,ui.task):null;
+  loadMats(year);
+  const os=orchards().filter(o=>!o.hidden).map(o=>({o,s:ui.task?orchardState(list,year,ui.cat,ui.task,o.id):{closed:false,reports:0}}));
+  const pick=os.filter(r=>!r.s.closed||admin);ui.orchards=ui.orchards.filter(id=>pick.some(r=>r.o.id===id));
+  const closedN=os.filter(r=>r.s.closed).length;
+  const view=admin?day:today(),canEdit=x=>x.employeeId===me().id||admin;
+  const at=x=>x.firstAt||x.createdAt,dayList=list.filter(x=>x.kind==='報告'&&x.date===view).sort((a,b)=>at(a)-at(b));
+  const fromPc=names(year0).fromPc;
+  root.innerHTML=statusHtml()+(toastText?`<div class="hv-toast" role="status">${esc(toastText)}</div>`:'')+`
+  <h2 class="hv-title">作業の記録</h2>
+  <div id="tk-form" class="hv-card">
+    <div class="tk-cats" role="group" aria-label="作業の区分">${CATS.map(c=>`<button type="button" class="tk-cat ${ui.cat===c?'on':''}" data-tk-cat="${c}" aria-pressed="${ui.cat===c}">${c}</button>`).join('')}</div>
+    <label class="hv-field"><span>作業した日</span><input type="date" id="tk-date" value="${esc(day)}" max="${today()}"></label>
+    <label class="hv-field"><span>作業名</span><select id="tk-task"><option value="">作業名を選んでください</option>${open.map(r=>`<option value="${esc(r.x.task)}" ${ui.task===r.x.task?'selected':''}>${esc(r.x.task)}${r.t.ended?'（終了）':''}${r.y!==year0?`・${r.y}年`:''}</option>`).join('')}</select></label>
+    ${endedN&&!admin?`<p class="hv-hint">終わった作業（${endedN}）は候補に出ません。</p>`:''}
+    ${!fromPc?'<p class="hv-hint">PC から作業名と処方がまだ届いていません（初めの作業名だけ出しています）。</p>':''}
+    ${ui.task?matsHtml():''}
+    <div class="hv-field"><span>園地${ui.orchards.length>1?`<small class="tk-sum">${ui.orchards.length}園地を合算（量は合計で1つ）</small>`:''}</span>
+      ${ui.task?`<div class="tk-orchards" role="group" aria-label="園地">${pick.map(r=>`<button type="button" class="tk-orch ${ui.orchards.includes(r.o.id)?'on':''} ${r.s.closed?'done':''}" data-tk-orch="${esc(r.o.id)}" aria-pressed="${ui.orchards.includes(r.o.id)}">${esc(r.o.name)}${r.s.closed?'<small>完了</small>':r.s.reports?'<small>途中</small>':''}</button>`).join('')}</div>
+      ${closedN&&!admin?`<p class="hv-hint tk-after">完了した園地（${closedN}）は候補に出ません。</p>`:''}<p class="hv-hint tk-after">いくつも選ぶと合算です（量は合計で1つ。園地へは分けません）。</p>`:'<p class="hv-empty">先に作業名を選んでください。</p>'}</div>
+    ${ui.cat!=='潅水'?`<div class="hv-field"><span>量（${UNIT[ui.cat]}）</span>${qtyPicker('tk-qty',ui.qty,'f',ui.cat)}</div>`:''}
+    <label class="hv-field"><span>メモ（なくてもよい）</span><input id="tk-note" maxlength="200" autocomplete="off" autocorrect="off" name="tk-memo-${Date.now()}" value="${esc(ui.note)}"></label>
+    <p id="tk-error" class="hv-error" role="alert" ${ui.message?'':'hidden'}>${esc(ui.message)}</p>
+    <div class="tk-go"><button type="button" class="tk-mid" data-tk-review="途中">途中で記録<small>まだ続ける</small></button><button type="button" class="hv-primary" data-tk-review="完了">完了で記録<small>この園地は終わり</small></button></div>
+  </div>
+  <section class="hv-card">
+    <h3 class="hv-h">${md(view)}${view===today()&&!admin?'（今日）':''} の記録（全員）</h3>
+    ${dayList.length?`<p class="hv-hint">${dayList.some(canEdit)?'修正・削除するときは、その行を押してください。':''}</p>`+dayList.map(x=>recRow(x,canEdit(x))).join(''):'<p class="hv-empty">この日の記録はまだありません。</p>'}
+  </section>
+  ${admin&&ui.task?statusSection(list,year,cur,os):(ui.task&&cur?`<p class="hv-hint tk-left">${esc(ui.task)}：残り ${os.filter(r=>!r.s.closed).length}園地</p>`:'')}`;
+  if(keep&&$('tk-r-qty')){$('tk-r-qty').value=keep.q;$('tk-r-note').value=keep.n;}
+}
+/** 処方：防除・除草は資材ごとに「使った」と倍率（直せる）。施肥は肥料を選ぶ。潅水はなし */
+function matsHtml(){
+  if(ui.cat==='潅水')return '';
+  if(!ui.mats.length)return '<p class="hv-hint tk-nomats">この作業名の処方は、PC からまだ届いていません（量だけ記録します）。</p>';
+  if(ui.cat==='施肥')return `<label class="hv-field"><span>肥料</span><select id="tk-fert">${ui.mats.map(m=>`<option value="${esc(m.key)}" ${ui.fert===m.key?'selected':''}>${esc(m.name)}</option>`).join('')}</select></label>`;
+  return `<div class="hv-field"><span>資材・倍率<small class="tk-sum">変えた時だけ直してください</small></span><div class="tk-mats">${ui.mats.map((m,i)=>`<div class="tk-mat ${m.use?'':'off'}"><label><input type="checkbox" data-tk-use="${i}" ${m.use?'checked':''}> ${esc(m.name)}</label><span><input class="tk-rate" data-tk-rate="${i}" value="${esc(m.rate)}" inputmode="numeric" autocomplete="off" aria-label="${esc(m.name)}の倍率" ${m.use?'':'disabled'}> 倍</span></div>`).join('')}</div></div>`;
+}
+const usedMats=()=>ui.cat==='潅水'?[]:ui.cat==='施肥'?ui.mats.filter(m=>m.key===ui.fert).slice(0,1).map(m=>({key:m.key,name:m.name,rate:''})):ui.mats.filter(m=>m.use).map(m=>({key:m.key,name:m.name,rate:String(m.rate||'').trim()}));
+const matText=ms=>ms.map(m=>m.name+(m.rate?` ${m.rate}倍`:'')).join('・');
+/** 管理者：園地ごとの状況（押すと完了。完了を戻すのは2回押し）と、作業の終了 */
+function statusSection(list,year,cur,os){
+  const doneN=os.filter(r=>r.s.closed).length;
+  return `<section class="hv-card"><h3 class="hv-h">${esc(ui.task)}（${year}年）の園地<span class="hv-total">完了 ${doneN}／${os.length}</span></h3>
+    <p class="hv-hint">園地を押すと「完了」。途中に戻すときは、その園地を2回押します。完了した園地は全員の候補から外れます。</p>
+    <div class="hv-table">${os.map(r=>`<button type="button" class="hv-orow ${r.s.closed?'done':''}" data-tk-toggle="${esc(r.o.id)}" aria-pressed="${r.s.closed}"><span>${esc(r.o.name)}</span><span class="n">${r.s.reports?r.s.reports+'回':'—'}</span><span class="s">${r.s.closed&&armed==='reopen:'+r.o.id?'<b class="hv-arm">もう一度押すと戻ります</b>':r.s.closed?`完了<small>${md(r.s.on)}</small>`:r.s.reports?`途中<small>${md(r.s.lastDay)}</small>`:''}</span></button>`).join('')}</div>
+    <div class="tk-end">${cur.manual?`<p class="hv-hint">${esc(cur.by)}さんが ${md(cur.on)} に終了にしました。</p><button type="button" class="hv-small" data-tk-end="再開">${armed==='end:再開'?'もう一度押すと、作業を再開します':'作業を再開する'}</button>`:cur.ended?'<p class="hv-hint">すべての園地が完了したので、この作業は終わりです（候補から外れます）。</p>':`<button type="button" class="hv-small" data-tk-end="終了">${armed==='end:終了'?'もう一度押すと、この作業を終わりにします':'この作業を終わりにする（残りの園地はしない）'}</button>`}</div></section>`;
+}
+/** その日の記録の1行。押すとその場で開き、量・途中／完了・メモを修正／削除（日付・作業名・園地の間違いは削除して入れ直す） */
+function recRow(x,can){
+  const head=`<span><b>${esc(x.task)}　${esc(x.orchardIds.map(oname).join('・'))}</b><small>${esc(x.name)}${x.pending?'・未送信':''}・${esc(x.done)}${x.orchardIds.length>1?'・合算':''}${x.materials?.length?'・'+esc(matText(x.materials)):''}${x.note?'・'+esc(x.note):''}</small></span><span class="n">${esc(fmtQty(x.qty,x.cat))}</span>`;
+  if(!can)return `<div class="hv-rec">${head}<span></span></div>`;
+  if(openRow!==x.id)return `<button type="button" class="hv-rec hv-rec-btn" data-tk-row="${esc(x.id)}">${head}<span class="hv-chev" aria-hidden="true">›</span></button>`;
+  const d=ui.rowDone??x.done;
+  return `<div class="hv-rec-open" data-tk-open="${esc(x.id)}"><div class="hv-rec">${head}<button type="button" class="hv-small" data-tk-row="">閉じる</button></div>
+    ${x.employeeId!==me().id?`<p class="hv-hint">${esc(x.name)}さんの記録を管理者として直します。</p>`:''}
+    ${x.cat!=='潅水'?qtyPicker('tk-r-qty',x.qty,'r',x.cat):''}
+    <div class="tk-done" role="group" aria-label="途中・完了">${['途中','完了'].map(v=>`<button type="button" class="tk-cat ${d===v?'on':''}" data-tk-rdone="${v}" aria-pressed="${d===v}">${v}</button>`).join('')}</div>
+    <label class="hv-field"><span>メモ</span><input id="tk-r-note" maxlength="200" autocomplete="off" autocorrect="off" value="${esc(x.note)}"></label>
+    <p id="tk-r-error" class="hv-error" hidden></p>
+    <div class="hv-rbuttons"><button type="button" class="hv-danger" id="tk-r-del">${armed==='del:'+x.id?'もう一度押すと削除':'削除'}</button><button type="button" class="hv-primary" id="tk-r-save">修正</button></div></div>`;
+}
+/* ===== 小窓 ===== */
+function box(){let d=$('tk-dialog');if(!d){d=document.createElement('dialog');d.id='tk-dialog';d.setAttribute('aria-label','作業の記録');document.body.appendChild(d);d.addEventListener('close',()=>{pendingSave=null;});}return d;}
+function dialog(html){const d=box();d.innerHTML=html;if(!d.open)d.showModal();}
+function closeDialog(){const d=$('tk-dialog');if(d?.open)d.close();pendingSave=null;}
+function readForm(){
+  if(!$('tk-form'))return;ui.date=$('tk-date').value||today();const t=$('tk-task').value;if(t!==ui.task){ui.task=t;ui.orchards=[];}
+  if($('tk-qty'))ui.qty=$('tk-qty').value.trim();ui.note=$('tk-note').value.trim();if($('tk-fert'))ui.fert=$('tk-fert').value;
+  document.querySelectorAll('[data-tk-rate]').forEach(el=>{const m=ui.mats[Number(el.dataset.tkRate)];if(m)m.rate=el.value.trim();});
+}
+function qtyError(cat,qty){
+  if(cat==='潅水')return '';
+  if(!(qty>0&&qty<=MAX[cat]))return `量を入れてください（${MAX[cat]}${UNIT[cat]}まで）。`;
+  if(cat==='施肥'?Math.round(qty*100)!==qty*100:Math.floor(qty)!==qty)return cat==='施肥'?'袋数は小数2けたまでで入れてください。':'量は整数（L）で入れてください。';
+  return '';
+}
+function check(rec){
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(rec.date))return '作業した日を入れてください。';
+  if(rec.date>today())return 'これからの日は入れられません。';
+  if(!rec.task)return '作業名を選んでください。';
+  if(!rec.orchardIds.length)return '園地を選んでください。';
+  const q=qtyError(rec.cat,rec.qty);if(q)return q;
+  if(rec.materials.some(m=>m.rate.length>20))return '倍率を確かめてください。';
+  if(isAdmin())return '';
+  const list=records();if(taskState(list,rec.year,rec.cat,rec.task).ended)return `${rec.task}は終わっています。`;
+  for(const id of rec.orchardIds){const s=orchardState(list,rec.year,rec.cat,rec.task,id);if(s.closed)return `${oname(id)}の${rec.task}は終わっています（${s.by}さん ${md(s.on)}）。`;}
+  return '';
+}
+function review(done){
+  readForm();
+  const qty=ui.cat==='潅水'?null:(ui.qty===''?0:Number(ui.qty));
+  const rec={id:newId(),createdAt:Date.now(),date:ui.date,year:yearOf(ui.date,ui.task),cat:ui.cat,task:ui.task,kind:'報告',orchardIds:visibleIds().filter(id=>ui.orchards.includes(id)),qty,done,materials:usedMats(),note:ui.note};
+  const err=check(rec);if(err){ui.message=err;render();$('tk-error')?.scrollIntoView({block:'center'});return;}
+  ui.message='';pendingSave=rec;
+  dialog(`<h2 class="hv-dtitle">この内容で記録しますか？</h2><dl class="hv-dl"><dt>作業した日</dt><dd>${md(rec.date)}（${rec.year}年）</dd><dt>作業名</dt><dd>${esc(rec.cat)}・${esc(rec.task)}</dd>${rec.materials.length?`<dt>${rec.cat==='施肥'?'肥料':'資材'}</dt><dd>${esc(matText(rec.materials))}</dd>`:''}<dt>園地</dt><dd>${esc(rec.orchardIds.map(oname).join('・'))}${rec.orchardIds.length>1?`<small>${rec.orchardIds.length}園地を合算（量は合計で1つ）</small>`:''}</dd>${rec.qty!==null?`<dt>量</dt><dd><b>${esc(fmtQty(rec.qty,rec.cat))}</b></dd>`:''}<dt>${done}</dt><dd><b>${done==='完了'?'この園地は終わり':'まだ続ける'}</b>${done==='完了'?'<small>全員の候補から外れます</small>':''}</dd>${rec.note?`<dt>メモ</dt><dd>${esc(rec.note)}</dd>`:''}</dl><div class="hv-buttons"><button type="button" class="hv-small" data-tk-close>戻る</button><button type="button" class="hv-primary" id="tk-save">この内容で記録</button></div>`);
+}
+function save(){
+  if(!pendingSave)return;const rec=pendingSave;
+  try{enqueue(rec);}catch(err){dialog(`<p class="hv-error">${esc(err.message)}</p><div class="hv-buttons"><button type="button" class="hv-small" data-tk-close>閉じる</button></div>`);return;}
+  ui.orchards=[];ui.qty='';ui.note='';ui.message='';typing='';pendingSave=null;render();
+  sent(`${rec.task} ${placeText(rec.orchardIds)}${rec.qty!==null?' '+fmtQty(rec.qty,rec.cat):''}を記録しました（${rec.done}）。`,rec.id);
+}
+function rowError(msg){const el=$('tk-r-error');if(el){el.hidden=false;el.textContent=msg;}}
+function rowSave(){
+  const x=records().find(r=>r.id===openRow);if(!x)return;
+  const qty=x.cat==='潅水'?null:($('tk-r-qty').value.trim()===''?0:Number($('tk-r-qty').value)),done=ui.rowDone??x.done,note=$('tk-r-note').value.trim();
+  if(qty===x.qty&&done===x.done&&note===(x.note||'')){openRow='';armed='';ui.rowDone=null;typing='';render();return;}
+  const err=qtyError(x.cat,qty);if(err){rowError(err);return;}
+  const rec={id:newId(),createdAt:Date.now(),originalId:x.id,date:x.date,year:x.year,cat:x.cat,task:x.task,kind:'報告',orchardIds:x.orchardIds.slice(),qty,done,materials:(x.materials||[]).map(m=>({key:m.key,name:m.name,rate:m.rate})),note};
+  try{enqueue(rec);}catch(e){rowError(e.message);return;}
+  openRow='';armed='';ui.rowDone=null;typing='';render();sent('修正しました。',rec.id);
+}
+function rowDelete(){
+  const x=records().find(r=>r.id===openRow);if(!x)return;
+  if(armed!=='del:'+x.id){armed='del:'+x.id;render();return;}
+  const del={id:newId(),createdAt:Date.now(),originalId:x.id,cancel:true,date:x.date,year:x.year,cat:x.cat,task:x.task,kind:'報告',orchardIds:x.orchardIds.slice(),qty:x.qty,done:x.done,materials:x.materials||[],note:x.note||''};
+  try{enqueue(del);}catch(e){rowError(e.message);return;}
+  openRow='';armed='';ui.rowDone=null;render();sent(`${x.task} ${placeText(x.orchardIds)} を削除しました。`,del.id);
+}
+function arm(k){armed=k;clearTimeout(armTimer);armTimer=setTimeout(()=>{if(armed===k){armed='';render();}},4000);render();}
+/** 管理者：園地を押すと 完了⇄途中（戻すのは2回押し） */
+function toggleOrchard(id){
+  if(!isAdmin()||!ui.task)return;const day=ui.date||today(),year=yearOf(day,ui.task),s=orchardState(records(),year,ui.cat,ui.task,id);
+  if(s.closed&&armed!=='reopen:'+id){arm('reopen:'+id);return;}
+  armed='';clearTimeout(armTimer);
+  const rec={id:newId(),createdAt:Date.now(),date:day,year,cat:ui.cat,task:ui.task,kind:'園地',orchardIds:[id],qty:null,done:s.closed?'再開':'完了',materials:[],note:''};
+  try{enqueue(rec);}catch(e){toast(e.message);return;}
+  ui.orchards=ui.orchards.filter(x=>x!==id||s.closed);
+  sent(s.closed?`${oname(id)}を途中に戻しました。`:`${oname(id)}を完了にしました。`,rec.id);
+}
+/** 管理者：作業の終了・再開（2回押し） */
+function endTask(done){
+  if(!isAdmin()||!ui.task)return;if(armed!=='end:'+done){arm('end:'+done);return;}
+  armed='';clearTimeout(armTimer);const day=ui.date||today(),year=yearOf(day,ui.task);
+  const rec={id:newId(),createdAt:Date.now(),date:day,year,cat:ui.cat,task:ui.task,kind:'作業',orchardIds:[],qty:null,done,materials:[],note:''};
+  try{enqueue(rec);}catch(e){toast(e.message);return;}
+  sent(done==='終了'?`${ui.task}を終わりにしました。`:`${ui.task}を再開しました。`,rec.id);
+}
+/* ===== 操作 ===== */
+document.addEventListener('change',ev=>{const t=ev.target;if(!t.closest?.('#task-root'))return;
+  if(t.id==='tk-date'||t.id==='tk-task'){readForm();ui.message='';openRow='';armed='';render();}
+  else if(t.dataset.tkUse!==undefined){readForm();const m=ui.mats[Number(t.dataset.tkUse)];if(m)m.use=t.checked;render();}
+  else if(t.id==='tk-fert')readForm();});
+document.addEventListener('input',ev=>{if(ev.target.closest?.('#tk-form'))readForm();});
+document.addEventListener('click',ev=>{const b=ev.target.closest('button');
+  if(st&&(armed.startsWith('reopen:')||armed.startsWith('end:'))&&!(b&&((b.dataset.tkToggle&&armed==='reopen:'+b.dataset.tkToggle)||(b.dataset.tkEnd&&armed==='end:'+b.dataset.tkEnd)))){armed='';clearTimeout(armTimer);render();if(!b)return;}
+  if(!b||!st)return;
+  if(!b.closest('#task-panel')&&!b.closest('#tk-dialog'))return;
+  if(b.id==='tk-sync')flush();
+  else if(b.id==='tk-problems-ok'){st.problems=[];try{write();}catch(e){}render();}
+  else if(b.dataset.tkCat){readForm();if(ui.cat!==b.dataset.tkCat){ui.cat=b.dataset.tkCat;ui.task='';ui.orchards=[];ui.qty='';ui.matsFor='';ui.message='';typing='';}render();}
+  else if(b.dataset.tkOrch){readForm();const id=b.dataset.tkOrch;ui.orchards=ui.orchards.includes(id)?ui.orchards.filter(x=>x!==id):[...ui.orchards,id];ui.message='';render();}
+  else if(b.dataset.tkReview)review(b.dataset.tkReview);
+  else if(b.dataset.tkSet){const [k,n]=b.dataset.tkSet.split(':');if(k==='f')readForm();setQty(k,()=>Number(n));}
+  else if(b.dataset.tkAdd){const [k,n]=b.dataset.tkAdd.split(':');if(k==='f')readForm();setQty(k,v=>v+Number(n));}
+  else if(b.dataset.tkType){if(b.dataset.tkType==='f')readForm();typing=b.dataset.tkType;const keepR=b.dataset.tkType==='r'&&$('tk-r-qty')?{q:$('tk-r-qty').value,n:$('tk-r-note').value}:null;render();if(keepR){$('tk-r-qty').value=keepR.q;$('tk-r-note').value=keepR.n;}const el=$(typing==='r'?'tk-r-qty':'tk-qty');if(el){el.focus();el.select?.();}}
+  else if(b.dataset.tkRdone){ui.rowDone=b.dataset.tkRdone;render();}
+  else if(b.dataset.tkRow!==undefined){openRow=openRow===b.dataset.tkRow?'':b.dataset.tkRow;armed='';ui.rowDone=null;typing='';render();}
+  else if(b.dataset.tkToggle)toggleOrchard(b.dataset.tkToggle);
+  else if(b.dataset.tkEnd)endTask(b.dataset.tkEnd);
+  else if(b.hasAttribute('data-tk-close'))closeDialog();
+  else if(b.id==='tk-save')save();
+  else if(b.id==='tk-r-save')rowSave();
+  else if(b.id==='tk-r-del')rowDelete();
+});
+window.addEventListener('online',()=>{if(st){render();flush();}});window.addEventListener('offline',()=>{if(st)render();});
+document.addEventListener('visibilitychange',()=>{if(document.hidden||!st)return;if(!$('task-panel')?.hidden)refresh();else if(st.queue.length)flush();});
+setInterval(()=>{if(!document.hidden&&st?.queue.length)flush();},60000);
+window.TCTasks={
+  open(){if(!ensure())return;if(!ui.qty&&!ui.orchards.length)ui.date=today();render();refresh();},
+  pending(id){if(!id)return 0;if(st&&owner===id)return st.queue.length;return read(id).queue.length;},
   wake(){if(ensure()){render();if(st.queue.length)flush();}}
 };
 })();
