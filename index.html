@@ -307,6 +307,7 @@ dialog label select{display:block;width:100%;margin-top:4px;font-size:17px;paddi
 #task-panel .tk-end .hv-small{width:100%;padding:12px}
 #task-panel .tk-left{text-align:center;margin:4px 0 12px}
 #task-panel .tk-nomats{margin:0 0 14px}
+#task-panel .tk-orch small.tk-g{color:var(--green);font-weight:700}
 </style></head><body>
 <main class="app">
   <header class="header"><button id="home-link" class="brand" aria-label="最初の画面へ"><span class="brand-icon">◷</span><span><span id="brand-title">農園出勤簿</span><small id="brand-sub">FARM ATTENDANCE BOOK</small></span></button><button id="settings" class="icon-button" aria-label="保存・アカウントの設定">⚙</button></header>
@@ -360,7 +361,7 @@ dialog label select{display:block;width:100%;margin-top:4px;font-size:17px;paddi
     <p class="fine-print" id="days-note"></p>
   </div>
   
-</main><dialog id="modal"><div id="modal-body"></div></dialog><script>window.P02_WEB={"apiUrl":"https://script.google.com/macros/s/AKfycby-w8l6me8DyQfZX5PXZDLk5PXUTVT-BY3xomKUANceDVHtCn_QrUrFfLp6pu7iZdF1tg/exec","version":"20261120.w65"};</script><script>(function(root){
+</main><dialog id="modal"><div id="modal-body"></div></dialog><script>window.P02_WEB={"apiUrl":"https://script.google.com/macros/s/AKfycby-w8l6me8DyQfZX5PXZDLk5PXUTVT-BY3xomKUANceDVHtCn_QrUrFfLp6pu7iZdF1tg/exec","version":"20261121.w67"};</script><script>(function(root){
 'use strict';
 const api={};
 api.id=()=>{if(root.crypto.randomUUID)return root.crypto.randomUUID();const bytes=root.crypto.getRandomValues(new Uint8Array(16));bytes[6]=(bytes[6]&15)|64;bytes[8]=(bytes[8]&63)|128;const hex=[...bytes].map(x=>x.toString(16).padStart(2,'0')).join('');return hex.slice(0,8)+'-'+hex.slice(8,12)+'-'+hex.slice(12,16)+'-'+hex.slice(16,20)+'-'+hex.slice(20);};
@@ -1425,7 +1426,10 @@ window.TCWork={
 </script>
 <script>/* 作業の記録（w64）：退勤の下の「作業の記録」から開く。防除・除草・施肥・潅水。打刻の流れ・保存には触らない。収穫（harvest.js）とも別。
    - 使えるのは、保存先が workTasks を返した人だけ。試しの間は管理者だけ（w65・Code.gs TC_WORK_ADMIN_ONLY）。みんなに出すときは作業報告「あり」の人（収穫と同じ人）。
-   - 1回の報告：作業した日・作業名（PC から届いた処方が入る。倍率は直せる）・園地（1つ、または複数＝合算。量は合計で1つ）・量・「途中」か「完了」。
+   - 合算のグループ（w67。2026/11/21 農園主）：一緒に記録した園地はグループ。途中のグループは、どの園地を押してもグループ全部が選ばれる（1つずつ外さない。
+     もう一度押すと全部外れる＝押し間違いを戻すだけ）。続けて撒いた園地は足せる（足すとグループに入る）。途中・完了はグループごと。年度・作業名が変われば別。
+   - 処方（資材・倍率）はスマホでは扱わない（w66。2026/11/21 農園主「処方はいらない。PC で管理する」）。PC が取り込むときに暦の処方を入れる。
+   - 1回の報告：作業した日・作業名・園地（1つ、または複数＝合算。量は合計で1つ）・量・「途中」か「完了」。
    - 全員共通：完了した園地は全員の候補から外れる。作業は、管理者が「終了」にするか、表示している園地がすべて完了すると候補から外れる。
    - 年度：作業した日の年。お礼肥の1月だけ前の年（保存先 workYear_・PC と同じ）。
    - 記録は端末（localStorage、人ごと）に置いてから送る。電波がなくても入れられ、電波が戻ったら送る。
@@ -1446,17 +1450,17 @@ const DEFAULT={'防除':['1月葉面','3月マシン','4月防除','5月防除�
 const yearOf=(day,task)=>{const y=Number(day.slice(0,4)),m=Number(day.slice(5,7));return m===1&&String(task||'').includes('お礼肥')?y-1:y;};
 const fmtQty=(q,cat)=>q===null||q===undefined?'':String(Math.round(q*100)/100)+(UNIT[cat]||'');
 let toastText='',toastTimer=0,owner='',st=null,sending=false,loading=false,authProblem='',loadError='',pendingSave=null,openRow='',armed='',armTimer=0,typing='';
-let ui={cat:'防除',task:'',date:'',orchards:[],qty:'',mats:[],fert:'',note:'',message:'',matsFor:''};
+let ui={cat:'防除',task:'',date:'',orchards:[],qty:'',note:'',message:''};
 const A=()=>window.TCApp;const me=()=>A()?.session?.employee||null;const isAdmin=()=>me()?.role==='管理者';
 const key=id=>'p02-task-v1-'+id;
 function read(id){try{const v=JSON.parse(localStorage.getItem(key(id))||'null');if(v&&v.schema===1&&Array.isArray(v.queue))return {problems:[],...v};}catch(e){}return {schema:1,server:null,queue:[],problems:[]};}
 function write(){localStorage.setItem(key(owner),JSON.stringify(st));}
-function ensure(){const e=me();if(!e)return false;if(owner!==e.id){owner=e.id;st=read(owner);authProblem='';loadError='';pendingSave=null;openRow='';armed='';typing='';ui={cat:'防除',task:'',date:today(),orchards:[],qty:'',mats:[],fert:'',note:'',message:'',matsFor:''};}return true;}
+function ensure(){const e=me();if(!e)return false;if(owner!==e.id){owner=e.id;st=read(owner);authProblem='';loadError='';pendingSave=null;openRow='';armed='';typing='';ui={cat:'防除',task:'',date:today(),orchards:[],qty:'',note:'',message:''};}return true;}
 const orchards=()=>st.server?.orchards||[];
 const orchard=id=>orchards().find(o=>o.id===id);
 const visibleIds=()=>orchards().filter(o=>!o.hidden).map(o=>o.id);
 const oname=id=>orchard(id)?.name||id;
-/** その年度の作業名（PC から届いた分。届いていなければ初めの候補・処方なし） */
+/** その年度の作業名（PC から届いた分。届いていなければ初めの候補） */
 function names(year){
   const w=st.server?.names?.[year];
   if(w&&Array.isArray(w.list))return w;
@@ -1499,6 +1503,13 @@ function taskState(list,year,cat,task){
   const mark=list.find(x=>x.kind==='作業'&&x.done==='終了'&&same(x,year,cat,task));
   if(mark)return {ended:true,manual:true,by:mark.name,on:mark.date};
   const ids=visibleIds();return {ended:ids.length>0&&ids.every(id=>orchardState(list,year,cat,task,id).closed),manual:false,by:'',on:''};
+}
+/** 合算のグループ：その年度・作業名で、一緒に記録した園地のつながり（PC の合算No と同じ考え方） */
+function groups(list,year,cat,task){
+  const parent=new Map(),find=a=>{while(parent.get(a)!==a){parent.set(a,parent.get(parent.get(a)));a=parent.get(a);}return a;};
+  for(const x of list){if(x.kind!=='報告'||!same(x,year,cat,task))continue;for(const id of x.orchardIds)if(!parent.has(id))parent.set(id,id);for(let i=1;i<x.orchardIds.length;i++){const p=find(x.orchardIds[0]),q=find(x.orchardIds[i]);if(p!==q)parent.set(q,p);}}
+  const members=new Map();for(const id of parent.keys()){const r=find(id);if(!members.has(r))members.set(r,[]);members.get(r).push(id);}
+  return id=>parent.has(id)?members.get(find(id)):[id];
 }
 function toast(text){toastText=text;clearTimeout(toastTimer);toastTimer=setTimeout(()=>{toastText='';render();},3500);render();}
 async function sent(title,id){
@@ -1551,12 +1562,6 @@ function statusHtml(){
   if(loadError&&!authProblem)h+=`<div class="hv-alert">最新の記録を受け取れませんでした（${esc(loadError)}）。表示は前に受け取った内容です。</div>`;
   return h;
 }
-/** 作業名を選び直した時：処方（PC から届いた資材・倍率）を入れ直す */
-function loadMats(year){
-  const n=ui.task?nameOf(year,ui.cat,ui.task):null,m=n?.materials||[];
-  /* PC から処方が届き直したときも入れ直す */const k=year+'|'+ui.cat+'|'+ui.task+'|'+JSON.stringify(m);if(ui.matsFor===k)return;ui.matsFor=k;
-  ui.mats=m.map(x=>({key:x.key,name:x.name,rate:x.rate||'',use:true}));ui.fert=m[0]?.key||'';
-}
 /* 量はボタンで入れる（収穫と同じ。iPhone のキーボードの上の欄を出さない）。数字で入れたいときは「数字で入れる」 */
 const STEPS={'L':{presets:[500,1000,2000],steps:[-100,-10,10,100]},'袋':{presets:[1,5,10],steps:[-1,-0.5,0.5,1]}};
 function qtyPicker(id,value,kind,cat){
@@ -1580,9 +1585,13 @@ function render(){
   const open=nameRows.filter(r=>!r.t.ended||admin),endedN=nameRows.filter(r=>r.t.ended).length;
   if(ui.task&&!open.some(r=>r.x.task===ui.task)){ui.task='';ui.orchards=[];}
   const year=yearOf(day,ui.task),cur=ui.task?taskState(list,year,ui.cat,ui.task):null;
-  loadMats(year);
   const os=orchards().filter(o=>!o.hidden).map(o=>({o,s:ui.task?orchardState(list,year,ui.cat,ui.task,o.id):{closed:false,reports:0}}));
   const pick=os.filter(r=>!r.s.closed||admin);ui.orchards=ui.orchards.filter(id=>pick.some(r=>r.o.id===id));
+  /* 途中のグループに「合算1」などの印（園地の並びの順） */
+  const groupOf=ui.task?groups(list,year,ui.cat,ui.task):(id=>[id]),label=new Map();let gn=0;
+  if(ui.task)for(const r of os){const g=groupOf(r.o.id).filter(id=>os.some(q=>q.o.id===id&&!q.s.closed));if(g.length>1&&!label.has(g.slice().sort()[0])){label.set(g.slice().sort()[0],'合算'+(++gn));}}
+  const glabel=id=>{const g=groupOf(id).filter(x=>os.some(q=>q.o.id===x&&!q.s.closed));return g.length>1?label.get(g.slice().sort()[0]):'';};
+  ui.groupOf=groupOf;ui.openIds=new Set(os.filter(r=>!r.s.closed).map(r=>r.o.id));
   const closedN=os.filter(r=>r.s.closed).length;
   const view=admin?day:today(),canEdit=x=>x.employeeId===me().id||admin;
   const at=x=>x.firstAt||x.createdAt,dayList=list.filter(x=>x.kind==='報告'&&x.date===view).sort((a,b)=>at(a)-at(b));
@@ -1594,15 +1603,14 @@ function render(){
     <label class="hv-field"><span>作業した日</span><input type="date" id="tk-date" value="${esc(day)}" max="${today()}"></label>
     <label class="hv-field"><span>作業名</span><select id="tk-task"><option value="">作業名を選んでください</option>${open.map(r=>`<option value="${esc(r.x.task)}" ${ui.task===r.x.task?'selected':''}>${esc(r.x.task)}${r.t.ended?'（終了）':''}${r.y!==year0?`・${r.y}年`:''}</option>`).join('')}</select></label>
     ${endedN&&!admin?`<p class="hv-hint">終わった作業（${endedN}）は候補に出ません。</p>`:''}
-    ${!fromPc?'<p class="hv-hint">PC から作業名と処方がまだ届いていません（初めの作業名だけ出しています）。</p>':''}
-    ${ui.task?matsHtml():''}
+    ${!fromPc?'<p class="hv-hint">PC から作業名がまだ届いていません（初めの作業名だけ出しています）。</p>':''}
     <div class="hv-field"><span>園地${ui.orchards.length>1?`<small class="tk-sum">${ui.orchards.length}園地を合算（量は合計で1つ）</small>`:''}</span>
-      ${ui.task?`<div class="tk-orchards" role="group" aria-label="園地">${pick.map(r=>`<button type="button" class="tk-orch ${ui.orchards.includes(r.o.id)?'on':''} ${r.s.closed?'done':''}" data-tk-orch="${esc(r.o.id)}" aria-pressed="${ui.orchards.includes(r.o.id)}">${esc(r.o.name)}${r.s.closed?'<small>完了</small>':r.s.reports?'<small>途中</small>':''}</button>`).join('')}</div>
-      ${closedN&&!admin?`<p class="hv-hint tk-after">完了した園地（${closedN}）は候補に出ません。</p>`:''}<p class="hv-hint tk-after">いくつも選ぶと合算です（量は合計で1つ。園地へは分けません）。</p>`:'<p class="hv-empty">先に作業名を選んでください。</p>'}</div>
+      ${ui.task?`<div class="tk-orchards" role="group" aria-label="園地">${pick.map(r=>`<button type="button" class="tk-orch ${ui.orchards.includes(r.o.id)?'on':''} ${r.s.closed?'done':''}" data-tk-orch="${esc(r.o.id)}" aria-pressed="${ui.orchards.includes(r.o.id)}">${esc(r.o.name)}${r.s.closed?'<small>完了</small>':glabel(r.o.id)?`<small class="tk-g">${glabel(r.o.id)}・途中</small>`:r.s.reports?'<small>途中</small>':''}</button>`).join('')}</div>
+      ${closedN&&!admin?`<p class="hv-hint tk-after">完了した園地（${closedN}）は候補に出ません。</p>`:''}<p class="hv-hint tk-after">いくつも選ぶと合算です（量は合計で1つ。園地へは分けません）。「合算」の印の園地は、1つ押すとグループ全部が選ばれます。続けて撒いた園地は足せます。</p>`:'<p class="hv-empty">先に作業名を選んでください。</p>'}</div>
     ${ui.cat!=='潅水'?`<div class="hv-field"><span>量（${UNIT[ui.cat]}）</span>${qtyPicker('tk-qty',ui.qty,'f',ui.cat)}</div>`:''}
     <label class="hv-field"><span>メモ（なくてもよい）</span><input id="tk-note" maxlength="200" autocomplete="off" autocorrect="off" name="tk-memo-${Date.now()}" value="${esc(ui.note)}"></label>
     <p id="tk-error" class="hv-error" role="alert" ${ui.message?'':'hidden'}>${esc(ui.message)}</p>
-    <div class="tk-go"><button type="button" class="tk-mid" data-tk-review="途中">途中で記録<small>まだ続ける</small></button><button type="button" class="hv-primary" data-tk-review="完了">完了で記録<small>この園地は終わり</small></button></div>
+    <div class="tk-go"><button type="button" class="tk-mid" data-tk-review="途中">途中で記録<small>まだ続ける</small></button><button type="button" class="hv-primary" data-tk-review="完了">完了で記録<small>選んだ園地は終わり</small></button></div>
   </div>
   <section class="hv-card">
     <h3 class="hv-h">${md(view)}${view===today()&&!admin?'（今日）':''} の記録（全員）</h3>
@@ -1611,15 +1619,7 @@ function render(){
   ${admin&&ui.task?statusSection(list,year,cur,os):(ui.task&&cur?`<p class="hv-hint tk-left">${esc(ui.task)}：残り ${os.filter(r=>!r.s.closed).length}園地</p>`:'')}`;
   if(keep&&$('tk-r-qty')){$('tk-r-qty').value=keep.q;$('tk-r-note').value=keep.n;}
 }
-/** 処方：防除・除草は資材ごとに「使った」と倍率（直せる）。施肥は肥料を選ぶ。潅水はなし */
-function matsHtml(){
-  if(ui.cat==='潅水')return '';
-  if(!ui.mats.length)return '<p class="hv-hint tk-nomats">この作業名の処方は、PC からまだ届いていません（量だけ記録します）。</p>';
-  if(ui.cat==='施肥')return `<label class="hv-field"><span>肥料</span><select id="tk-fert">${ui.mats.map(m=>`<option value="${esc(m.key)}" ${ui.fert===m.key?'selected':''}>${esc(m.name)}</option>`).join('')}</select></label>`;
-  return `<div class="hv-field"><span>資材・倍率<small class="tk-sum">変えた時だけ直してください</small></span><div class="tk-mats">${ui.mats.map((m,i)=>`<div class="tk-mat ${m.use?'':'off'}"><label><input type="checkbox" data-tk-use="${i}" ${m.use?'checked':''}> ${esc(m.name)}</label><span><input class="tk-rate" data-tk-rate="${i}" value="${esc(m.rate)}" inputmode="numeric" autocomplete="off" aria-label="${esc(m.name)}の倍率" ${m.use?'':'disabled'}> 倍</span></div>`).join('')}</div></div>`;
-}
-const usedMats=()=>ui.cat==='潅水'?[]:ui.cat==='施肥'?ui.mats.filter(m=>m.key===ui.fert).slice(0,1).map(m=>({key:m.key,name:m.name,rate:''})):ui.mats.filter(m=>m.use).map(m=>({key:m.key,name:m.name,rate:String(m.rate||'').trim()}));
-const matText=ms=>ms.map(m=>m.name+(m.rate?` ${m.rate}倍`:'')).join('・');
+const usedMats=()=>[];
 /** 管理者：園地ごとの状況（押すと完了。完了を戻すのは2回押し）と、作業の終了 */
 function statusSection(list,year,cur,os){
   const doneN=os.filter(r=>r.s.closed).length;
@@ -1630,7 +1630,7 @@ function statusSection(list,year,cur,os){
 }
 /** その日の記録の1行。押すとその場で開き、量・途中／完了・メモを修正／削除（日付・作業名・園地の間違いは削除して入れ直す） */
 function recRow(x,can){
-  const head=`<span><b>${esc(x.task)}　${esc(x.orchardIds.map(oname).join('・'))}</b><small>${esc(x.name)}${x.pending?'・未送信':''}・${esc(x.done)}${x.orchardIds.length>1?'・合算':''}${x.materials?.length?'・'+esc(matText(x.materials)):''}${x.note?'・'+esc(x.note):''}</small></span><span class="n">${esc(fmtQty(x.qty,x.cat))}</span>`;
+  const head=`<span><b>${esc(x.task)}　${esc(x.orchardIds.map(oname).join('・'))}</b><small>${esc(x.name)}${x.pending?'・未送信':''}・${esc(x.done)}${x.orchardIds.length>1?'・合算':''}${x.note?'・'+esc(x.note):''}</small></span><span class="n">${esc(fmtQty(x.qty,x.cat))}</span>`;
   if(!can)return `<div class="hv-rec">${head}<span></span></div>`;
   if(openRow!==x.id)return `<button type="button" class="hv-rec hv-rec-btn" data-tk-row="${esc(x.id)}">${head}<span class="hv-chev" aria-hidden="true">›</span></button>`;
   const d=ui.rowDone??x.done;
@@ -1648,8 +1648,7 @@ function dialog(html){const d=box();d.innerHTML=html;if(!d.open)d.showModal();}
 function closeDialog(){const d=$('tk-dialog');if(d?.open)d.close();pendingSave=null;}
 function readForm(){
   if(!$('tk-form'))return;ui.date=$('tk-date').value||today();const t=$('tk-task').value;if(t!==ui.task){ui.task=t;ui.orchards=[];}
-  if($('tk-qty'))ui.qty=$('tk-qty').value.trim();ui.note=$('tk-note').value.trim();if($('tk-fert'))ui.fert=$('tk-fert').value;
-  document.querySelectorAll('[data-tk-rate]').forEach(el=>{const m=ui.mats[Number(el.dataset.tkRate)];if(m)m.rate=el.value.trim();});
+  if($('tk-qty'))ui.qty=$('tk-qty').value.trim();ui.note=$('tk-note').value.trim();
 }
 function qtyError(cat,qty){
   if(cat==='潅水')return '';
@@ -1663,7 +1662,6 @@ function check(rec){
   if(!rec.task)return '作業名を選んでください。';
   if(!rec.orchardIds.length)return '園地を選んでください。';
   const q=qtyError(rec.cat,rec.qty);if(q)return q;
-  if(rec.materials.some(m=>m.rate.length>20))return '倍率を確かめてください。';
   if(isAdmin())return '';
   const list=records();if(taskState(list,rec.year,rec.cat,rec.task).ended)return `${rec.task}は終わっています。`;
   for(const id of rec.orchardIds){const s=orchardState(list,rec.year,rec.cat,rec.task,id);if(s.closed)return `${oname(id)}の${rec.task}は終わっています（${s.by}さん ${md(s.on)}）。`;}
@@ -1675,7 +1673,8 @@ function review(done){
   const rec={id:newId(),createdAt:Date.now(),date:ui.date,year:yearOf(ui.date,ui.task),cat:ui.cat,task:ui.task,kind:'報告',orchardIds:visibleIds().filter(id=>ui.orchards.includes(id)),qty,done,materials:usedMats(),note:ui.note};
   const err=check(rec);if(err){ui.message=err;render();$('tk-error')?.scrollIntoView({block:'center'});return;}
   ui.message='';pendingSave=rec;
-  dialog(`<h2 class="hv-dtitle">この内容で記録しますか？</h2><dl class="hv-dl"><dt>作業した日</dt><dd>${md(rec.date)}（${rec.year}年）</dd><dt>作業名</dt><dd>${esc(rec.cat)}・${esc(rec.task)}</dd>${rec.materials.length?`<dt>${rec.cat==='施肥'?'肥料':'資材'}</dt><dd>${esc(matText(rec.materials))}</dd>`:''}<dt>園地</dt><dd>${esc(rec.orchardIds.map(oname).join('・'))}${rec.orchardIds.length>1?`<small>${rec.orchardIds.length}園地を合算（量は合計で1つ）</small>`:''}</dd>${rec.qty!==null?`<dt>量</dt><dd><b>${esc(fmtQty(rec.qty,rec.cat))}</b></dd>`:''}<dt>${done}</dt><dd><b>${done==='完了'?'この園地は終わり':'まだ続ける'}</b>${done==='完了'?'<small>全員の候補から外れます</small>':''}</dd>${rec.note?`<dt>メモ</dt><dd>${esc(rec.note)}</dd>`:''}</dl><div class="hv-buttons"><button type="button" class="hv-small" data-tk-close>戻る</button><button type="button" class="hv-primary" id="tk-save">この内容で記録</button></div>`);
+  const cont=[...new Set(rec.orchardIds.map(id=>(document.querySelector(`[data-tk-orch="${id}"] .tk-g`)?.textContent||'').replace('・途中','')).filter(Boolean))].join('・');
+  dialog(`<h2 class="hv-dtitle">この内容で記録しますか？</h2><dl class="hv-dl"><dt>作業した日</dt><dd>${md(rec.date)}（${rec.year}年）</dd><dt>作業名</dt><dd>${esc(rec.cat)}・${esc(rec.task)}</dd><dt>園地</dt><dd>${esc(rec.orchardIds.map(oname).join('・'))}${rec.orchardIds.length>1?`<small>${rec.orchardIds.length}園地を合算（量は合計で1つ）</small>`:''}${cont?`<small>途中の${esc(cont)}の続き</small>`:''}</dd>${rec.qty!==null?`<dt>量</dt><dd><b>${esc(fmtQty(rec.qty,rec.cat))}</b></dd>`:''}<dt>${done}</dt><dd><b>${done==='完了'?(rec.orchardIds.length>1?'選んだ園地は全部終わり':'この園地は終わり'):'まだ続ける'}</b>${done==='完了'?'<small>全員の候補から外れます</small>':''}</dd>${rec.note?`<dt>メモ</dt><dd>${esc(rec.note)}</dd>`:''}</dl><div class="hv-buttons"><button type="button" class="hv-small" data-tk-close>戻る</button><button type="button" class="hv-primary" id="tk-save">この内容で記録</button></div>`);
 }
 function save(){
   if(!pendingSave)return;const rec=pendingSave;
@@ -1721,9 +1720,7 @@ function endTask(done){
 }
 /* ===== 操作 ===== */
 document.addEventListener('change',ev=>{const t=ev.target;if(!t.closest?.('#task-root'))return;
-  if(t.id==='tk-date'||t.id==='tk-task'){readForm();ui.message='';openRow='';armed='';render();}
-  else if(t.dataset.tkUse!==undefined){readForm();const m=ui.mats[Number(t.dataset.tkUse)];if(m)m.use=t.checked;render();}
-  else if(t.id==='tk-fert')readForm();});
+  if(t.id==='tk-date'||t.id==='tk-task'){readForm();ui.message='';openRow='';armed='';render();}});
 document.addEventListener('input',ev=>{if(ev.target.closest?.('#tk-form'))readForm();});
 document.addEventListener('click',ev=>{const b=ev.target.closest('button');
   if(st&&(armed.startsWith('reopen:')||armed.startsWith('end:'))&&!(b&&((b.dataset.tkToggle&&armed==='reopen:'+b.dataset.tkToggle)||(b.dataset.tkEnd&&armed==='end:'+b.dataset.tkEnd)))){armed='';clearTimeout(armTimer);render();if(!b)return;}
@@ -1731,8 +1728,11 @@ document.addEventListener('click',ev=>{const b=ev.target.closest('button');
   if(!b.closest('#task-panel')&&!b.closest('#tk-dialog'))return;
   if(b.id==='tk-sync')flush();
   else if(b.id==='tk-problems-ok'){st.problems=[];try{write();}catch(e){}render();}
-  else if(b.dataset.tkCat){readForm();if(ui.cat!==b.dataset.tkCat){ui.cat=b.dataset.tkCat;ui.task='';ui.orchards=[];ui.qty='';ui.matsFor='';ui.message='';typing='';}render();}
-  else if(b.dataset.tkOrch){readForm();const id=b.dataset.tkOrch;ui.orchards=ui.orchards.includes(id)?ui.orchards.filter(x=>x!==id):[...ui.orchards,id];ui.message='';render();}
+  else if(b.dataset.tkCat){readForm();if(ui.cat!==b.dataset.tkCat){ui.cat=b.dataset.tkCat;ui.task='';ui.orchards=[];ui.qty='';ui.message='';typing='';}render();}
+  else if(b.dataset.tkOrch){readForm();const id=b.dataset.tkOrch;
+    /* 途中のグループの園地は、グループ全部をまとめて選ぶ・外す（1つずつは外さない）。完了した園地（管理者だけ押せる）はその園地だけ */
+    const all=ui.openIds?.has(id)&&ui.groupOf?ui.groupOf(id).filter(x=>ui.openIds.has(x)):[id],set=all.length?all:[id];
+    ui.orchards=ui.orchards.includes(id)?ui.orchards.filter(x=>!set.includes(x)):[...new Set([...ui.orchards,...set])];ui.message='';render();}
   else if(b.dataset.tkReview)review(b.dataset.tkReview);
   else if(b.dataset.tkSet){const [k,n]=b.dataset.tkSet.split(':');if(k==='f')readForm();setQty(k,()=>Number(n));}
   else if(b.dataset.tkAdd){const [k,n]=b.dataset.tkAdd.split(':');if(k==='f')readForm();setQty(k,v=>v+Number(n));}
